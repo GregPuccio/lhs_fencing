@@ -11,13 +11,15 @@ class DefaultAppBar extends ConsumerWidget implements PreferredSizeWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ThemeController controller = ref.watch(themeControllerProvider);
     return AppBar(
-      title: ListTile(
-        leading: livingstonLogo,
-        title: const Text(
+      leading: livingstonLogo,
+      title: const ListTile(
+        title: Text(
           "LHS Fencing Team Attendance",
           textAlign: TextAlign.center,
         ),
-        trailing: IconButton(
+      ),
+      actions: [
+        IconButton(
           icon: Icon(
             controller.themeMode == ThemeMode.light
                 ? Icons.dark_mode
@@ -29,7 +31,7 @@ class DefaultAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 : ThemeMode.light);
           },
         ),
-      ),
+      ],
     );
   }
 
