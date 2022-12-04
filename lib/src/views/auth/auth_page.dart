@@ -1,5 +1,9 @@
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lhs_fencing/google_keys.dart';
+import 'package:lhs_fencing/src/constants/widgets/livingston_logo.dart';
 import 'package:lhs_fencing/src/services/auth/auth_service.dart';
 
 class AuthPage extends StatefulWidget {
@@ -63,107 +67,46 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SizedBox(
-        width: 600,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Form(
-            key: formKey,
-            child: AutofillGroup(
-              child: ListView(
-                children: [
-                  Image.asset(
-                    "assets/images/tournado_logo2.png",
-                    height: 300,
-                  ),
-                  TextFormField(
-                    controller: email,
-                    autofillHints: const [AutofillHints.email],
-                    decoration: const InputDecoration(
-                      labelText: "Email Address",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  if (isNewUser) ...[
-                    TextFormField(
-                      controller: newPassword,
-                      autofillHints: const [AutofillHints.newPassword],
-                      decoration: const InputDecoration(
-                        labelText: "New Password",
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: (val) => newPassword.text.length > 6
-                          ? null
-                          : "Password needs to be 6 characters",
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    TextFormField(
-                      controller: repeatNewPassword,
-                      autofillHints: const [AutofillHints.newPassword],
-                      decoration: const InputDecoration(
-                        labelText: "Repeat New Password",
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: (val) =>
-                          repeatNewPassword.text == newPassword.text
-                              ? null
-                              : "New passwords need to match",
-                      onEditingComplete: tryCompleteForm,
-                    ),
-                  ] else ...[
-                    TextFormField(
-                      obscureText: obscurePass,
-                      controller: password,
-                      autofillHints: const [AutofillHints.password],
-                      decoration: InputDecoration(
-                        labelText: "Password",
-                        border: const OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                            onPressed: () => setState(() {
-                                  obscurePass = !obscurePass;
-                                }),
-                            icon: Icon(obscurePass
-                                ? Icons.visibility
-                                : Icons.visibility_off)),
-                      ),
-                      onEditingComplete: tryCompleteForm,
-                    ),
-                  ],
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      MaterialButton(
-                        color: Theme.of(context).colorScheme.primary,
-                        child: Text(isNewUser ? "Register" : "Sign In"),
-                        onPressed: () async {
-                          if (formKey.currentState?.validate() == true) {
-                            tryCompleteForm();
-                          }
-                        },
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            isNewUser = !isNewUser;
-                          });
-                        },
-                        child: Text(isNewUser
-                            ? "Already have an account?"
-                            : "No Account?"),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+    return AuthStateListener(
+      listener: (oldState, newState, controller) {
+        if (newState is SignedIn) {
+          return true;
+        }
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: ListTile(
+            leading: livingstonLogo,
+            title: const Text(
+              "LHS Fencing Team Attendance App",
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        body: SizedBox(
+          width: 600,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                Text(
+                  "Welcome to the Livingston Highschool Fencing Team's Attendance App.",
+                  style: Theme.of(context).textTheme.titleLarge,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  "This will give you access to your past attendance as well as the ability to sign in when you are at practice.",
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                OAuthProviderButton(
+                  provider: GoogleProvider(clientId: googleClientID),
+                ),
+              ],
             ),
           ),
         ),

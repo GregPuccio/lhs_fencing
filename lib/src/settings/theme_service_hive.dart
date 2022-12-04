@@ -1,8 +1,6 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'app_data_directory/app_data_dir_web.dart'
-    if (dart.library.io) 'app_data_directory/app_data_dir_no_web.dart';
 
 import 'theme_service.dart';
 import 'theme_service_hive_adapters.dart';
@@ -53,7 +51,7 @@ class ThemeServiceHive implements ThemeService {
     // right, the folder we got with it did not work on Windows. This
     // implementation works and it uses the same folder that SharedPreferences
     // does.
-    final String appDataDir = await getAppDataDir();
+    const String appDataDir = "";
     // To make it easier to find the files on your device, this should help.
     // Usually you find the "shared_preferences.json" file in the same folder
     // that the ThemeServicePref creates with SharedPreferences. You cannot

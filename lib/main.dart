@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/firebase_options.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
-
 import 'package:lhs_fencing/src/settings/theme_controller.dart';
 import 'package:lhs_fencing/src/settings/theme_service.dart';
 import 'package:lhs_fencing/src/settings/theme_service_hive.dart';

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>505946713260-vdi3did46io6ak12lfvi8m0nmg0g3fta.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.505946713260-vdi3did46io6ak12lfvi8m0nmg0g3fta</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCpfMcE6A8Ggog5R3FHf2_3DFWxfQSL_hU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>505946713260</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.lhsFencing</string>
+	<key>PROJECT_ID</key>
+	<string>lhs-fencing</string>
+	<key>STORAGE_BUCKET</key>
+	<string>lhs-fencing.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:505946713260:ios:814f72d9078e1782fe4309</string>
+</dict>
+</plist>
