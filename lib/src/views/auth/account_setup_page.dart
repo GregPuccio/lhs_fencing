@@ -71,13 +71,13 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 16),
                 TextFormField(
                   readOnly: true,
                   decoration: const InputDecoration(labelText: "Email Address"),
                   initialValue: user.email,
                 ),
-                const Divider(),
+                const SizedBox(height: 8),
                 ElevatedButton.icon(
                   onPressed: () {
                     FirestoreService.instance.setData(
@@ -85,9 +85,10 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                       data: userData.toMap(),
                     );
                   },
-                  icon: const Icon(Icons.check_box),
+                  icon: const Icon(Icons.check),
                   label: const Text("Confirm My Information"),
                 ),
+                const Divider(),
                 ListTile(
                   title: const Text("Need to come back later?"),
                   trailing: OutlinedButton.icon(
