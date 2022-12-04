@@ -70,7 +70,17 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   ),
                                   const Divider(),
                                   ListTile(
-                                    title: Text(formattedDate),
+                                    title: Text(
+                                      formattedDate,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSecondaryContainer,
+                                          ),
+                                    ),
                                     trailing: ElevatedButton.icon(
                                       onPressed: () {
                                         DateTime now = DateTime.now();
