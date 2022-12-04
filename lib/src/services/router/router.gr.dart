@@ -22,7 +22,13 @@ class _$AppRouter extends RootStackRouter {
         routeData: routeData,
         child: const AuthPage(),
       );
-    }
+    },
+    HomeRoute.name: (routeData) {
+      return AdaptivePage<dynamic>(
+        routeData: routeData,
+        child: const HomePage(),
+      );
+    },
   };
 
   @override
@@ -30,6 +36,10 @@ class _$AppRouter extends RootStackRouter {
         RouteConfig(
           AuthRoute.name,
           path: '/',
+        ),
+        RouteConfig(
+          HomeRoute.name,
+          path: '/home',
         ),
         RouteConfig(
           '*#redirect',
@@ -50,4 +60,16 @@ class AuthRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'AuthRoute';
+}
+
+/// generated route for
+/// [HomePage]
+class HomeRoute extends PageRouteInfo<void> {
+  const HomeRoute()
+      : super(
+          HomeRoute.name,
+          path: '/home',
+        );
+
+  static const String name = 'HomeRoute';
 }

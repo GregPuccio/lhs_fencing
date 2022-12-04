@@ -1,10 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lhs_fencing/google_keys.dart';
-import 'package:lhs_fencing/src/constants/widgets/livingston_logo.dart';
+import 'package:lhs_fencing/src/constants/widgets/default_app_bar.dart';
 import 'package:lhs_fencing/src/services/auth/auth_service.dart';
+import 'package:lhs_fencing/src/services/router/router.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({Key? key}) : super(key: key);
@@ -70,20 +72,13 @@ class _AuthPageState extends State<AuthPage> {
     return AuthStateListener(
       listener: (oldState, newState, controller) {
         if (newState is SignedIn) {
+          context.router.push(const HomeRoute());
           return true;
         }
         return false;
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: ListTile(
-            leading: livingstonLogo,
-            title: const Text(
-              "LHS Fencing Team Attendance App",
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
+        appBar: defaultAppBar,
         body: SizedBox(
           width: 600,
           child: Padding(
