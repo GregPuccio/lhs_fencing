@@ -68,7 +68,7 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: defaultAppBar,
+      appBar: const DefaultAppBar(),
       body: SizedBox(
         width: 600,
         child: Padding(

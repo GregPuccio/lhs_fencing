@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
               // We moved the definition of the list of color schemes to use into
               // a separate static class and list. We use the theme controller
               // to change the index of used color scheme from the list.
-              colors: AppColor.schemes[8].light,
+              colors: AppColor.schemes[14].light,
               // Here we use another surface blend mode, where the scaffold
               // background gets a strong blend. This type is commonly used
               // on web/desktop when you wrap content on the scaffold in a
@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
               // We moved the definition of the list of color schemes to use into
               // a separate static class and list. We use the theme controller
               // to change the index of used color scheme from the list.
-              colors: AppColor.schemes[8].dark,
+              colors: AppColor.schemes[14].dark,
               // Here we use another surface blend mode, where the scaffold
               // background gets a strong blend. This type is commonly used
               // on web/desktop when you wrap content on the scaffold in a

@@ -34,7 +34,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
         return const LoadingPage();
       } else {
         return Scaffold(
-          appBar: defaultAppBar,
+          appBar: const DefaultAppBar(),
           body: SizedBox(
             width: 600,
             child: ListView(
@@ -73,6 +73,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
+                  readOnly: true,
                   decoration: const InputDecoration(labelText: "Email Address"),
                   initialValue: user.email,
                 ),
