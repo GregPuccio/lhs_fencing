@@ -56,7 +56,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                           ),
                           const Divider(),
                           Card(
-                            color: Theme.of(context).colorScheme.primary,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .secondaryContainer,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Column(
