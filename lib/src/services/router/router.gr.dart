@@ -22,7 +22,13 @@ class _$AppRouter extends RootStackRouter {
         routeData: routeData,
         child: const AuthWrapperPage(),
       );
-    }
+    },
+    AddPracticesRoute.name: (routeData) {
+      return AdaptivePage<dynamic>(
+        routeData: routeData,
+        child: const AddPracticesPage(),
+      );
+    },
   };
 
   @override
@@ -30,6 +36,10 @@ class _$AppRouter extends RootStackRouter {
         RouteConfig(
           AuthWrapperRoute.name,
           path: '/',
+        ),
+        RouteConfig(
+          AddPracticesRoute.name,
+          path: 'addPractices',
         ),
         RouteConfig(
           '*#redirect',
@@ -50,4 +60,16 @@ class AuthWrapperRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'AuthWrapperRoute';
+}
+
+/// generated route for
+/// [AddPracticesPage]
+class AddPracticesRoute extends PageRouteInfo<void> {
+  const AddPracticesRoute()
+      : super(
+          AddPracticesRoute.name,
+          path: 'addPractices',
+        );
+
+  static const String name = 'AddPracticesRoute';
 }

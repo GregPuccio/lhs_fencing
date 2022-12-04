@@ -3,6 +3,7 @@
 // @CustomAutoRouter
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:lhs_fencing/src/views/add_practices/add_practices_page.dart';
 import 'package:lhs_fencing/src/views/auth_wrapper.dart';
 
 part 'router.gr.dart';
@@ -12,6 +13,7 @@ part 'router.gr.dart';
   replaceInRouteName: 'Page,Route',
   routes: <AutoRoute>[
     AutoRoute(page: AuthWrapperPage, initial: true),
+    AutoRoute(page: AddPracticesPage, path: "addPractices"),
     RedirectRoute(path: '*', redirectTo: '/'),
   ],
 )

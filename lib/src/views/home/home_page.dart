@@ -6,6 +6,7 @@ import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/auth/auth_service.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
+import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/views/home/welcome_header.dart';
 import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
 import 'package:intl/intl.dart';
@@ -144,6 +145,12 @@ class _HomePageState extends ConsumerState<HomePage> {
                       index == 0 ? Container() : const Divider(),
                 );
               }),
+          floatingActionButton: userData.admin
+              ? FloatingActionButton(
+                  onPressed: () => context.pushRoute(const AddPracticesRoute()),
+                  child: const Icon(Icons.add),
+                )
+              : null,
         );
       } else {
         return const LoadingPage();

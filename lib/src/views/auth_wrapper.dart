@@ -14,15 +14,19 @@ class AuthWrapperPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Widget whenUserData(UserData? userData) {
-      return const HomePage();
+    Widget whenUserData(UserData? userData, User user) {
+      if (userData != null) {
+        return const HomePage();
+      } else {
+        return AccountSetupPage(user: user);
+      }
     }
 
     Widget whenData(User? user) {
       if (user != null) {
         return ref.watch(userDataProvider).when(
-              data: whenUserData,
-              error: (obj, stkTrce) => AccountSetupPage(user: user),
+              data: (userData) => whenUserData(userData, user),
+              error: (obj, stkTrce) => const ErrorPage(),
               loading: () => const LoadingPage(),
             );
       } else {
