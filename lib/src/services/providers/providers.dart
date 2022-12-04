@@ -27,7 +27,6 @@ final authStateChangesProvider = StreamProvider<User?>(
 
 final databaseProvider = Provider<FirestoreService>((ref) {
   final auth = ref.watch(authStateChangesProvider);
-
   if (auth.asData?.value?.uid != null) {
     return FirestoreService.instance;
   }

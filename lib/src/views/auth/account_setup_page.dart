@@ -1,134 +1,111 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/auth/auth_service.dart';
+import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
+import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
+import 'package:lhs_fencing/src/services/providers/providers.dart';
+import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
+import 'package:lhs_fencing/src/widgets/error.dart';
+import 'package:lhs_fencing/src/widgets/loading.dart';
 
 class AccountSetupPage extends ConsumerStatefulWidget {
-  const AccountSetupPage({Key? key}) : super(key: key);
+  final User user;
+  const AccountSetupPage({required this.user, Key? key}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AccountSetupState();
 }
 
 class _AccountSetupState extends ConsumerState<AccountSetupPage> {
-  late TextEditingController memberID;
-  int currentStep = 0;
-  List? list;
+  late UserData userData;
 
   @override
   void initState() {
-    memberID = TextEditingController();
+    userData = UserData.create(widget.user);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<Step> steps = [
-      Step(
-        title: const Text('Account Lookup'),
-        subtitle: const Text(
-            'Please enter your USA Fencing member ID below so we can look up your account'),
-        content: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: memberID,
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(), labelText: "Member ID"),
-                validator: (value) => value?.length == 9
-                    ? null
-                    : "Your ID should be 9 digits long",
-              ),
-            ),
-          ],
-        ),
-      ),
-      // Step(
-      //   title: const Text('Account Type'),
-      //   subtitle: const Text(
-      //       'Please choose the account type you are setting up. You can choose more than 1!'),
-      //   content: Column(
-      //     children: List.generate(
-      //       AccountType.values.length,
-      //       (index) => CheckboxListTile(
-      //         title: Text(AccountType.values[index].type),
-      //         subtitle: Text(AccountType.values[index].description),
-      //         value: accountTypes.contains(AccountType.values[index]),
-      //         onChanged: (val) {
-      //           setState(() {
-      //             if (val == true) {
-      //               accountTypes.add(AccountType.values[index]);
-      //             } else {
-      //               accountTypes.remove(AccountType.values[index]);
-      //             }
-      //           });
-      //         },
-      //       ),
-      //     ),
-      //   ),
-      // ),
-    ];
-    return Scaffold(
-      body: SizedBox(
-        width: 800,
-        child: ListView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: const EdgeInsets.only(top: 60),
-          children: [
-            const Text(
-              'Welcome to Tournado!',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 25),
-            ),
-            const Text(
-              'Please complete your account set up below.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
-            ),
-            Stepper(
-              physics: const NeverScrollableScrollPhysics(),
-              steps: steps,
-              currentStep: currentStep,
-              controlsBuilder: (context, controlDetails) {
-                return Row(
-                  children: <Widget>[
-                    if (currentStep > 0)
-                      TextButton(
-                        onPressed: controlDetails.onStepCancel,
-                        child: const Text('Go Back'),
+    Widget whenData(User? user) {
+      if (user == null) {
+        return const LoadingPage();
+      } else {
+        return Scaffold(
+          appBar: defaultAppBar,
+          body: SizedBox(
+            width: 600,
+            child: ListView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 16),
+              children: [
+                const Text(
+                  'Welcome to LHS Fencing!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 25),
+                ),
+                const Text(
+                  'Please confirm the information for your account below.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Flexible(
+                      child: TextFormField(
+                        decoration:
+                            const InputDecoration(labelText: "First Name"),
+                        initialValue: userData.firstName,
                       ),
-                    TextButton(
-                      onPressed: controlDetails.onStepContinue,
-                      child: Text(currentStep > 0 ? 'Complete' : 'Search'),
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: TextFormField(
+                        decoration:
+                            const InputDecoration(labelText: "Last Name"),
+                        initialValue: userData.lastName,
+                      ),
                     ),
                   ],
-                );
-              },
-              onStepCancel: () {
-                if (currentStep > 0) {
-                  setState(() {
-                    currentStep--;
-                  });
-                }
-              },
-              onStepContinue: () {},
-              onStepTapped: list != null
-                  ? (val) => setState(() => currentStep = val)
-                  : null,
+                ),
+                const SizedBox(height: 8),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: "Email Address"),
+                  initialValue: user.email,
+                ),
+                const Divider(),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    FirestoreService.instance.setData(
+                      path: FirestorePath.user(user.uid),
+                      data: userData.toMap(),
+                    );
+                  },
+                  icon: const Icon(Icons.check_box),
+                  label: const Text("Confirm My Information"),
+                ),
+                ListTile(
+                  title: const Text("Need to come back later?"),
+                  trailing: OutlinedButton.icon(
+                    onPressed: () => AuthService().signOut(),
+                    icon: const Text("Sign Out"),
+                    label: const Icon(Icons.logout),
+                  ),
+                ),
+              ],
             ),
-            const Divider(),
-            ListTile(
-              title: const Text("Need to come back later?"),
-              trailing: OutlinedButton.icon(
-                onPressed: () => AuthService().signOut(),
-                icon: const Text("Sign Out"),
-                label: const Icon(Icons.logout),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+          ),
+        );
+      }
+    }
+
+    return ref.watch(authStateChangesProvider).when(
+          data: whenData,
+          error: (obj, stkTrce) => const ErrorPage(),
+          loading: () => const LoadingPage(),
+        );
   }
 }

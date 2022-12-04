@@ -17,29 +17,19 @@ class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
-    AuthRoute.name: (routeData) {
+    AuthWrapperRoute.name: (routeData) {
       return AdaptivePage<dynamic>(
         routeData: routeData,
-        child: const AuthPage(),
+        child: const AuthWrapperPage(),
       );
-    },
-    HomeRoute.name: (routeData) {
-      return AdaptivePage<dynamic>(
-        routeData: routeData,
-        child: const HomePage(),
-      );
-    },
+    }
   };
 
   @override
   List<RouteConfig> get routes => [
         RouteConfig(
-          AuthRoute.name,
+          AuthWrapperRoute.name,
           path: '/',
-        ),
-        RouteConfig(
-          HomeRoute.name,
-          path: '/home',
         ),
         RouteConfig(
           '*#redirect',
@@ -51,25 +41,13 @@ class _$AppRouter extends RootStackRouter {
 }
 
 /// generated route for
-/// [AuthPage]
-class AuthRoute extends PageRouteInfo<void> {
-  const AuthRoute()
+/// [AuthWrapperPage]
+class AuthWrapperRoute extends PageRouteInfo<void> {
+  const AuthWrapperRoute()
       : super(
-          AuthRoute.name,
+          AuthWrapperRoute.name,
           path: '/',
         );
 
-  static const String name = 'AuthRoute';
-}
-
-/// generated route for
-/// [HomePage]
-class HomeRoute extends PageRouteInfo<void> {
-  const HomeRoute()
-      : super(
-          HomeRoute.name,
-          path: '/home',
-        );
-
-  static const String name = 'HomeRoute';
+  static const String name = 'AuthWrapperRoute';
 }

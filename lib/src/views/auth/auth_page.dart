@@ -1,12 +1,10 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lhs_fencing/google_keys.dart';
-import 'package:lhs_fencing/src/constants/widgets/default_app_bar.dart';
+import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
 import 'package:lhs_fencing/src/services/auth/auth_service.dart';
-import 'package:lhs_fencing/src/services/router/router.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({Key? key}) : super(key: key);
@@ -69,40 +67,31 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AuthStateListener(
-      listener: (oldState, newState, controller) {
-        if (newState is SignedIn) {
-          context.router.push(const HomeRoute());
-          return true;
-        }
-        return false;
-      },
-      child: Scaffold(
-        appBar: defaultAppBar,
-        body: SizedBox(
-          width: 600,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                Text(
-                  "Welcome to the Livingston Highschool Fencing Team's Attendance App.",
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  "This will give you access to your past attendance as well as the ability to sign in when you are at practice.",
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                OAuthProviderButton(
-                  provider: GoogleProvider(clientId: googleClientID),
-                ),
-              ],
-            ),
+    return Scaffold(
+      appBar: defaultAppBar,
+      body: SizedBox(
+        width: 600,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              Text(
+                "Welcome to the Livingston Highschool Fencing Team's Attendance App.",
+                style: Theme.of(context).textTheme.titleLarge,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "This will give you access to your past attendance as well as the ability to sign in when you are at practice.",
+                style: Theme.of(context).textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              OAuthProviderButton(
+                provider: GoogleProvider(clientId: googleClientID),
+              ),
+            ],
           ),
         ),
       ),

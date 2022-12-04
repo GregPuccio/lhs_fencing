@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
+
 class UserData {
   String id;
   String email;
@@ -14,6 +16,22 @@ class UserData {
     required this.lastName,
     required this.admin,
   });
+
+  static UserData create(User user) {
+    String firstName =
+        user.displayName?.substring(0, user.displayName?.indexOf(" ")) ?? "";
+    String lastName =
+        (user.displayName == null || !user.displayName!.contains(" "))
+            ? ""
+            : user.displayName?.substring(user.displayName!.indexOf(" ")) ?? "";
+    return UserData(
+      id: user.uid,
+      email: user.email ?? "",
+      firstName: firstName,
+      lastName: lastName,
+      admin: false,
+    );
+  }
 
   UserData copyWith({
     String? id,
