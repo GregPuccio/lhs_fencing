@@ -1,22 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lhs_fencing/src/views/home/attendance_view.dart';
+import 'package:lhs_fencing/src/views/home/home_view.dart';
+import 'package:lhs_fencing/src/views/home/profile_view.dart';
 import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
 
-class HomePage extends ConsumerWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
+}
+
+class _HomePageState extends ConsumerState<HomePage> {
+  int currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: defaultAppBar,
-      body: const Text(
-        "You are now logged in!\nThis page will soon have the ability to allow you to sign in to practice as well as track your previous attendance.",
+      body: IndexedStack(
+        index: currentIndex,
+        children: const [
+          HomeView(),
+          AttendanceView(),
+          ProfileView(),
+        ],
       ),
-      bottomNavigationBar: BottomNavigationBar(items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.login), label: "Practice"),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.history), label: "Past Attendance"),
-      ]),
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: (value) => setState(() => currentIndex = value),
+        currentIndex: currentIndex,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.login), label: "Practice"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.history), label: "Past Attendance"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+        ],
+      ),
     );
   }
 }
