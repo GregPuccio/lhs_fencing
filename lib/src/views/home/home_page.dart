@@ -12,7 +12,6 @@ import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
-import 'package:lhs_fencing/src/widgets/text_badge.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -56,70 +55,91 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 "1) Check in when you arrive at practice\n2) Check out if you leave early\n3) If you are late to practice or leave early, provide a reason\n4) Any issues? Contact one of the coaches ASAP"),
                           ),
                           const Divider(),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            child: const TextBadge(text: "Today's Attendance"),
-                          ),
-                          ListTile(
-                            title: Text(formattedDate),
-                            trailing: ElevatedButton.icon(
-                              onPressed: () {
-                                DateTime now = DateTime.now();
-                                final closetsDateTimeToNow = possibleAttendances
-                                    .reduce((a, b) => a.difference(now).abs() <
-                                            b.difference(now).abs()
-                                        ? a
-                                        : b);
+                          Card(
+                            color: Theme.of(context).colorScheme.primary,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Today's Attendance",
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
+                                  ),
+                                  const Divider(),
+                                  ListTile(
+                                    title: Text(formattedDate),
+                                    trailing: ElevatedButton.icon(
+                                      onPressed: () {
+                                        DateTime now = DateTime.now();
+                                        final closetsDateTimeToNow =
+                                            possibleAttendances.reduce((a, b) =>
+                                                a.difference(now).abs() <
+                                                        b.difference(now).abs()
+                                                    ? a
+                                                    : b);
 
-                                if (now.isBefore(closetsDateTimeToNow
-                                        .add(const Duration(hours: 2))) &&
-                                    now.isAfter(closetsDateTimeToNow.subtract(
-                                        const Duration(minutes: 15)))) {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: const Text("Check In To Practice"),
-                                      content: const Text(
-                                          "Please only check in when you have arrived at the gym. Have you arrived at the fencing gym?"),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () => context.popRoute(),
-                                          child: const Text("No, cancel"),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {},
-                                          child: const Text("Yes, check in"),
-                                        ),
-                                      ],
+                                        if (now.isBefore(closetsDateTimeToNow
+                                                .add(const Duration(
+                                                    hours: 2))) &&
+                                            now.isAfter(closetsDateTimeToNow
+                                                .subtract(const Duration(
+                                                    minutes: 15)))) {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              title: const Text(
+                                                  "Check In To Practice"),
+                                              content: const Text(
+                                                  "Please only check in when you have arrived at the gym. Have you arrived at the fencing gym?"),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      context.popRoute(),
+                                                  child:
+                                                      const Text("No, cancel"),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {},
+                                                  child: const Text(
+                                                      "Yes, check in"),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        } else if (now.isBefore(
+                                            closetsDateTimeToNow.subtract(
+                                                const Duration(minutes: 15)))) {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              title: const Text(
+                                                  "Too Early For Check In"),
+                                              content: const Text(
+                                                  "You cannot check in for attendance before practice has started. Make sure it is time for practice before you try checking in again."),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () =>
+                                                        context.popRoute(),
+                                                    child: const Text(
+                                                      "Understood",
+                                                    ))
+                                              ],
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      icon: const Icon(Icons.check),
+                                      label: const Text("Check In"),
                                     ),
-                                  );
-                                } else if (now.isBefore(closetsDateTimeToNow
-                                    .subtract(const Duration(minutes: 15)))) {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title:
-                                          const Text("Too Early For Check In"),
-                                      content: const Text(
-                                          "You cannot check in for attendance before practice has started. Make sure it is time for practice before you try checking in again."),
-                                      actions: [
-                                        TextButton(
-                                            onPressed: () => context.popRoute(),
-                                            child: const Text(
-                                              "Understood",
-                                            ))
-                                      ],
-                                    ),
-                                  );
-                                }
-                              },
-                              icon: const Icon(Icons.check),
-                              label: const Text("Check In"),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           const Divider(),
                           Text(
-                            "Past Attendance",
+                            "Previous Attendance",
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                         ],

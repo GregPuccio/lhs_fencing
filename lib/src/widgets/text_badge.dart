@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class TextBadge extends StatelessWidget {
   final String text;
-  const TextBadge({required this.text, super.key});
+  final TextStyle? style;
+  const TextBadge({required this.text, this.style, super.key});
 
   @override
   Widget build(BuildContext context) {
+    TextStyle? textStyle = style ?? Theme.of(context).textTheme.bodyText2;
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondaryContainer,
@@ -15,9 +17,9 @@ class TextBadge extends StatelessWidget {
       child: Text(
         text,
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.bodyText2?.copyWith(
-              color: Theme.of(context).colorScheme.onSecondaryContainer,
-            ),
+        style: textStyle?.copyWith(
+          color: Theme.of(context).colorScheme.onSecondaryContainer,
+        ),
       ),
     );
   }
