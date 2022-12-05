@@ -150,7 +150,6 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
                                 .format(practice.startTime);
                         return ListTile(
                           title: Text(practiceStart),
-                          onTap: () {},
                         );
                       }
                     },
