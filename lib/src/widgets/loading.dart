@@ -25,7 +25,7 @@ class LoadingTile extends StatelessWidget {
           const CircularProgressIndicator.adaptive(),
           const SizedBox(width: 8),
           Text(
-            "Loading Events",
+            "Loading Practices",
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ],

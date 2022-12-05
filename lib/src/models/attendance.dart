@@ -1,34 +1,57 @@
 import 'dart:convert';
 
 import 'package:lhs_fencing/src/models/practice.dart';
+import 'package:lhs_fencing/src/models/user_data.dart';
 
 class Attendance {
+  /// this [id] is created based off of the practice id, I can use these ids
+  /// to find all of the fencers that have attended a specific practice
   String id;
   DateTime practiceStart;
   DateTime practiceEnd;
   DateTime checkIn;
   String lateReason;
-  DateTime checkOut;
+  DateTime? checkOut;
   String earlyLeaveReason;
+  UserData userData;
   Attendance({
     required this.id,
     required this.practiceStart,
     required this.practiceEnd,
     required this.checkIn,
     required this.lateReason,
-    required this.checkOut,
+    this.checkOut,
     required this.earlyLeaveReason,
+    required this.userData,
   });
 
-  static Attendance create(Practice practice) {
+  static Attendance noUserCreate(Practice practice) {
     return Attendance(
-      id: "",
+      id: practice.id,
       practiceStart: practice.startTime,
       practiceEnd: practice.endTime,
       checkIn: DateTime.now(),
       lateReason: "",
-      checkOut: DateTime.now(),
       earlyLeaveReason: "",
+      userData: UserData(
+        id: "",
+        email: "",
+        firstName: "",
+        lastName: "",
+        admin: false,
+      ),
+    );
+  }
+
+  static Attendance create(Practice practice, UserData userData) {
+    return Attendance(
+      id: practice.id,
+      practiceStart: practice.startTime,
+      practiceEnd: practice.endTime,
+      checkIn: DateTime.now(),
+      lateReason: "",
+      earlyLeaveReason: "",
+      userData: userData,
     );
   }
 
@@ -40,6 +63,7 @@ class Attendance {
     String? lateReason,
     DateTime? checkOut,
     String? earlyLeaveReason,
+    UserData? userData,
   }) {
     return Attendance(
       id: id ?? this.id,
@@ -49,6 +73,7 @@ class Attendance {
       lateReason: lateReason ?? this.lateReason,
       checkOut: checkOut ?? this.checkOut,
       earlyLeaveReason: earlyLeaveReason ?? this.earlyLeaveReason,
+      userData: userData ?? this.userData,
     );
   }
 
@@ -59,8 +84,9 @@ class Attendance {
       'practiceEnd': practiceEnd.millisecondsSinceEpoch,
       'checkIn': checkIn.millisecondsSinceEpoch,
       'lateReason': lateReason,
-      'checkOut': checkOut.millisecondsSinceEpoch,
+      'checkOut': checkOut?.millisecondsSinceEpoch,
       'earlyLeaveReason': earlyLeaveReason,
+      'userData': userData.toMap(),
     };
   }
 
@@ -71,8 +97,11 @@ class Attendance {
       practiceEnd: DateTime.fromMillisecondsSinceEpoch(map['practiceEnd']),
       checkIn: DateTime.fromMillisecondsSinceEpoch(map['checkIn']),
       lateReason: map['lateReason'] ?? '',
-      checkOut: DateTime.fromMillisecondsSinceEpoch(map['checkOut']),
+      checkOut: map['checkOut'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['checkOut'])
+          : null,
       earlyLeaveReason: map['earlyLeaveReason'] ?? '',
+      userData: UserData.fromMap(map['userData']),
     );
   }
 
@@ -83,7 +112,7 @@ class Attendance {
 
   @override
   String toString() {
-    return 'Attendance(id: $id, practiceStart: $practiceStart, practiceEnd: $practiceEnd, checkIn: $checkIn, lateReason: $lateReason, checkOut: $checkOut, earlyLeaveReason: $earlyLeaveReason)';
+    return 'Attendance(id: $id, practiceStart: $practiceStart, practiceEnd: $practiceEnd, checkIn: $checkIn, lateReason: $lateReason, checkOut: $checkOut, earlyLeaveReason: $earlyLeaveReason, userData: $userData)';
   }
 
   @override
@@ -97,7 +126,8 @@ class Attendance {
         other.checkIn == checkIn &&
         other.lateReason == lateReason &&
         other.checkOut == checkOut &&
-        other.earlyLeaveReason == earlyLeaveReason;
+        other.earlyLeaveReason == earlyLeaveReason &&
+        other.userData == userData;
   }
 
   @override
@@ -108,6 +138,7 @@ class Attendance {
         checkIn.hashCode ^
         lateReason.hashCode ^
         checkOut.hashCode ^
-        earlyLeaveReason.hashCode;
+        earlyLeaveReason.hashCode ^
+        userData.hashCode;
   }
 }
