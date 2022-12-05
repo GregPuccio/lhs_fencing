@@ -33,6 +33,10 @@ class UserData {
     );
   }
 
+  String get fullName {
+    return "$firstName $lastName";
+  }
+
   UserData copyWith({
     String? id,
     String? email,

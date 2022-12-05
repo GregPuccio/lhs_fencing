@@ -14,4 +14,15 @@ class FirestoreStreams {
       },
     );
   }
+
+  Stream<List<Attendance>> practiceAttendances(String practiceID) {
+    return firestore.collectionGroupStream(
+      groupTerm: attendanceCollection,
+      queryBuilder: (query) =>
+          query.where("id", isEqualTo: practiceID).orderBy("userData.lastName"),
+      builder: (map, docID) {
+        return Attendance.fromMap(map!).copyWith(id: docID);
+      },
+    );
+  }
 }

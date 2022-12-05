@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 class Practice {
   String id;
   String location;
@@ -11,6 +13,10 @@ class Practice {
     required this.startTime,
     required this.endTime,
   });
+
+  String get startString {
+    return DateFormat("EEEE, MMM d @ h:mm aa").format(startTime);
+  }
 
   Practice copyWith({
     String? id,

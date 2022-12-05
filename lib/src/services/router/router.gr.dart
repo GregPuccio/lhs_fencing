@@ -29,6 +29,16 @@ class _$AppRouter extends RootStackRouter {
         child: const AddPracticesPage(),
       );
     },
+    PracticeRoute.name: (routeData) {
+      final args = routeData.argsAs<PracticeRouteArgs>();
+      return AdaptivePage<dynamic>(
+        routeData: routeData,
+        child: PracticePage(
+          practice: args.practice,
+          key: args.key,
+        ),
+      );
+    },
   };
 
   @override
@@ -40,6 +50,10 @@ class _$AppRouter extends RootStackRouter {
         RouteConfig(
           AddPracticesRoute.name,
           path: 'addPractices',
+        ),
+        RouteConfig(
+          PracticeRoute.name,
+          path: 'practice',
         ),
         RouteConfig(
           '*#redirect',
@@ -72,4 +86,38 @@ class AddPracticesRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'AddPracticesRoute';
+}
+
+/// generated route for
+/// [PracticePage]
+class PracticeRoute extends PageRouteInfo<PracticeRouteArgs> {
+  PracticeRoute({
+    required Practice practice,
+    Key? key,
+  }) : super(
+          PracticeRoute.name,
+          path: 'practice',
+          args: PracticeRouteArgs(
+            practice: practice,
+            key: key,
+          ),
+        );
+
+  static const String name = 'PracticeRoute';
+}
+
+class PracticeRouteArgs {
+  const PracticeRouteArgs({
+    required this.practice,
+    this.key,
+  });
+
+  final Practice practice;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'PracticeRouteArgs{practice: $practice, key: $key}';
+  }
 }

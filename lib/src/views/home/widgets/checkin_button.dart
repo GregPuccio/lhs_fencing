@@ -40,10 +40,11 @@ class CheckInButton extends ConsumerWidget {
                         "You cannot check in for attendance before practice has started. Make sure it is time for practice before you try checking in again."),
                     actions: [
                       TextButton(
-                          onPressed: () => context.popRoute(),
-                          child: const Text(
-                            "Understood",
-                          ))
+                        onPressed: () => context.popRoute(),
+                        child: const Text(
+                          "Understood",
+                        ),
+                      ),
                     ],
                   ),
                 );
@@ -142,10 +143,11 @@ class CheckInButton extends ConsumerWidget {
                         "You cannot check in after practice has ended. Make sure to let a coach know that you attended practice and try not to forget again in the future."),
                     actions: [
                       TextButton(
-                          onPressed: () => context.popRoute(),
-                          child: const Text(
-                            "Understood",
-                          ))
+                        onPressed: () => context.popRoute(),
+                        child: const Text(
+                          "Understood",
+                        ),
+                      ),
                     ],
                   ),
                 );
