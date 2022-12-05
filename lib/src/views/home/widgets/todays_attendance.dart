@@ -26,7 +26,9 @@ class TodaysAttendance extends ConsumerWidget {
       }
       DateTime now = DateTime.now();
       final todaysPractice = practices.reduce((a, b) =>
-          a.startTime.difference(now).abs() < b.startTime.difference(now).abs()
+          a.startTime.difference(now).abs() <
+                      b.startTime.difference(now).abs() &&
+                  a.startTime.isAfter(DateTime.now())
               ? a
               : b);
       final todaysAttendance = attendances.firstWhere(
