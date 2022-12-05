@@ -33,9 +33,14 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
       List<Practice> pastPractices =
           practices.where((p) => p.endTime.isBefore(DateTime.now())).toList();
       pastPractices.sort((a, b) => -a.startTime.compareTo(b.startTime));
-      int currentPracticeIndex = practices.indexWhere((p) =>
-          p.startTime.isBefore(DateTime.now()) &&
-          p.endTime.isAfter(DateTime.now()));
+
+      DateTime now = DateTime.now();
+      DateTime today = DateTime(now.year, now.month, now.day);
+      int currentPracticeIndex = practices.indexWhere((p) {
+        DateTime startTime =
+            DateTime(p.startTime.year, p.startTime.month, p.startTime.day);
+        return startTime.isAtSameMomentAs(today);
+      });
 
       Practice? currentPractice;
       String? formattedDate;
@@ -45,8 +50,15 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
             .format(currentPractice.startTime);
       }
 
-      List<Practice> futurePractices =
-          practices.where((p) => p.startTime.isAfter(DateTime.now())).toList();
+      List<Practice> futurePractices = practices
+          .where(
+            (p) => p.startTime.isAfter(
+              today.add(
+                const Duration(hours: 24),
+              ),
+            ),
+          )
+          .toList();
       futurePractices.sort((a, b) => a.startTime.compareTo(b.startTime));
       return DefaultTabController(
         length: 2,
