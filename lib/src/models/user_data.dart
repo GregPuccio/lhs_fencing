@@ -20,10 +20,10 @@ class UserData {
   static UserData create(User user) {
     String firstName =
         user.displayName?.substring(0, user.displayName?.indexOf(" ")) ?? "";
-    String lastName =
-        (user.displayName == null || !user.displayName!.contains(" "))
-            ? ""
-            : user.displayName?.substring(user.displayName!.indexOf(" ")) ?? "";
+    String lastName = (user.displayName == null ||
+            !user.displayName!.contains(" "))
+        ? ""
+        : user.displayName?.substring(user.displayName!.indexOf(" ") + 1) ?? "";
     return UserData(
       id: user.uid,
       email: user.email ?? "",

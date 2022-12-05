@@ -78,7 +78,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   initialValue: user.email,
                 ),
                 const SizedBox(height: 8),
-                ElevatedButton.icon(
+                OutlinedButton.icon(
                   onPressed: () {
                     // if (user.email != null &&
                     //     (user.email!.contains("livingston") ||
@@ -109,6 +109,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   icon: const Icon(Icons.check),
                   label: const Text("Confirm My Information"),
                 ),
+                const SizedBox(height: 60),
                 const Divider(),
                 ListTile(
                   title: const Text("Need to come back later?"),
