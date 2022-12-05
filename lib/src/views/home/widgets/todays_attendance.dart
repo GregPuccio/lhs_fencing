@@ -50,7 +50,7 @@ class TodaysAttendance extends ConsumerWidget {
           child: Column(
             children: [
               Text(
-                today ? "Today's Attendance" : "Next Practice",
+                today ? "Today's Practice" : "Next Practice",
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const Divider(),
