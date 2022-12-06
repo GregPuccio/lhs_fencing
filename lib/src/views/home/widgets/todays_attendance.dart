@@ -36,12 +36,6 @@ class TodaysAttendance extends ConsumerWidget {
           return b;
         }
       });
-      bool haveNextPractice = true;
-      // DateTime today = DateTime(now.year, now.month, now.day);
-      // if (todaysPractice.startTime
-      //     .isBefore(today.add(const Duration(hours: 24)))) {
-      //   haveNextPractice = false;
-      // }
       final todaysAttendance = attendances.firstWhere(
         (a) => a.practiceStart == todaysPractice.startTime,
         orElse: () => Attendance.noUserCreate(todaysPractice),
@@ -67,9 +61,6 @@ class TodaysAttendance extends ConsumerWidget {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const Divider(),
-              // if (!haveNextPractice)
-              //   const LoadingTile()
-              // else
               ListTile(
                 title: Text(
                   formattedDate,
