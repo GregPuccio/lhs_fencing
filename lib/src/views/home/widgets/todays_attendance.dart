@@ -38,10 +38,10 @@ class TodaysAttendance extends ConsumerWidget {
       });
       bool haveNextPractice = true;
       DateTime today = DateTime(now.year, now.month, now.day);
-      if (todaysPractice.startTime
-          .isBefore(today.add(const Duration(hours: 24)))) {
-        haveNextPractice = false;
-      }
+      // if (todaysPractice.startTime
+      //     .isBefore(today.add(const Duration(hours: 24)))) {
+      //   haveNextPractice = false;
+      // }
       final todaysAttendance = attendances.firstWhere(
         (a) => a.practiceStart == todaysPractice.startTime,
         orElse: () => Attendance.noUserCreate(todaysPractice),
