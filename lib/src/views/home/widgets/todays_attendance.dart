@@ -37,7 +37,9 @@ class TodaysAttendance extends ConsumerWidget {
         }
       });
       bool haveNextPractice = true;
-      if (todaysPractice.startTime.isBefore(DateTime.now())) {
+      DateTime today = DateTime(now.year, now.month, now.day);
+      if (todaysPractice.startTime
+          .isBefore(today.add(const Duration(hours: 24)))) {
         haveNextPractice = false;
       }
       final todaysAttendance = attendances.firstWhere(
@@ -53,7 +55,7 @@ class TodaysAttendance extends ConsumerWidget {
       DateTime closestDateTimeToNow = todaysPractice.startTime;
       String formattedDate =
           DateFormat('EEEE, MMMM d @ h:mm aa').format(closestDateTimeToNow);
-      bool today = now.day == closestDateTimeToNow.day;
+      bool todayBool = now.day == closestDateTimeToNow.day;
       return Card(
         color: Theme.of(context).colorScheme.primaryContainer,
         child: Padding(
@@ -61,7 +63,7 @@ class TodaysAttendance extends ConsumerWidget {
           child: Column(
             children: [
               Text(
-                today ? "Today's Practice" : "Next Practice",
+                todayBool ? "Today's Practice" : "Next Practice",
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const Divider(),
@@ -85,7 +87,8 @@ class TodaysAttendance extends ConsumerWidget {
                       ? null
                       : attendedToday
                           ? CheckOutButton(attendance: todaysAttendance)
-                          : CheckInButton(today: today, practices: practices),
+                          : CheckInButton(
+                              today: todayBool, practices: practices),
                 ),
             ],
           ),
