@@ -17,20 +17,29 @@ class TodaysAttendance extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Widget whenData(List<PracticeMonth> practiceMonths) {
-      if (practiceMonths.isEmpty) {
-        return const LoadingTile();
-      }
       List<Practice> practices = [];
       for (var month in practiceMonths) {
         practices.addAll(month.practices);
       }
       DateTime now = DateTime.now();
-      final todaysPractice = practices.reduce((a, b) =>
-          a.startTime.difference(now).abs() <
-                      b.startTime.difference(now).abs() &&
-                  a.startTime.isAfter(DateTime.now())
+      final todaysPractice = practices.reduce((a, b) {
+        DateTime now = DateTime.now();
+        DateTime today = DateTime(now.year, now.month, now.day);
+        if (a.startTime.isAfter(today) && b.startTime.isAfter(today)) {
+          return a.startTime.difference(now).abs() <
+                  b.startTime.difference(now).abs()
               ? a
-              : b);
+              : b;
+        } else if (a.startTime.isAfter(today)) {
+          return a;
+        } else {
+          return b;
+        }
+      });
+      bool haveNextPractice = true;
+      if (todaysPractice.startTime.isBefore(DateTime.now())) {
+        haveNextPractice = false;
+      }
       final todaysAttendance = attendances.firstWhere(
         (a) => a.practiceStart == todaysPractice.startTime,
         orElse: () => Attendance.noUserCreate(todaysPractice),
@@ -56,24 +65,28 @@ class TodaysAttendance extends ConsumerWidget {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const Divider(),
-              ListTile(
-                title: Text(
-                  formattedDate,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer,
-                      ),
+              if (!haveNextPractice)
+                const LoadingTile()
+              else
+                ListTile(
+                  title: Text(
+                    formattedDate,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSecondaryContainer,
+                        ),
+                  ),
+                  subtitle: attendedToday
+                      ? Text(
+                          "Checked in: $checkedIn${todaysAttendance.lateReason.isNotEmpty ? "\n${todaysAttendance.lateReason}" : ""}${checkedOut != null ? "\nChecked out: $checkedOut" : ""}${todaysAttendance.earlyLeaveReason.isNotEmpty ? "\n${todaysAttendance.earlyLeaveReason}" : ""}")
+                      : null,
+                  trailing: todaysAttendance.checkOut != null
+                      ? null
+                      : attendedToday
+                          ? CheckOutButton(attendance: todaysAttendance)
+                          : CheckInButton(today: today, practices: practices),
                 ),
-                subtitle: attendedToday
-                    ? Text(
-                        "Checked in: $checkedIn${todaysAttendance.lateReason.isNotEmpty ? "\n${todaysAttendance.lateReason}" : ""}${checkedOut != null ? "\nChecked out: $checkedOut" : ""}${todaysAttendance.earlyLeaveReason.isNotEmpty ? "\n${todaysAttendance.earlyLeaveReason}" : ""}")
-                    : null,
-                trailing: todaysAttendance.checkOut != null
-                    ? null
-                    : attendedToday
-                        ? CheckOutButton(attendance: todaysAttendance)
-                        : CheckInButton(today: today, practices: practices),
-              ),
             ],
           ),
         ),
