@@ -37,7 +37,7 @@ class TodaysAttendance extends ConsumerWidget {
         }
       });
       bool haveNextPractice = true;
-      DateTime today = DateTime(now.year, now.month, now.day);
+      // DateTime today = DateTime(now.year, now.month, now.day);
       // if (todaysPractice.startTime
       //     .isBefore(today.add(const Duration(hours: 24)))) {
       //   haveNextPractice = false;
@@ -67,29 +67,27 @@ class TodaysAttendance extends ConsumerWidget {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const Divider(),
-              if (!haveNextPractice)
-                const LoadingTile()
-              else
-                ListTile(
-                  title: Text(
-                    formattedDate,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSecondaryContainer,
-                        ),
-                  ),
-                  subtitle: attendedToday
-                      ? Text(
-                          "Checked in: $checkedIn${todaysAttendance.lateReason.isNotEmpty ? "\n${todaysAttendance.lateReason}" : ""}${checkedOut != null ? "\nChecked out: $checkedOut" : ""}${todaysAttendance.earlyLeaveReason.isNotEmpty ? "\n${todaysAttendance.earlyLeaveReason}" : ""}")
-                      : null,
-                  trailing: todaysAttendance.checkOut != null
-                      ? null
-                      : attendedToday
-                          ? CheckOutButton(attendance: todaysAttendance)
-                          : CheckInButton(
-                              today: todayBool, practices: practices),
+              // if (!haveNextPractice)
+              //   const LoadingTile()
+              // else
+              ListTile(
+                title: Text(
+                  formattedDate,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer,
+                      ),
                 ),
+                subtitle: attendedToday
+                    ? Text(
+                        "Checked in: $checkedIn${todaysAttendance.lateReason.isNotEmpty ? "\n${todaysAttendance.lateReason}" : ""}${checkedOut != null ? "\nChecked out: $checkedOut" : ""}${todaysAttendance.earlyLeaveReason.isNotEmpty ? "\n${todaysAttendance.earlyLeaveReason}" : ""}")
+                    : null,
+                trailing: todaysAttendance.checkOut != null
+                    ? null
+                    : attendedToday
+                        ? CheckOutButton(attendance: todaysAttendance)
+                        : CheckInButton(today: todayBool, practices: practices),
+              ),
             ],
           ),
         ),
