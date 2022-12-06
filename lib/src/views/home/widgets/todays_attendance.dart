@@ -24,13 +24,10 @@ class TodaysAttendance extends ConsumerWidget {
       DateTime now = DateTime.now();
       final todaysPractice = practices.reduce((a, b) {
         DateTime now = DateTime.now();
-        DateTime today = DateTime(now.year, now.month, now.day);
-        if (a.startTime.isAfter(today) && b.startTime.isAfter(today)) {
-          return a.startTime.difference(now).abs() <
-                  b.startTime.difference(now).abs()
-              ? a
-              : b;
-        } else if (a.startTime.isAfter(today)) {
+        if (a.endTime.add(const Duration(minutes: 15)).isAfter(now) &&
+            b.endTime.add(const Duration(minutes: 15)).isAfter(now)) {
+          return a.startTime.compareTo(b.startTime).isNegative ? a : b;
+        } else if (a.endTime.add(const Duration(minutes: 15)).isAfter(now)) {
           return a;
         } else {
           return b;
