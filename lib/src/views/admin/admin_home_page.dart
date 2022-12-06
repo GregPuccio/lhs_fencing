@@ -77,7 +77,7 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
                       ListTile(
                         title: const Text("Fencer List"),
                         subtitle: const Text(
-                            "View fencers and there current attendances"),
+                            "View fencers and their number of practices"),
                         trailing: const Icon(Icons.arrow_forward),
                         onTap: () =>
                             context.router.push(const FencerListRoute()),
