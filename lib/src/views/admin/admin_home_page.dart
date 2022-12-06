@@ -74,6 +74,15 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
                     children: [
                       const WelcomeHeader(),
                       const Divider(),
+                      ListTile(
+                        title: const Text("Fencer List"),
+                        subtitle: const Text(
+                            "View fencers and there current attendances"),
+                        trailing: const Icon(Icons.arrow_forward),
+                        onTap: () =>
+                            context.router.push(const FencerListRoute()),
+                      ),
+                      const Divider(),
                       if (currentPractice != null && formattedDate != null)
                         TodaysPractice(
                           formattedDate: formattedDate,

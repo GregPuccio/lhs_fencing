@@ -39,6 +39,12 @@ class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    FencerListRoute.name: (routeData) {
+      return AdaptivePage<dynamic>(
+        routeData: routeData,
+        child: const FencerListPage(),
+      );
+    },
   };
 
   @override
@@ -54,6 +60,10 @@ class _$AppRouter extends RootStackRouter {
         RouteConfig(
           PracticeRoute.name,
           path: 'practice',
+        ),
+        RouteConfig(
+          FencerListRoute.name,
+          path: 'fencerList',
         ),
         RouteConfig(
           '*#redirect',
@@ -120,4 +130,16 @@ class PracticeRouteArgs {
   String toString() {
     return 'PracticeRouteArgs{practice: $practice, key: $key}';
   }
+}
+
+/// generated route for
+/// [FencerListPage]
+class FencerListRoute extends PageRouteInfo<void> {
+  const FencerListRoute()
+      : super(
+          FencerListRoute.name,
+          path: 'fencerList',
+        );
+
+  static const String name = 'FencerListRoute';
 }
