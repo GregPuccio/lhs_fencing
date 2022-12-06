@@ -7,6 +7,8 @@ import 'package:lhs_fencing/src/services/auth/auth_service.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/views/admin/widgets/admin_practice_type_bar.dart';
+import 'package:lhs_fencing/src/views/admin/widgets/no_practice_today.dart';
+import 'package:lhs_fencing/src/views/admin/widgets/todays_practice.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
 import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
 import 'package:intl/intl.dart';
@@ -73,39 +75,12 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
                       const WelcomeHeader(),
                       const Divider(),
                       if (currentPractice != null && formattedDate != null)
-                        Card(
-                          color:
-                              Theme.of(context).colorScheme.secondaryContainer,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Today's Practice",
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                                const Divider(),
-                                ListTile(
-                                  title: Text(
-                                    formattedDate,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSecondaryContainer,
-                                        ),
-                                  ),
-                                  trailing: const Icon(Icons.arrow_forward),
-                                  onTap: () => context.router.push(
-                                    PracticeRoute(practice: currentPractice!),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                        TodaysPractice(
+                          formattedDate: formattedDate,
+                          currentPractice: currentPractice,
+                        )
+                      else
+                        const NoPracticeToday(),
                     ],
                   ),
                 ),

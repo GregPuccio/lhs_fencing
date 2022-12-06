@@ -2,10 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
+import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
-import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
-import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
+import 'package:lhs_fencing/src/services/firestore/functions/attendance_functions.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 
 class CheckInButton extends ConsumerWidget {
@@ -20,6 +20,18 @@ class CheckInButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    Future<void> checkIn(Practice practice, {String? lateReason}) async {
+      UserData userData = ref.read(userDataProvider).asData!.value!;
+      List<AttendanceMonth> months =
+          ref.read(attendancesProvider).asData!.value;
+
+      return await addAttendance(
+        userData.id,
+        months,
+        Attendance.create(practice, userData).copyWith(lateReason: lateReason),
+      );
+    }
+
     return ElevatedButton.icon(
       onPressed: today
           ? () {
@@ -86,14 +98,9 @@ class CheckInButton extends ConsumerWidget {
                         ),
                         TextButton(
                           onPressed: () async {
-                            UserData userData =
-                                ref.read(userDataProvider).asData!.value!;
-                            await FirestoreService.instance.setData(
-                              path: FirestorePath.attendance(
-                                  userData.id, todaysPractice.id),
-                              data: Attendance.create(todaysPractice, userData)
-                                  .copyWith(lateReason: controller.text)
-                                  .toMap(),
+                            await checkIn(
+                              todaysPractice,
+                              lateReason: controller.text,
                             );
                             context.router.pop();
                           },
@@ -118,14 +125,8 @@ class CheckInButton extends ConsumerWidget {
                         ),
                         TextButton(
                           onPressed: () async {
-                            UserData userData =
-                                ref.read(userDataProvider).asData!.value!;
-                            await FirestoreService.instance.setData(
-                              path: FirestorePath.attendance(
-                                  userData.id, todaysPractice.id),
-                              data: Attendance.create(todaysPractice, userData)
-                                  .toMap(),
-                            );
+                            await checkIn(todaysPractice);
+
                             context.router.pop();
                           },
                           child: const Text("Yes, check in"),

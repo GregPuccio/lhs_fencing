@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
@@ -55,5 +56,22 @@ final practicesProvider = StreamProvider((ref) {
   return database.collectionStream(
     path: FirestorePath.practices(),
     builder: (map, docID) => PracticeMonth.fromMap(map!).copyWith(id: docID),
+  );
+});
+
+final attendancesProvider = StreamProvider((ref) {
+  final auth = ref.watch(authStateChangesProvider);
+  final database = ref.watch(databaseProvider);
+  return database.collectionStream(
+    path: FirestorePath.attendances(auth.asData!.value!.uid),
+    builder: (map, docID) => AttendanceMonth.fromMap(map!).copyWith(id: docID),
+  );
+});
+
+final allAttendancesProvider = StreamProvider((ref) {
+  final database = ref.watch(databaseProvider);
+  return database.collectionGroupStream(
+    groupTerm: attendanceCollection,
+    builder: (map, docID) => AttendanceMonth.fromMap(map!).copyWith(id: docID),
   );
 });

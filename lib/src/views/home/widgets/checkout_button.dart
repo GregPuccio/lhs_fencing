@@ -2,9 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
+import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
-import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
-import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
+import 'package:lhs_fencing/src/services/firestore/functions/attendance_functions.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 
 class CheckOutButton extends ConsumerWidget {
@@ -17,6 +17,21 @@ class CheckOutButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    Future<void> checkOut({String? earlyLeaveReason}) async {
+      UserData userData = ref.read(userDataProvider).asData!.value!;
+      List<AttendanceMonth> months =
+          ref.read(attendancesProvider).asData!.value;
+
+      return await updateAttendance(
+        userData.id,
+        months,
+        attendance.copyWith(
+          checkOut: DateTime.now(),
+          earlyLeaveReason: earlyLeaveReason,
+        ),
+      );
+    }
+
     DateTime now = DateTime.now();
     final practiceEnd = attendance.practiceEnd;
     return ElevatedButton(
@@ -52,17 +67,7 @@ class CheckOutButton extends ConsumerWidget {
                 ),
                 TextButton(
                   onPressed: () async {
-                    UserData userData =
-                        ref.read(userDataProvider).asData!.value!;
-                    await FirestoreService.instance.updateData(
-                      path:
-                          FirestorePath.attendance(userData.id, attendance.id),
-                      data: attendance
-                          .copyWith(
-                              earlyLeaveReason: controller.text,
-                              checkOut: DateTime.now())
-                          .toMap(),
-                    );
+                    await checkOut(earlyLeaveReason: controller.text);
                     context.router.pop();
                   },
                   child: const Text("Complete check out"),
@@ -80,14 +85,7 @@ class CheckOutButton extends ConsumerWidget {
               actions: [
                 TextButton(
                   onPressed: () async {
-                    UserData userData =
-                        ref.read(userDataProvider).asData!.value!;
-                    await FirestoreService.instance.updateData(
-                      path:
-                          FirestorePath.attendance(userData.id, attendance.id),
-                      data:
-                          attendance.copyWith(checkOut: DateTime.now()).toMap(),
-                    );
+                    await checkOut();
                     context.router.pop();
                   },
                   child: const Text(

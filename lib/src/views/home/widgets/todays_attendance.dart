@@ -46,7 +46,7 @@ class TodaysAttendance extends ConsumerWidget {
           DateFormat('EEEE, MMMM d @ h:mm aa').format(closestDateTimeToNow);
       bool today = now.day == closestDateTimeToNow.day;
       return Card(
-        color: Theme.of(context).colorScheme.secondaryContainer,
+        color: Theme.of(context).colorScheme.primaryContainer,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
