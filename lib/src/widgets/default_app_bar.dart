@@ -16,7 +16,7 @@ class DefaultAppBar extends ConsumerWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           icon: Icon(
-            controller.themeMode == ThemeMode.light
+            Theme.of(context).brightness == Brightness.light
                 ? Icons.dark_mode
                 : Icons.light_mode,
           ),
