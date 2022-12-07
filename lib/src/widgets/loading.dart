@@ -14,7 +14,8 @@ class LoadingPage extends StatelessWidget {
 }
 
 class LoadingTile extends StatelessWidget {
-  const LoadingTile({super.key});
+  final String text;
+  const LoadingTile({this.text = "Loading Practices", super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class LoadingTile extends StatelessWidget {
           const CircularProgressIndicator.adaptive(),
           const SizedBox(width: 8),
           Text(
-            "Loading Practices",
+            text,
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ],

@@ -51,6 +51,18 @@ final userDataProvider = StreamProvider<UserData?>((ref) {
   );
 });
 
+final fencersProvider = StreamProvider<List<UserData>>((ref) {
+  final database = ref.watch(databaseProvider);
+  return database.collectionStream(
+    path: FirestorePath.users(),
+    queryBuilder: (query) =>
+        query.where("admin", isEqualTo: false).orderBy("lastName"),
+    builder: (map, docID) {
+      return UserData.fromMap(map!).copyWith(id: docID);
+    },
+  );
+});
+
 final practicesProvider = StreamProvider((ref) {
   final database = ref.watch(databaseProvider);
   return database.collectionStream(
