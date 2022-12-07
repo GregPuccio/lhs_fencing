@@ -7,6 +7,7 @@ import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 import 'package:lhs_fencing/src/widgets/search_bar.dart';
+import 'package:lhs_fencing/src/widgets/text_badge.dart';
 
 class FencerListPage extends ConsumerStatefulWidget {
   const FencerListPage({super.key});
@@ -41,8 +42,9 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
       for (var month in attendanceMonths) {
         attendances.addAll(month.attendances);
       }
+      List<UserData> filteredFencers = fencers.toList();
       if (controller.text.isNotEmpty) {
-        fencers = fencers
+        filteredFencers = fencers
             .where(
               (f) => f.fullName.toLowerCase().contains(
                     controller.text.toLowerCase(),
@@ -52,13 +54,19 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
       }
       return Scaffold(
           appBar: AppBar(
-            title: const Text("Fencer List"),
+            title: Row(
+              children: [
+                const Text("Fencer List"),
+                const SizedBox(width: 8),
+                TextBadge(text: "${fencers.length}"),
+              ],
+            ),
             bottom: SearchBar(controller),
           ),
           body: ListView.separated(
-            itemCount: fencers.length,
+            itemCount: filteredFencers.length,
             itemBuilder: (context, index) {
-              UserData fencer = fencers[index];
+              UserData fencer = filteredFencers[index];
 
               List<Attendance> fencerAttendances = attendances
                   .where((att) => att.userData.id == fencer.id)
