@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
@@ -25,11 +24,8 @@ class PracticePage extends ConsumerWidget {
           }
         }
       }
-      List<UserData> presentFencers = fencers
-          .where((fencer) => attendances
-              .any((attendance) => attendance.userData.id == fencer.id))
-          .toList();
-      presentFencers.sort((a, b) => a.lastName.compareTo(b.lastName));
+      attendances
+          .sort((a, b) => a.userData.lastName.compareTo(b.userData.lastName));
       List<UserData> absentFencers = fencers
           .where((fencer) => !attendances
               .any((attendance) => attendance.userData.id == fencer.id))
@@ -54,15 +50,10 @@ class PracticePage extends ConsumerWidget {
                 itemCount: attendances.length,
                 itemBuilder: (context, index) {
                   Attendance attendance = attendances[index];
-                  String checkedIn =
-                      DateFormat('h:mm aa').format(attendance.checkIn);
-                  String? checkedOut = attendance.checkOut != null
-                      ? DateFormat('h:mm aa').format(attendance.checkOut!)
-                      : null;
+
                   return ListTile(
                     title: Text(attendance.userData.fullName),
-                    subtitle: Text(
-                        "Checked in: $checkedIn${attendance.lateReason.isNotEmpty ? "\n${attendance.lateReason}" : ""}${checkedOut != null ? "\nChecked out: $checkedOut" : ""}${attendance.earlyLeaveReason.isNotEmpty ? "\n${attendance.earlyLeaveReason}" : ""}"),
+                    subtitle: Text(attendance.info),
                   );
                 },
                 separatorBuilder: (context, index) => const Divider(),

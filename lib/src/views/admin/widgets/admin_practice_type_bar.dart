@@ -13,10 +13,10 @@ class PracticeTypeTabBar extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => kToolbarHeight;
+  double get maxExtent => 48;
 
   @override
-  double get minExtent => kToolbarHeight;
+  double get minExtent => 48;
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SearchBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -16,7 +17,11 @@ class SearchBar extends ConsumerWidget implements PreferredSizeWidget {
     return Container(
       margin: const EdgeInsets.fromLTRB(15, 0, 15, 5),
       child: CupertinoSearchTextField(
-        style: const TextStyle(color: CupertinoColors.systemGrey),
+        style: TextStyle(
+          color: Theme.of(context).brightness == Brightness.light
+              ? CupertinoColors.black
+              : CupertinoColors.white,
+        ),
         prefixInsets: const EdgeInsetsDirectional.fromSTEB(8, 2, 4, 2),
         placeholder: text,
         controller: controller,

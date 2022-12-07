@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 
@@ -75,6 +76,13 @@ class Attendance {
       earlyLeaveReason: earlyLeaveReason ?? this.earlyLeaveReason,
       userData: userData ?? this.userData,
     );
+  }
+
+  String get info {
+    String checkedIn = DateFormat('h:mm aa').format(checkIn);
+    String? checkedOut =
+        checkOut != null ? DateFormat('h:mm aa').format(checkOut!) : null;
+    return "Checked in: $checkedIn${lateReason.isNotEmpty ? "\n$lateReason" : ""}${checkedOut != null ? "\nChecked out: $checkedOut" : ""}${earlyLeaveReason.isNotEmpty ? "\n$earlyLeaveReason" : ""}";
   }
 
   Map<String, dynamic> toMap() {

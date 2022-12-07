@@ -29,6 +29,8 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
   void initState() {
     DateTime now = DateTime.now();
     DateTime today = DateTime(now.year, now.month, now.day);
+    daysOfWeek.add(DayOfWeek.values
+        .firstWhere((element) => now.weekday == element.weekday));
     dateRange = DateTimeRange(start: today, end: today);
     startTime = const TimeOfDay(hour: 18, minute: 0);
     endTime = const TimeOfDay(hour: 20, minute: 0);

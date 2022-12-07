@@ -5,13 +5,11 @@ import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
-import 'package:lhs_fencing/src/services/auth/auth_service.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/views/home/widgets/instructions.dart';
 import 'package:lhs_fencing/src/views/home/widgets/todays_attendance.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
 import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
-import 'package:intl/intl.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 
@@ -40,7 +38,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         appBar: const DefaultAppBar(),
         body: ListView.separated(
           padding: const EdgeInsets.all(8.0),
-          itemCount: practices.length + 2,
+          itemCount: practices.length + 1,
           itemBuilder: (context, index) {
             if (index == 0) {
               return Column(
@@ -70,12 +68,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                     ),
                 ],
               );
-            } else if (index == practices.length + 1) {
-              return OutlinedButton.icon(
-                onPressed: () => AuthService().signOut(),
-                icon: const Text("Sign Out"),
-                label: const Icon(Icons.logout),
-              );
             } else {
               index--;
               Practice practice = practices[index];
@@ -84,20 +76,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                 orElse: () => Attendance.noUserCreate(practice),
               );
               bool attendedToday = attendance.userData.id.isNotEmpty;
-
-              String checkedIn =
-                  DateFormat('h:mm aa').format(attendance.checkIn);
-              String? checkedOut = attendance.checkOut != null
-                  ? DateFormat('h:mm aa').format(attendance.checkOut!)
-                  : null;
-              DateTime closestDateTimeToNow = practice.startTime;
-              String formattedDate = DateFormat('EEEE, MMMM d @ h:mm aa')
-                  .format(closestDateTimeToNow);
               return ListTile(
-                title: Text(formattedDate),
+                title: Text(practice.startString),
                 subtitle: attendedToday
-                    ? Text(
-                        "Checked in: $checkedIn${attendance.lateReason.isNotEmpty ? "\n${attendance.lateReason}" : ""}${checkedOut != null ? "\nChecked out: $checkedOut" : ""}${attendance.earlyLeaveReason.isNotEmpty ? "\n${attendance.earlyLeaveReason}" : ""}")
+                    ? Text(attendance.info)
                     : const Text("Did not check in"),
               );
             }

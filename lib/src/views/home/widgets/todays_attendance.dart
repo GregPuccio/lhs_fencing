@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
@@ -38,15 +37,7 @@ class TodaysAttendance extends ConsumerWidget {
         orElse: () => Attendance.noUserCreate(todaysPractice),
       );
       bool attendedToday = todaysAttendance.userData.id.isNotEmpty;
-
-      String checkedIn = DateFormat('h:mm aa').format(todaysAttendance.checkIn);
-      String? checkedOut = todaysAttendance.checkOut != null
-          ? DateFormat('h:mm aa').format(todaysAttendance.checkOut!)
-          : null;
-      DateTime closestDateTimeToNow = todaysPractice.startTime;
-      String formattedDate =
-          DateFormat('EEEE, MMMM d @ h:mm aa').format(closestDateTimeToNow);
-      bool todayBool = now.day == closestDateTimeToNow.day;
+      bool todayBool = now.day == todaysPractice.startTime.day;
       return Card(
         color: Theme.of(context).colorScheme.primaryContainer,
         child: Padding(
@@ -60,16 +51,13 @@ class TodaysAttendance extends ConsumerWidget {
               const Divider(),
               ListTile(
                 title: Text(
-                  formattedDate,
+                  todaysPractice.startString,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color:
                             Theme.of(context).colorScheme.onSecondaryContainer,
                       ),
                 ),
-                subtitle: attendedToday
-                    ? Text(
-                        "Checked in: $checkedIn${todaysAttendance.lateReason.isNotEmpty ? "\n${todaysAttendance.lateReason}" : ""}${checkedOut != null ? "\nChecked out: $checkedOut" : ""}${todaysAttendance.earlyLeaveReason.isNotEmpty ? "\n${todaysAttendance.earlyLeaveReason}" : ""}")
-                    : null,
+                subtitle: attendedToday ? Text(todaysAttendance.info) : null,
                 trailing: todaysAttendance.checkOut != null
                     ? null
                     : attendedToday

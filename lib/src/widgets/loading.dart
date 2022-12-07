@@ -15,7 +15,7 @@ class LoadingPage extends StatelessWidget {
 
 class LoadingTile extends StatelessWidget {
   final String text;
-  const LoadingTile({this.text = "Loading Practices", super.key});
+  const LoadingTile({this.text = "Loading Practice", super.key});
 
   @override
   Widget build(BuildContext context) {
