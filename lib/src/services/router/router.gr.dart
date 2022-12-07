@@ -45,6 +45,17 @@ class _$AppRouter extends RootStackRouter {
         child: const FencerListPage(),
       );
     },
+    EditFencerStatusRoute.name: (routeData) {
+      final args = routeData.argsAs<EditFencerStatusRouteArgs>();
+      return AdaptivePage<dynamic>(
+        routeData: routeData,
+        child: EditFencerStatusPage(
+          args.fencer,
+          args.practice,
+          key: args.key,
+        ),
+      );
+    },
   };
 
   @override
@@ -64,6 +75,10 @@ class _$AppRouter extends RootStackRouter {
         RouteConfig(
           FencerListRoute.name,
           path: 'fencerList',
+        ),
+        RouteConfig(
+          EditFencerStatusRoute.name,
+          path: 'editFencerStatus',
         ),
         RouteConfig(
           '*#redirect',
@@ -142,4 +157,43 @@ class FencerListRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'FencerListRoute';
+}
+
+/// generated route for
+/// [EditFencerStatusPage]
+class EditFencerStatusRoute extends PageRouteInfo<EditFencerStatusRouteArgs> {
+  EditFencerStatusRoute({
+    required UserData fencer,
+    required Practice practice,
+    Key? key,
+  }) : super(
+          EditFencerStatusRoute.name,
+          path: 'editFencerStatus',
+          args: EditFencerStatusRouteArgs(
+            fencer: fencer,
+            practice: practice,
+            key: key,
+          ),
+        );
+
+  static const String name = 'EditFencerStatusRoute';
+}
+
+class EditFencerStatusRouteArgs {
+  const EditFencerStatusRouteArgs({
+    required this.fencer,
+    required this.practice,
+    this.key,
+  });
+
+  final UserData fencer;
+
+  final Practice practice;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'EditFencerStatusRouteArgs{fencer: $fencer, practice: $practice, key: $key}';
+  }
 }

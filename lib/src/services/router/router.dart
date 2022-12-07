@@ -4,7 +4,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
+import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/views/add_practices/add_practices_page.dart';
+import 'package:lhs_fencing/src/views/admin/edit_fencer_status_page.dart';
 import 'package:lhs_fencing/src/views/admin/fencer_list_page.dart';
 import 'package:lhs_fencing/src/views/admin/practice_page.dart';
 import 'package:lhs_fencing/src/views/auth_wrapper.dart';
@@ -19,6 +21,7 @@ part 'router.gr.dart';
     AutoRoute(page: AddPracticesPage, path: "addPractices"),
     AutoRoute(page: PracticePage, path: "practice"),
     AutoRoute(page: FencerListPage, path: "fencerList"),
+    AutoRoute(page: EditFencerStatusPage, path: "editFencerStatus"),
     RedirectRoute(path: '*', redirectTo: '/'),
   ],
 )

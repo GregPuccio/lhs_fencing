@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
@@ -5,6 +6,7 @@ import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
+import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 import 'package:lhs_fencing/src/widgets/text_badge.dart';
@@ -84,6 +86,13 @@ class PracticePage extends ConsumerWidget {
 
                   return ListTile(
                     title: Text(fencer.fullName),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () => context.router.push(
+                        EditFencerStatusRoute(
+                            fencer: fencer, practice: practice),
+                      ),
+                    ),
                   );
                 },
                 separatorBuilder: (context, index) => const Divider(),
