@@ -6,8 +6,11 @@ import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
+import 'package:lhs_fencing/src/views/admin/widgets/future_practices.dart';
 import 'package:lhs_fencing/src/views/home/widgets/instructions.dart';
+import 'package:lhs_fencing/src/views/home/widgets/past_attendances.dart';
 import 'package:lhs_fencing/src/views/home/widgets/todays_attendance.dart';
+import 'package:lhs_fencing/src/widgets/practice_type_tab_bar.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
 import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
@@ -34,58 +37,41 @@ class _HomePageState extends ConsumerState<HomePage> {
       }
       attendances.sort((a, b) => a.checkIn.compareTo(b.checkIn));
 
-      return Scaffold(
-        appBar: const DefaultAppBar(),
-        body: ListView.separated(
-          padding: const EdgeInsets.all(8.0),
-          itemCount: practices.length + 1,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return Column(
-                children: [
-                  const WelcomeHeader(),
-                  const Divider(),
-                  const Instructions(),
-                  const Divider(),
-                  TodaysAttendance(attendances: attendances),
-                  const Divider(),
-                  Text(
-                    "Previous Practices",
-                    style: Theme.of(context).textTheme.titleLarge,
+      return DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: const DefaultAppBar(),
+          body: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      const WelcomeHeader(),
+                      const Divider(),
+                      const Instructions(),
+                      const Divider(),
+                      TodaysAttendance(attendances: attendances),
+                    ],
                   ),
-                  if (practices.isEmpty)
-                    Column(
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            "No Practices Found",
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Divider(),
-                      ],
-                    ),
-                ],
-              );
-            } else {
-              index--;
-              Practice practice = practices[index];
-              Attendance attendance = attendances.firstWhere(
-                (element) => element.id == practice.id,
-                orElse: () => Attendance.noUserCreate(practice),
-              );
-              bool attendedToday = attendance.userData.id.isNotEmpty;
-              return ListTile(
-                title: Text(practice.startString),
-                subtitle: attendedToday
-                    ? Text(attendance.info)
-                    : const Text("Did not check in"),
-              );
-            }
-          },
-          separatorBuilder: (context, index) =>
-              index == 0 ? Container() : const Divider(),
+                ),
+                SliverOverlapAbsorber(
+                  handle:
+                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverPersistentHeader(
+                    pinned: true,
+                    delegate: PracticeTypeTabBar(),
+                  ),
+                ),
+              ];
+            },
+            body: TabBarView(
+              children: [
+                PastAttendances(practices: practices),
+                FuturePractices(practices: practices),
+              ],
+            ),
+          ),
         ),
       );
     }
@@ -95,8 +81,6 @@ class _HomePageState extends ConsumerState<HomePage> {
       for (var month in practiceMonths) {
         practices.addAll(month.practices);
       }
-      practices =
-          practices.where((p) => p.endTime.isBefore(DateTime.now())).toList();
       practices.sort((a, b) => -a.startTime.compareTo(b.startTime));
       return ref.watch(attendancesProvider).when(
             data: whenAttendanceData,
@@ -119,8 +103,9 @@ class _HomePageState extends ConsumerState<HomePage> {
     }
 
     return ref.watch(userDataProvider).when(
-        data: whenData,
-        error: (error, stackTrace) => const ErrorPage(),
-        loading: () => const LoadingPage());
+          data: whenData,
+          error: (error, stackTrace) => const ErrorPage(),
+          loading: () => const LoadingPage(),
+        );
   }
 }

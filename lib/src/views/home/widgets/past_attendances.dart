@@ -1,17 +1,14 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
-import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
-import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 
-class PastPractices extends ConsumerWidget {
-  const PastPractices({
+class PastAttendances extends ConsumerWidget {
+  const PastAttendances({
     Key? key,
     required this.practices,
   }) : super(key: key);
@@ -24,7 +21,6 @@ class PastPractices extends ConsumerWidget {
         practices.where((p) => p.endTime.isBefore(DateTime.now())).toList();
     pastPractices.sort((a, b) => -a.startTime.compareTo(b.startTime));
 
-    List<UserData> fencers = [];
     Widget whenData(List<AttendanceMonth> attendanceMonths) {
       return CustomScrollView(
         key: const PageStorageKey<String>("past"),
@@ -44,23 +40,18 @@ class PastPractices extends ConsumerWidget {
                     }
                   }
                 }
-                int presentFencers = fencers
-                    .where((fencer) => attendances.any(
-                        (attendance) => attendance.userData.id == fencer.id))
-                    .length;
-                int absentFencers = fencers
-                    .where((fencer) => !attendances.any(
-                        (attendance) => attendance.userData.id == fencer.id))
-                    .length;
+                Attendance attendance = attendances.firstWhere(
+                  (element) => element.id == practice.id,
+                  orElse: () => Attendance.noUserCreate(practice),
+                );
+                bool attendedToday = attendance.userData.id.isNotEmpty;
                 return Column(
                   children: [
                     ListTile(
                       title: Text(practice.startString),
-                      subtitle: Text(
-                        "$presentFencers Checked In | $absentFencers Absent",
-                      ),
-                      onTap: () => context.router
-                          .push(PracticeRoute(practice: practice)),
+                      subtitle: attendedToday
+                          ? Text(attendance.info)
+                          : const Text("Did not check in"),
                     ),
                     if (index != pastPractices.length - 1) const Divider(),
                   ],
@@ -73,18 +64,9 @@ class PastPractices extends ConsumerWidget {
       );
     }
 
-    Widget whenFencerData(List<UserData> data) {
-      fencers = data;
-      return ref.watch(allAttendancesProvider).when(
-          data: whenData,
-          error: (error, stackTrace) => const ErrorPage(),
-          loading: () => const LoadingPage());
-    }
-
-    return ref.watch(fencersProvider).when(
-          data: whenFencerData,
-          error: (error, stackTrace) => const ErrorPage(),
-          loading: () => const LoadingPage(),
-        );
+    return ref.watch(attendancesProvider).when(
+        data: whenData,
+        error: (error, stackTrace) => const ErrorPage(),
+        loading: () => const LoadingPage());
   }
 }
