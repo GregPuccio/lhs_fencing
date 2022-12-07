@@ -7,6 +7,7 @@ import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
+import 'package:lhs_fencing/src/widgets/text_badge.dart';
 
 class PracticePage extends ConsumerWidget {
   final Practice practice;
@@ -37,10 +38,28 @@ class PracticePage extends ConsumerWidget {
         child: Scaffold(
           appBar: AppBar(
             title: Text(practice.startString),
-            bottom: const TabBar(
+            bottom: TabBar(
               tabs: [
-                Tab(text: "Present"),
-                Tab(text: "Not Present"),
+                Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Present"),
+                      const SizedBox(width: 8),
+                      TextBadge(text: "${attendances.length}"),
+                    ],
+                  ),
+                ),
+                Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Not Present"),
+                      const SizedBox(width: 8),
+                      TextBadge(text: "${absentFencers.length}"),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
