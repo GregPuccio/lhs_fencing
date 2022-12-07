@@ -75,6 +75,16 @@ class PracticePage extends ConsumerWidget {
                   return ListTile(
                     title: Text(attendance.userData.fullName),
                     subtitle: Text(attendance.info),
+                    trailing: TextButton.icon(
+                      icon: const Text("Edit"),
+                      label: const Icon(Icons.edit),
+                      onPressed: () => context.router.push(
+                        EditFencerStatusRoute(
+                          fencer: attendance.userData,
+                          practice: practice,
+                        ),
+                      ),
+                    ),
                   );
                 },
                 separatorBuilder: (context, index) => const Divider(),
@@ -86,11 +96,14 @@ class PracticePage extends ConsumerWidget {
 
                   return ListTile(
                     title: Text(fencer.fullName),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.edit),
+                    trailing: TextButton.icon(
+                      icon: const Text("Edit"),
+                      label: const Icon(Icons.edit),
                       onPressed: () => context.router.push(
                         EditFencerStatusRoute(
-                            fencer: fencer, practice: practice),
+                          fencer: fencer,
+                          practice: practice,
+                        ),
                       ),
                     ),
                   );
