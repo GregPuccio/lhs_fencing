@@ -7,9 +7,7 @@ import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/widgets/practice_type_tab_bar.dart';
 import 'package:lhs_fencing/src/views/admin/widgets/future_practices.dart';
-import 'package:lhs_fencing/src/views/admin/widgets/no_practice_today.dart';
 import 'package:lhs_fencing/src/views/admin/widgets/past_practices.dart';
-import 'package:lhs_fencing/src/views/admin/widgets/todays_practice.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
 import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
@@ -67,10 +65,6 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
                             context.router.push(const FencerListRoute()),
                       ),
                       const Divider(),
-                      if (currentPractice != null)
-                        TodaysPractice(currentPractice: currentPractice)
-                      else
-                        const NoPracticeToday(),
                     ],
                   ),
                 ),
@@ -79,7 +73,7 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
                       NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                   sliver: SliverPersistentHeader(
                     pinned: true,
-                    delegate: PracticeTypeTabBar(),
+                    delegate: PracticeTypeTabBar(currentPractice),
                   ),
                 ),
               ];
