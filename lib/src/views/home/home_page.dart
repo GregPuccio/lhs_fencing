@@ -9,7 +9,6 @@ import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/views/admin/widgets/future_practices.dart';
 import 'package:lhs_fencing/src/views/home/widgets/instructions.dart';
 import 'package:lhs_fencing/src/views/home/widgets/past_attendances.dart';
-import 'package:lhs_fencing/src/views/home/widgets/todays_attendance.dart';
 import 'package:lhs_fencing/src/widgets/practice_type_tab_bar.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
 import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
@@ -46,12 +45,11 @@ class _HomePageState extends ConsumerState<HomePage> {
               return [
                 SliverToBoxAdapter(
                   child: Column(
-                    children: [
-                      const WelcomeHeader(),
-                      const Divider(),
-                      const Instructions(),
-                      const Divider(),
-                      TodaysAttendance(attendances: attendances),
+                    children: const [
+                      WelcomeHeader(),
+                      Divider(),
+                      Instructions(),
+                      Divider(),
                     ],
                   ),
                 ),
@@ -60,7 +58,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                   sliver: SliverPersistentHeader(
                     pinned: true,
-                    delegate: PracticeTypeTabBar(),
+                    delegate: FencerPracticeTypeTabBar(attendances),
                   ),
                 ),
               ];
