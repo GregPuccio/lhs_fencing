@@ -129,7 +129,8 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
             CheckboxListTile(
               title: const Text("Include Check Out Time"),
               value: selectCheckOutTime,
-              onChanged: (value) => selectCheckOutTime = value ?? true,
+              onChanged: (value) =>
+                  setState(() => selectCheckOutTime = value ?? true),
             ),
             const SizedBox(height: 8),
             if (selectCheckOutTime) ...[
