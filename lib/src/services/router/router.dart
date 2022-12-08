@@ -3,6 +3,7 @@
 // @CustomAutoRouter
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/views/add_practices/add_practices_page.dart';

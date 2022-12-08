@@ -82,6 +82,7 @@ class PracticePage extends ConsumerWidget {
                         EditFencerStatusRoute(
                           fencer: attendance.userData,
                           practice: practice,
+                          attendance: attendance,
                         ),
                       ),
                     ),

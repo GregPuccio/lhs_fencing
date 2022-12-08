@@ -11,7 +11,9 @@ import 'package:lhs_fencing/src/services/providers/providers.dart';
 class EditFencerStatusPage extends ConsumerStatefulWidget {
   final UserData fencer;
   final Practice practice;
-  const EditFencerStatusPage(this.fencer, this.practice, {super.key});
+  final Attendance? attendance;
+  const EditFencerStatusPage(this.fencer, this.practice,
+      {this.attendance, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -20,7 +22,7 @@ class EditFencerStatusPage extends ConsumerStatefulWidget {
 
 class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
   late TimeOfDay startTime;
-  bool selectCheckOutTime = false;
+  late bool selectCheckOutTime;
   late TimeOfDay endTime;
   late TextEditingController lateReason;
   late TextEditingController earlyLeaveReason;
@@ -34,18 +36,23 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
 
   @override
   void initState() {
-    lateReason = TextEditingController();
-    earlyLeaveReason = TextEditingController();
+    lateReason = TextEditingController(text: widget.attendance?.lateReason);
+    earlyLeaveReason =
+        TextEditingController(text: widget.attendance?.earlyLeaveReason);
     startTime = TimeOfDay(
-        hour: widget.practice.startTime.hour,
-        minute: widget.practice.startTime.minute);
+        hour: widget.attendance?.checkIn.hour ?? widget.practice.startTime.hour,
+        minute: widget.attendance?.checkIn.minute ??
+            widget.practice.startTime.minute);
     endTime = TimeOfDay(
-        hour: widget.practice.endTime.hour,
-        minute: widget.practice.endTime.minute);
+      hour: widget.attendance?.checkOut?.hour ?? widget.practice.endTime.hour,
+      minute:
+          widget.attendance?.checkOut?.minute ?? widget.practice.endTime.minute,
+    );
+    selectCheckOutTime = widget.attendance?.checkOut != null;
     super.initState();
   }
 
-  Future<void> checkIn() async {
+  Future<void> saveStatus() async {
     List<AttendanceMonth> months =
         ref.read(allAttendancesProvider).asData!.value;
     List<AttendanceMonth> fencerMonths = months
@@ -66,16 +73,32 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
       endTime.hour,
       endTime.minute,
     );
+    Attendance newAttendance =
+        widget.attendance ?? Attendance.create(widget.practice, widget.fencer);
 
     return await addAttendance(
       widget.fencer.id,
       fencerMonths,
-      Attendance.create(widget.practice, widget.fencer).copyWith(
+      newAttendance.copyWith(
         checkIn: checkIn,
         lateReason: lateReason.text,
         checkOut: selectCheckOutTime ? checkOut : null,
         earlyLeaveReason: earlyLeaveReason.text,
       ),
+    );
+  }
+
+  Future deleteAttendance() async {
+    List<AttendanceMonth> months =
+        ref.read(allAttendancesProvider).asData!.value;
+    List<AttendanceMonth> fencerMonths = months
+        .where(
+            (month) => month.attendances.first.userData.id == widget.fencer.id)
+        .toList();
+    return await removeAttendance(
+      widget.fencer.id,
+      fencerMonths,
+      widget.attendance!,
     );
   }
 
@@ -100,8 +123,33 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Fencer Status"),
+        actions: [
+          if (widget.attendance != null)
+            IconButton(
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Delete Attendance"),
+                  content: const Text(
+                      "Are you sure you would like to delete this attendance entry?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => context.router.pop(),
+                      child: const Text("No, cancel"),
+                    ),
+                    TextButton(
+                      onPressed: deleteAttendance,
+                      child: const Text("Yes, delete"),
+                    ),
+                  ],
+                ),
+              ),
+              icon: const Icon(Icons.delete),
+            ),
+        ],
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
             Text(
@@ -121,6 +169,10 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
             ),
             const SizedBox(height: 8),
             TextField(
+              decoration: const InputDecoration(
+                label: Text("Late Arrival Reason"),
+                alignLabelWithHint: true,
+              ),
               controller: lateReason,
               minLines: 3,
               maxLines: 5,
@@ -141,9 +193,11 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                 onTap: () => setTime(endTime, start: false),
               ),
               const SizedBox(height: 8),
-            ],
-            if (selectCheckOutTime) ...[
               TextField(
+                decoration: const InputDecoration(
+                  label: Text("Early Leave Reason"),
+                  alignLabelWithHint: true,
+                ),
                 controller: earlyLeaveReason,
                 minLines: 3,
                 maxLines: 5,
@@ -152,7 +206,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
             ],
             OutlinedButton.icon(
               onPressed: () async {
-                await checkIn();
+                await saveStatus();
                 if (mounted) {
                   context.popRoute();
                 }

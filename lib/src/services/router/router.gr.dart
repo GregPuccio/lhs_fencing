@@ -52,6 +52,7 @@ class _$AppRouter extends RootStackRouter {
         child: EditFencerStatusPage(
           args.fencer,
           args.practice,
+          attendance: args.attendance,
           key: args.key,
         ),
       );
@@ -165,6 +166,7 @@ class EditFencerStatusRoute extends PageRouteInfo<EditFencerStatusRouteArgs> {
   EditFencerStatusRoute({
     required UserData fencer,
     required Practice practice,
+    Attendance? attendance,
     Key? key,
   }) : super(
           EditFencerStatusRoute.name,
@@ -172,6 +174,7 @@ class EditFencerStatusRoute extends PageRouteInfo<EditFencerStatusRouteArgs> {
           args: EditFencerStatusRouteArgs(
             fencer: fencer,
             practice: practice,
+            attendance: attendance,
             key: key,
           ),
         );
@@ -183,6 +186,7 @@ class EditFencerStatusRouteArgs {
   const EditFencerStatusRouteArgs({
     required this.fencer,
     required this.practice,
+    this.attendance,
     this.key,
   });
 
@@ -190,10 +194,12 @@ class EditFencerStatusRouteArgs {
 
   final Practice practice;
 
+  final Attendance? attendance;
+
   final Key? key;
 
   @override
   String toString() {
-    return 'EditFencerStatusRouteArgs{fencer: $fencer, practice: $practice, key: $key}';
+    return 'EditFencerStatusRouteArgs{fencer: $fencer, practice: $practice, attendance: $attendance, key: $key}';
   }
 }
