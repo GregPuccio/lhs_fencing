@@ -48,6 +48,10 @@ class PastAttendances extends ConsumerWidget {
                 bool attendedToday = attendance.userData.id.isNotEmpty;
                 return Column(
                   children: [
+                    if (index == 0 &&
+                        (attendance.lateReason.isNotEmpty ||
+                            attendance.earlyLeaveReason.isNotEmpty))
+                      const SizedBox(height: 8),
                     ListTile(
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
