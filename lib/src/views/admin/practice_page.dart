@@ -80,7 +80,7 @@ class PracticePage extends ConsumerWidget {
                           children: [
                             if (attendance.lateReason.isNotEmpty) ...[
                               TextBadge(
-                                text: "Late",
+                                text: "Late Arrival",
                                 boxColor: Theme.of(context)
                                     .colorScheme
                                     .errorContainer,

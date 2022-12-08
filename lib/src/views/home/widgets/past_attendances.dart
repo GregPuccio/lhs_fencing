@@ -6,6 +6,7 @@ import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
+import 'package:lhs_fencing/src/widgets/text_badge.dart';
 
 class PastAttendances extends ConsumerWidget {
   const PastAttendances({
@@ -48,7 +49,32 @@ class PastAttendances extends ConsumerWidget {
                 return Column(
                   children: [
                     ListTile(
-                      title: Text(practice.startString),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              if (attendance.lateReason.isNotEmpty) ...[
+                                TextBadge(
+                                  text: "Late Arrival",
+                                  boxColor: Theme.of(context)
+                                      .colorScheme
+                                      .errorContainer,
+                                ),
+                                const SizedBox(width: 8),
+                              ],
+                              if (attendance.earlyLeaveReason.isNotEmpty)
+                                TextBadge(
+                                  text: "Early Leave",
+                                  boxColor: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                ),
+                            ],
+                          ),
+                          Text(practice.startString),
+                        ],
+                      ),
                       subtitle: attendedToday
                           ? Text(attendance.info)
                           : const Text("Did not check in"),
