@@ -73,7 +73,32 @@ class PracticePage extends ConsumerWidget {
                   Attendance attendance = attendances[index];
 
                   return ListTile(
-                    title: Text(attendance.userData.fullName),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            if (attendance.lateReason.isNotEmpty) ...[
+                              TextBadge(
+                                text: "Late",
+                                boxColor: Theme.of(context)
+                                    .colorScheme
+                                    .errorContainer,
+                              ),
+                              const SizedBox(width: 8),
+                            ],
+                            if (attendance.earlyLeaveReason.isNotEmpty)
+                              TextBadge(
+                                text: "Early Leave",
+                                boxColor: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer,
+                              ),
+                          ],
+                        ),
+                        Text(attendance.userData.fullName),
+                      ],
+                    ),
                     subtitle: Text(attendance.info),
                     trailing: TextButton.icon(
                       icon: const Text("Edit"),

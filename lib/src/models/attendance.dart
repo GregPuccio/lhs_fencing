@@ -82,7 +82,7 @@ class Attendance {
     String checkedIn = DateFormat('h:mm aa').format(checkIn);
     String? checkedOut =
         checkOut != null ? DateFormat('h:mm aa').format(checkOut!) : null;
-    return "Checked in: $checkedIn${lateReason.isNotEmpty ? "\n$lateReason" : ""}${checkedOut != null ? "\nChecked out: $checkedOut" : ""}${earlyLeaveReason.isNotEmpty ? "\n$earlyLeaveReason" : ""}";
+    return "Checked in: $checkedIn${lateReason.isNotEmpty ? " - $lateReason" : ""}${checkedOut != null ? "\nChecked out: $checkedOut" : ""}${earlyLeaveReason.isNotEmpty ? " - $earlyLeaveReason" : ""}";
   }
 
   Map<String, dynamic> toMap() {
