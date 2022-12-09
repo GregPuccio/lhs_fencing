@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
+
+import 'package:lhs_fencing/src/models/comment.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 
@@ -15,6 +18,7 @@ class Attendance {
   DateTime? checkOut;
   String earlyLeaveReason;
   UserData userData;
+  List<Comment> comments;
   Attendance({
     required this.id,
     required this.practiceStart,
@@ -24,6 +28,7 @@ class Attendance {
     this.checkOut,
     required this.earlyLeaveReason,
     required this.userData,
+    required this.comments,
   });
 
   static Attendance noUserCreate(Practice practice) {
@@ -41,6 +46,7 @@ class Attendance {
         lastName: "",
         admin: false,
       ),
+      comments: [],
     );
   }
 
@@ -53,6 +59,7 @@ class Attendance {
       lateReason: "",
       earlyLeaveReason: "",
       userData: userData,
+      comments: [],
     );
   }
 
@@ -65,6 +72,7 @@ class Attendance {
     DateTime? checkOut,
     String? earlyLeaveReason,
     UserData? userData,
+    List<Comment>? comments,
   }) {
     return Attendance(
       id: id ?? this.id,
@@ -75,6 +83,7 @@ class Attendance {
       checkOut: checkOut ?? this.checkOut,
       earlyLeaveReason: earlyLeaveReason ?? this.earlyLeaveReason,
       userData: userData ?? this.userData,
+      comments: comments ?? this.comments,
     );
   }
 
@@ -95,6 +104,7 @@ class Attendance {
       'checkOut': checkOut?.millisecondsSinceEpoch,
       'earlyLeaveReason': earlyLeaveReason,
       'userData': userData.toMap(),
+      'comments': comments.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -110,6 +120,8 @@ class Attendance {
           : null,
       earlyLeaveReason: map['earlyLeaveReason'] ?? '',
       userData: UserData.fromMap(map['userData']),
+      comments:
+          List<Comment>.from(map['comments']?.map((x) => Comment.fromMap(x))),
     );
   }
 
@@ -120,7 +132,7 @@ class Attendance {
 
   @override
   String toString() {
-    return 'Attendance(id: $id, practiceStart: $practiceStart, practiceEnd: $practiceEnd, checkIn: $checkIn, lateReason: $lateReason, checkOut: $checkOut, earlyLeaveReason: $earlyLeaveReason, userData: $userData)';
+    return 'Attendance(id: $id, practiceStart: $practiceStart, practiceEnd: $practiceEnd, checkIn: $checkIn, lateReason: $lateReason, checkOut: $checkOut, earlyLeaveReason: $earlyLeaveReason, userData: $userData, comments: $comments)';
   }
 
   @override
@@ -135,7 +147,8 @@ class Attendance {
         other.lateReason == lateReason &&
         other.checkOut == checkOut &&
         other.earlyLeaveReason == earlyLeaveReason &&
-        other.userData == userData;
+        other.userData == userData &&
+        listEquals(other.comments, comments);
   }
 
   @override
@@ -147,6 +160,7 @@ class Attendance {
         lateReason.hashCode ^
         checkOut.hashCode ^
         earlyLeaveReason.hashCode ^
-        userData.hashCode;
+        userData.hashCode ^
+        comments.hashCode;
   }
 }

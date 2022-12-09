@@ -61,6 +61,29 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                 TextBadge(text: "${fencers.length}"),
               ],
             ),
+            // actions: [
+            //   IconButton(
+            //       onPressed: () {},
+            //       icon: IconButton(
+            //         icon: const Icon(Icons.bug_report),
+            //         onPressed: () {
+            //           for (var fencer in fencers) {
+            //             List<AttendanceMonth> months = attendanceMonths
+            //                 .where((element) =>
+            //                     element.attendances.first.userData.id ==
+            //                     fencer.id)
+            //                 .toList();
+            //             for (int index = 0; index < months.length; index++) {
+            //               FirestoreService.instance.updateData(
+            //                 path: FirestorePath.attendance(
+            //                     fencer.id, months[index].id),
+            //                 data: months[index].toMap(),
+            //               );
+            //             }
+            //           }
+            //         },
+            //       ))
+            // ],
             bottom: SearchBar(controller),
           ),
           body: ListView.separated(
