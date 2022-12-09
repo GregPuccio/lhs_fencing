@@ -6,7 +6,7 @@ import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
-import 'package:lhs_fencing/src/views/admin/widgets/future_practices.dart';
+import 'package:lhs_fencing/src/views/home/widgets/future_attendances.dart';
 import 'package:lhs_fencing/src/views/home/widgets/instructions.dart';
 import 'package:lhs_fencing/src/views/home/widgets/past_attendances.dart';
 import 'package:lhs_fencing/src/widgets/practice_type_tab_bar.dart';
@@ -65,7 +65,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             body: TabBarView(
               children: [
                 PastAttendances(practices: practices),
-                FuturePractices(practices: practices),
+                FutureAttendances(practices: practices),
               ],
             ),
           ),

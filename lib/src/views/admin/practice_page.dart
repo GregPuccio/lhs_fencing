@@ -119,7 +119,7 @@ class PracticePage extends ConsumerWidget {
                     ),
                     subtitle: attendance != null
                         ? Text(
-                            "View ${attendance.comments.length} comments",
+                            "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",
                           )
                         : null,
                     trailing: const Icon(Icons.edit),

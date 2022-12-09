@@ -16,7 +16,7 @@ class AttendanceInfo extends StatelessWidget {
             : const Text("Did not check in"),
         if (attendance.comments.isNotEmpty)
           Text(
-            "View ${attendance.comments.length} comments",
+            "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",
             style: Theme.of(context).textTheme.caption,
           ),
       ],

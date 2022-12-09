@@ -1,5 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
+import 'package:lhs_fencing/src/services/router/router.dart';
 
 class FuturePractices extends StatelessWidget {
   const FuturePractices({
@@ -32,6 +34,9 @@ class FuturePractices extends StatelessWidget {
                 children: [
                   ListTile(
                     title: Text(practice.startString),
+                    onTap: () => context.router.push(
+                      PracticeRoute(practice: practice),
+                    ),
                   ),
                   if (index != futurePractices.length - 1) const Divider(),
                 ],
