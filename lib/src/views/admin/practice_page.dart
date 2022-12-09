@@ -12,6 +12,7 @@ import 'package:lhs_fencing/src/widgets/attendance_status_bar.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 import 'package:lhs_fencing/src/widgets/text_badge.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PracticePage extends ConsumerWidget {
   final Practice practice;
@@ -44,6 +45,7 @@ class PracticePage extends ConsumerWidget {
         child: Scaffold(
           appBar: AppBar(
             title: Text(practice.startString),
+            actions: const [],
             bottom: TabBar(
               tabs: [
                 Tab(
@@ -98,34 +100,79 @@ class PracticePage extends ConsumerWidget {
                 separatorBuilder: (context, index) => const Divider(),
               ),
               ListView.separated(
-                itemCount: absentFencers.length,
+                itemCount: absentFencers.length + 1,
                 itemBuilder: (context, index) {
-                  UserData fencer = absentFencers[index];
-                  int attendanceIndex = attendances.indexWhere(
-                      (attendance) => attendance.userData.id == fencer.id);
-                  Attendance? attendance;
-                  if (attendanceIndex != -1) {
-                    attendance = attendances[attendanceIndex];
-                  }
-
-                  return ListTile(
-                    title: Text(fencer.fullName),
-                    onTap: () => context.router.push(
-                      EditFencerStatusRoute(
-                        fencer: fencer,
-                        practice: practice,
-                        attendance: attendance,
+                  if (index == 0) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text("Send An Email"),
+                              content: const Text(
+                                  "Do you want to send an email to all of the students not present for this practice?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => context.router.pop(),
+                                  child: const Text("No, cancel"),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    UserData coach = ref
+                                        .read(userDataProvider)
+                                        .asData!
+                                        .value!;
+                                    launchUrl(
+                                      Uri(
+                                          scheme: "mailto",
+                                          path: coach.email,
+                                          query:
+                                              "bcc=${List.generate(absentFencers.length, (index) => absentFencers[index].email).join(",")}&subject=Absent from practice ${practice.startString}&body=Hello,\nOur records are showing that you were not at practice ${practice.startString}.\nIf you have not already provided a reason, please add a comment on the attendance site ASAP.\nThank you,\nCoach ${coach.firstName}"),
+                                    ).then((value) => context.popRoute());
+                                  },
+                                  child: const Text("Yes, please"),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        icon: const Text("Email Absent Fencers"),
+                        label: const Icon(Icons.email),
                       ),
-                    ),
-                    subtitle: attendance != null
-                        ? Text(
-                            "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",
-                          )
-                        : null,
-                    trailing: const Icon(Icons.edit),
-                  );
+                    );
+                  } else {
+                    index--;
+
+                    UserData fencer = absentFencers[index];
+                    int attendanceIndex = attendances.indexWhere(
+                        (attendance) => attendance.userData.id == fencer.id);
+                    Attendance? attendance;
+                    if (attendanceIndex != -1) {
+                      attendance = attendances[attendanceIndex];
+                    }
+
+                    return ListTile(
+                      title: Text(fencer.fullName),
+                      onTap: () => context.router.push(
+                        EditFencerStatusRoute(
+                          fencer: fencer,
+                          practice: practice,
+                          attendance: attendance,
+                        ),
+                      ),
+                      subtitle: attendance != null
+                          ? Text(
+                              "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",
+                            )
+                          : null,
+                      trailing: const Icon(Icons.edit),
+                    );
+                  }
                 },
-                separatorBuilder: (context, index) => const Divider(),
+                separatorBuilder: (context, index) =>
+                    index != 0 ? const Divider() : Container(),
               ),
             ],
           ),
