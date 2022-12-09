@@ -124,14 +124,22 @@ class PracticePage extends ConsumerWidget {
                                         .read(userDataProvider)
                                         .asData!
                                         .value!;
+                                    Uri url = Uri(
+                                        scheme: "mailto",
+                                        path: coach.email,
+                                        query:
+                                            "bcc=${List.generate(absentFencers.length, (index) => absentFencers[index].email).join(",")}&subject=Absent from practice ${practice.startString}&body=Hello,\nOur records are showing that you were not at practice ${practice.startString}.\nIf you have not already provided a reason, please add a comment on the attendance site ASAP.\nThank you,\nCoach ${coach.firstName}");
                                     try {
-                                      launchUrl(
-                                        Uri(
-                                            scheme: "mailto",
-                                            path: coach.email,
-                                            query:
-                                                "bcc=${List.generate(absentFencers.length, (index) => absentFencers[index].email).join(",")}&subject=Absent from practice ${practice.startString}&body=Hello,\nOur records are showing that you were not at practice ${practice.startString}.\nIf you have not already provided a reason, please add a comment on the attendance site ASAP.\nThank you,\nCoach ${coach.firstName}"),
-                                      ).then((value) => context.popRoute());
+                                      if (await canLaunchUrl(url)) {
+                                        launchUrl(
+                                          url,
+                                        ).then((value) => context.popRoute());
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                content:
+                                                    Text("Cannot launch URL")));
+                                      }
                                     } catch (e) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
