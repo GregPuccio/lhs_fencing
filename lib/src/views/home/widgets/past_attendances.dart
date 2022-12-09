@@ -1,12 +1,15 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
+import 'package:lhs_fencing/src/services/router/router.dart';
+import 'package:lhs_fencing/src/widgets/attendance_info.dart';
+import 'package:lhs_fencing/src/widgets/attendance_status_bar.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
-import 'package:lhs_fencing/src/widgets/text_badge.dart';
 
 class PastAttendances extends ConsumerWidget {
   const PastAttendances({
@@ -23,6 +26,10 @@ class PastAttendances extends ConsumerWidget {
     pastPractices.sort((a, b) => -a.startTime.compareTo(b.startTime));
 
     Widget whenData(List<AttendanceMonth> attendanceMonths) {
+      List<Attendance> attendances = [];
+      for (var month in attendanceMonths) {
+        attendances.addAll(month.attendances);
+      }
       return CustomScrollView(
         key: const PageStorageKey<String>("past"),
         slivers: <Widget>[
@@ -33,55 +40,29 @@ class PastAttendances extends ConsumerWidget {
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 Practice practice = pastPractices[index];
-                List<Attendance> attendances = [];
-                for (var month in attendanceMonths) {
-                  for (var attendance in month.attendances) {
-                    if (attendance.id == practice.id) {
-                      attendances.add(attendance);
-                    }
-                  }
-                }
                 Attendance attendance = attendances.firstWhere(
                   (element) => element.id == practice.id,
                   orElse: () => Attendance.noUserCreate(practice),
                 );
-                bool attendedToday = attendance.userData.id.isNotEmpty;
                 return Column(
                   children: [
                     if (index == 0 &&
-                        (attendance.lateReason.isNotEmpty ||
-                            attendance.earlyLeaveReason.isNotEmpty))
+                        (attendance.isLate || attendance.leftEarly))
                       const SizedBox(height: 8),
                     ListTile(
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              if (attendance.lateReason.isNotEmpty) ...[
-                                TextBadge(
-                                  text: "Late Arrival",
-                                  boxColor: Theme.of(context)
-                                      .colorScheme
-                                      .errorContainer,
-                                ),
-                                const SizedBox(width: 8),
-                              ],
-                              if (attendance.earlyLeaveReason.isNotEmpty)
-                                TextBadge(
-                                  text: "Early Leave",
-                                  boxColor: Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer,
-                                ),
-                            ],
-                          ),
+                          AttendanceStatusBar(attendance),
                           Text(practice.startString),
                         ],
                       ),
-                      subtitle: attendedToday
-                          ? Text(attendance.info)
-                          : const Text("Did not check in"),
+                      subtitle: AttendanceInfo(attendance),
+                      onTap: () {
+                        context.router.push(
+                          AttendanceRoute(attendanceID: attendance.id),
+                        );
+                      },
                     ),
                     if (index != pastPractices.length - 1) const Divider(),
                   ],

@@ -13,20 +13,16 @@ class Attendance {
   String id;
   DateTime practiceStart;
   DateTime practiceEnd;
-  DateTime checkIn;
-  String lateReason;
+  DateTime? checkIn;
   DateTime? checkOut;
-  String earlyLeaveReason;
   UserData userData;
   List<Comment> comments;
   Attendance({
     required this.id,
     required this.practiceStart,
     required this.practiceEnd,
-    required this.checkIn,
-    required this.lateReason,
+    this.checkIn,
     this.checkOut,
-    required this.earlyLeaveReason,
     required this.userData,
     required this.comments,
   });
@@ -36,9 +32,6 @@ class Attendance {
       id: practice.id,
       practiceStart: practice.startTime,
       practiceEnd: practice.endTime,
-      checkIn: DateTime.now(),
-      lateReason: "",
-      earlyLeaveReason: "",
       userData: UserData(
         id: "",
         email: "",
@@ -55,12 +48,13 @@ class Attendance {
       id: practice.id,
       practiceStart: practice.startTime,
       practiceEnd: practice.endTime,
-      checkIn: DateTime.now(),
-      lateReason: "",
-      earlyLeaveReason: "",
       userData: userData,
       comments: [],
     );
+  }
+
+  String get practiceStartString {
+    return DateFormat("EEEE, MMM d @ h:mm aa").format(practiceStart);
   }
 
   Attendance copyWith({
@@ -68,9 +62,7 @@ class Attendance {
     DateTime? practiceStart,
     DateTime? practiceEnd,
     DateTime? checkIn,
-    String? lateReason,
     DateTime? checkOut,
-    String? earlyLeaveReason,
     UserData? userData,
     List<Comment>? comments,
   }) {
@@ -79,19 +71,41 @@ class Attendance {
       practiceStart: practiceStart ?? this.practiceStart,
       practiceEnd: practiceEnd ?? this.practiceEnd,
       checkIn: checkIn ?? this.checkIn,
-      lateReason: lateReason ?? this.lateReason,
       checkOut: checkOut ?? this.checkOut,
-      earlyLeaveReason: earlyLeaveReason ?? this.earlyLeaveReason,
       userData: userData ?? this.userData,
       comments: comments ?? this.comments,
     );
   }
 
+  bool get attended {
+    return checkIn != null;
+  }
+
   String get info {
-    String checkedIn = DateFormat('h:mm aa').format(checkIn);
+    String? checkedIn =
+        checkIn != null ? DateFormat('h:mm aa').format(checkIn!) : null;
+
     String? checkedOut =
         checkOut != null ? DateFormat('h:mm aa').format(checkOut!) : null;
-    return "Checked in: $checkedIn${lateReason.isNotEmpty ? " - $lateReason" : ""}${checkedOut != null ? "\nChecked out: $checkedOut" : ""}${earlyLeaveReason.isNotEmpty ? " - $earlyLeaveReason" : ""}";
+    return "${checkedIn != null ? "Checked in: $checkedIn" : ""}${checkedOut != null ? "\nChecked out: $checkedOut" : ""}";
+  }
+
+  bool get isLate {
+    if (checkIn == null) {
+      return false;
+    } else {
+      return practiceStart.difference(checkIn!).abs() >
+          const Duration(minutes: 15);
+    }
+  }
+
+  bool get leftEarly {
+    if (checkOut == null) {
+      return false;
+    } else {
+      return practiceEnd.difference(checkOut!).abs() >
+          const Duration(minutes: 15);
+    }
   }
 
   Map<String, dynamic> toMap() {
@@ -99,10 +113,8 @@ class Attendance {
       'id': id,
       'practiceStart': practiceStart.millisecondsSinceEpoch,
       'practiceEnd': practiceEnd.millisecondsSinceEpoch,
-      'checkIn': checkIn.millisecondsSinceEpoch,
-      'lateReason': lateReason,
+      'checkIn': checkIn?.millisecondsSinceEpoch,
       'checkOut': checkOut?.millisecondsSinceEpoch,
-      'earlyLeaveReason': earlyLeaveReason,
       'userData': userData.toMap(),
       'comments': comments.map((x) => x.toMap()).toList(),
     };
@@ -113,12 +125,12 @@ class Attendance {
       id: map['id'] ?? '',
       practiceStart: DateTime.fromMillisecondsSinceEpoch(map['practiceStart']),
       practiceEnd: DateTime.fromMillisecondsSinceEpoch(map['practiceEnd']),
-      checkIn: DateTime.fromMillisecondsSinceEpoch(map['checkIn']),
-      lateReason: map['lateReason'] ?? '',
+      checkIn: map['checkIn'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['checkIn'])
+          : null,
       checkOut: map['checkOut'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['checkOut'])
           : null,
-      earlyLeaveReason: map['earlyLeaveReason'] ?? '',
       userData: UserData.fromMap(map['userData']),
       comments:
           List<Comment>.from(map['comments']?.map((x) => Comment.fromMap(x))),
@@ -132,7 +144,7 @@ class Attendance {
 
   @override
   String toString() {
-    return 'Attendance(id: $id, practiceStart: $practiceStart, practiceEnd: $practiceEnd, checkIn: $checkIn, lateReason: $lateReason, checkOut: $checkOut, earlyLeaveReason: $earlyLeaveReason, userData: $userData, comments: $comments)';
+    return 'Attendance(id: $id, practiceStart: $practiceStart, practiceEnd: $practiceEnd, checkIn: $checkIn, checkOut: $checkOut, userData: $userData, comments: $comments)';
   }
 
   @override
@@ -144,9 +156,7 @@ class Attendance {
         other.practiceStart == practiceStart &&
         other.practiceEnd == practiceEnd &&
         other.checkIn == checkIn &&
-        other.lateReason == lateReason &&
         other.checkOut == checkOut &&
-        other.earlyLeaveReason == earlyLeaveReason &&
         other.userData == userData &&
         listEquals(other.comments, comments);
   }
@@ -157,9 +167,7 @@ class Attendance {
         practiceStart.hashCode ^
         practiceEnd.hashCode ^
         checkIn.hashCode ^
-        lateReason.hashCode ^
         checkOut.hashCode ^
-        earlyLeaveReason.hashCode ^
         userData.hashCode ^
         comments.hashCode;
   }

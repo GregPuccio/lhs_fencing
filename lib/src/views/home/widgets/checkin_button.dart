@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
+import 'package:lhs_fencing/src/models/comment.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/firestore/functions/attendance_functions.dart';
@@ -28,7 +29,12 @@ class CheckInButton extends ConsumerWidget {
       return await addAttendance(
         userData.id,
         months,
-        Attendance.create(practice, userData).copyWith(lateReason: lateReason),
+        Attendance.create(practice, userData).copyWith(
+          comments: [
+            if (lateReason != null)
+              Comment.create(userData).copyWith(text: lateReason)
+          ],
+        ),
       );
     }
 
@@ -100,7 +106,9 @@ class CheckInButton extends ConsumerWidget {
                           onPressed: () async {
                             await checkIn(
                               todaysPractice,
-                              lateReason: controller.text,
+                              lateReason: controller.text.isNotEmpty
+                                  ? "Late: ${controller.text}"
+                                  : null,
                             );
                             context.router.pop();
                           },

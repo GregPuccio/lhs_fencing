@@ -65,10 +65,10 @@ class FencerPracticeTypeTabBar extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 168;
+  double get maxExtent => 184;
 
   @override
-  double get minExtent => 168;
+  double get minExtent => 184;
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {

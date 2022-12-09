@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
+import 'package:lhs_fencing/src/models/comment.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/firestore/functions/attendance_functions.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
@@ -27,7 +28,10 @@ class CheckOutButton extends ConsumerWidget {
         months,
         attendance.copyWith(
           checkOut: DateTime.now(),
-          earlyLeaveReason: earlyLeaveReason,
+          comments: [
+            if (earlyLeaveReason != null)
+              Comment.create(userData).copyWith(text: earlyLeaveReason)
+          ],
         ),
       );
     }
@@ -67,7 +71,11 @@ class CheckOutButton extends ConsumerWidget {
                 ),
                 TextButton(
                   onPressed: () async {
-                    await checkOut(earlyLeaveReason: controller.text);
+                    await checkOut(
+                      earlyLeaveReason: controller.text.isNotEmpty
+                          ? "Left Early: ${controller.text}"
+                          : null,
+                    );
                     context.router.pop();
                   },
                   child: const Text("Complete check out"),

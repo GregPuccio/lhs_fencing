@@ -11,6 +11,7 @@ import 'package:lhs_fencing/src/views/admin/edit_fencer_status_page.dart';
 import 'package:lhs_fencing/src/views/admin/fencer_list_page.dart';
 import 'package:lhs_fencing/src/views/admin/practice_page.dart';
 import 'package:lhs_fencing/src/views/auth_wrapper.dart';
+import 'package:lhs_fencing/src/views/home/attendance_page.dart';
 
 part 'router.gr.dart';
 
@@ -23,6 +24,7 @@ part 'router.gr.dart';
     AutoRoute(page: PracticePage, path: "practice"),
     AutoRoute(page: FencerListPage, path: "fencerList"),
     AutoRoute(page: EditFencerStatusPage, path: "editFencerStatus"),
+    AutoRoute(page: AttendancePage, path: "attendance"),
     RedirectRoute(path: '*', redirectTo: '/'),
   ],
 )

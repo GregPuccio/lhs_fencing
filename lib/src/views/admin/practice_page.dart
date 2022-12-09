@@ -7,6 +7,8 @@ import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
+import 'package:lhs_fencing/src/widgets/attendance_info.dart';
+import 'package:lhs_fencing/src/widgets/attendance_status_bar.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 import 'package:lhs_fencing/src/widgets/text_badge.dart';
@@ -27,11 +29,13 @@ class PracticePage extends ConsumerWidget {
           }
         }
       }
-      attendances
+      List<Attendance> presentFencers =
+          attendances.where((attendance) => attendance.attended).toList();
+      presentFencers
           .sort((a, b) => a.userData.lastName.compareTo(b.userData.lastName));
       List<UserData> absentFencers = fencers
-          .where((fencer) => !attendances
-              .any((attendance) => attendance.userData.id == fencer.id))
+          .where((fencer) => !attendances.any((attendance) =>
+              attendance.userData.id == fencer.id && attendance.attended))
           .toList();
       absentFencers.sort((a, b) => a.lastName.compareTo(b.lastName));
 
@@ -48,7 +52,7 @@ class PracticePage extends ConsumerWidget {
                     children: [
                       const Text("Present"),
                       const SizedBox(width: 8),
-                      TextBadge(text: "${attendances.length}"),
+                      TextBadge(text: "${presentFencers.length}"),
                     ],
                   ),
                 ),
@@ -68,49 +72,27 @@ class PracticePage extends ConsumerWidget {
           body: TabBarView(
             children: [
               ListView.separated(
-                itemCount: attendances.length,
+                itemCount: presentFencers.length,
                 itemBuilder: (context, index) {
-                  Attendance attendance = attendances[index];
+                  Attendance attendance = presentFencers[index];
 
                   return ListTile(
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            if (attendance.lateReason.isNotEmpty) ...[
-                              TextBadge(
-                                text: "Late Arrival",
-                                boxColor: Theme.of(context)
-                                    .colorScheme
-                                    .errorContainer,
-                              ),
-                              const SizedBox(width: 8),
-                            ],
-                            if (attendance.earlyLeaveReason.isNotEmpty)
-                              TextBadge(
-                                text: "Early Leave",
-                                boxColor: Theme.of(context)
-                                    .colorScheme
-                                    .primaryContainer,
-                              ),
-                          ],
-                        ),
+                        AttendanceStatusBar(attendance),
                         Text(attendance.userData.fullName),
                       ],
                     ),
-                    subtitle: Text(attendance.info),
-                    trailing: TextButton.icon(
-                      icon: const Text("Edit"),
-                      label: const Icon(Icons.edit),
-                      onPressed: () => context.router.push(
-                        EditFencerStatusRoute(
-                          fencer: attendance.userData,
-                          practice: practice,
-                          attendance: attendance,
-                        ),
+                    onTap: () => context.router.push(
+                      EditFencerStatusRoute(
+                        fencer: attendance.userData,
+                        practice: practice,
+                        attendance: attendance,
                       ),
                     ),
+                    subtitle: AttendanceInfo(attendance),
+                    trailing: const Icon(Icons.edit),
                   );
                 },
                 separatorBuilder: (context, index) => const Divider(),
@@ -119,19 +101,28 @@ class PracticePage extends ConsumerWidget {
                 itemCount: absentFencers.length,
                 itemBuilder: (context, index) {
                   UserData fencer = absentFencers[index];
+                  int attendanceIndex = attendances.indexWhere(
+                      (attendance) => attendance.userData.id == fencer.id);
+                  Attendance? attendance;
+                  if (attendanceIndex != -1) {
+                    attendance = attendances[attendanceIndex];
+                  }
 
                   return ListTile(
                     title: Text(fencer.fullName),
-                    trailing: TextButton.icon(
-                      icon: const Text("Edit"),
-                      label: const Icon(Icons.edit),
-                      onPressed: () => context.router.push(
-                        EditFencerStatusRoute(
-                          fencer: fencer,
-                          practice: practice,
-                        ),
+                    onTap: () => context.router.push(
+                      EditFencerStatusRoute(
+                        fencer: fencer,
+                        practice: practice,
+                        attendance: attendance,
                       ),
                     ),
+                    subtitle: attendance != null
+                        ? Text(
+                            "View ${attendance.comments.length} comments",
+                          )
+                        : null,
+                    trailing: const Icon(Icons.edit),
                   );
                 },
                 separatorBuilder: (context, index) => const Divider(),

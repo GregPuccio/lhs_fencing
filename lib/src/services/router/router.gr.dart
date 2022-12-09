@@ -57,6 +57,16 @@ class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    AttendanceRoute.name: (routeData) {
+      final args = routeData.argsAs<AttendanceRouteArgs>();
+      return AdaptivePage<dynamic>(
+        routeData: routeData,
+        child: AttendancePage(
+          practiceID: args.attendanceID,
+          key: args.key,
+        ),
+      );
+    },
   };
 
   @override
@@ -80,6 +90,10 @@ class _$AppRouter extends RootStackRouter {
         RouteConfig(
           EditFencerStatusRoute.name,
           path: 'editFencerStatus',
+        ),
+        RouteConfig(
+          AttendanceRoute.name,
+          path: 'attendance',
         ),
         RouteConfig(
           '*#redirect',
@@ -201,5 +215,39 @@ class EditFencerStatusRouteArgs {
   @override
   String toString() {
     return 'EditFencerStatusRouteArgs{fencer: $fencer, practice: $practice, attendance: $attendance, key: $key}';
+  }
+}
+
+/// generated route for
+/// [AttendancePage]
+class AttendanceRoute extends PageRouteInfo<AttendanceRouteArgs> {
+  AttendanceRoute({
+    required String attendanceID,
+    Key? key,
+  }) : super(
+          AttendanceRoute.name,
+          path: 'attendance',
+          args: AttendanceRouteArgs(
+            attendanceID: attendanceID,
+            key: key,
+          ),
+        );
+
+  static const String name = 'AttendanceRoute';
+}
+
+class AttendanceRouteArgs {
+  const AttendanceRouteArgs({
+    required this.attendanceID,
+    this.key,
+  });
+
+  final String attendanceID;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'AttendanceRouteArgs{attendanceID: $attendanceID, key: $key}';
   }
 }

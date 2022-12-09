@@ -37,6 +37,10 @@ class UserData {
     return "$firstName $lastName";
   }
 
+  String get initials {
+    return "${firstName.substring(0, 1).toUpperCase()}${lastName.substring(0, 1).toUpperCase()}";
+  }
+
   UserData copyWith({
     String? id,
     String? email,

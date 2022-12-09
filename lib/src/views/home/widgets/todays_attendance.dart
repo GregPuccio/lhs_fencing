@@ -1,11 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
+import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/views/home/widgets/checkin_button.dart';
 import 'package:lhs_fencing/src/views/home/widgets/checkout_button.dart';
+import 'package:lhs_fencing/src/widgets/attendance_info.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 
@@ -36,7 +39,6 @@ class TodaysAttendance extends ConsumerWidget {
         (a) => a.practiceStart == todaysPractice.startTime,
         orElse: () => Attendance.noUserCreate(todaysPractice),
       );
-      bool attendedToday = todaysAttendance.userData.id.isNotEmpty;
       bool todayBool = now.day == todaysPractice.startTime.day;
       return Card(
         color: Theme.of(context).colorScheme.primaryContainer,
@@ -57,12 +59,14 @@ class TodaysAttendance extends ConsumerWidget {
                             Theme.of(context).colorScheme.onSecondaryContainer,
                       ),
                 ),
-                subtitle: attendedToday ? Text(todaysAttendance.info) : null,
+                subtitle: AttendanceInfo(todaysAttendance),
                 trailing: todaysAttendance.checkOut != null
                     ? null
-                    : attendedToday
+                    : todaysAttendance.attended
                         ? CheckOutButton(attendance: todaysAttendance)
                         : CheckInButton(today: todayBool, practices: practices),
+                onTap: () => context.router
+                    .push(AttendanceRoute(attendanceID: todaysAttendance.id)),
               ),
             ],
           ),

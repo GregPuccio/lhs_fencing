@@ -34,7 +34,6 @@ class _HomePageState extends ConsumerState<HomePage> {
       for (var month in attendanceMonths) {
         attendances.addAll(month.attendances);
       }
-      attendances.sort((a, b) => a.checkIn.compareTo(b.checkIn));
 
       return DefaultTabController(
         length: 2,
