@@ -132,8 +132,9 @@ class Attendance {
           ? DateTime.fromMillisecondsSinceEpoch(map['checkOut'])
           : null,
       userData: UserData.fromMap(map['userData']),
-      comments:
-          List<Comment>.from(map['comments']?.map((x) => Comment.fromMap(x))),
+      comments: map['comments'] != null
+          ? List<Comment>.from(map['comments']?.map((x) => Comment.fromMap(x)))
+          : [],
     );
   }
 
