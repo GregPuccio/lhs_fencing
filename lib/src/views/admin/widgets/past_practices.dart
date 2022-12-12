@@ -45,12 +45,14 @@ class PastPractices extends ConsumerWidget {
                   }
                 }
                 int presentFencers = fencers
-                    .where((fencer) => attendances.any(
-                        (attendance) => attendance.userData.id == fencer.id))
+                    .where((fencer) => attendances.any((attendance) =>
+                        attendance.userData.id == fencer.id &&
+                        attendance.attended))
                     .length;
                 int absentFencers = fencers
-                    .where((fencer) => !attendances.any(
-                        (attendance) => attendance.userData.id == fencer.id))
+                    .where((fencer) => !attendances.any((attendance) =>
+                        attendance.userData.id == fencer.id &&
+                        attendance.attended))
                     .length;
                 return Column(
                   children: [

@@ -30,6 +30,7 @@ class CheckInButton extends ConsumerWidget {
         userData.id,
         months,
         Attendance.create(practice, userData).copyWith(
+          checkIn: DateTime.now(),
           comments: [
             if (lateReason != null)
               Comment.create(userData).copyWith(text: lateReason)
