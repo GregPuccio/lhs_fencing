@@ -134,7 +134,7 @@ class PracticePage extends ConsumerWidget {
                                       await launchUrl(
                                         url,
                                         // mode: LaunchMode.externalApplication,
-                                        webOnlyWindowName: "_blank",
+                                        // webOnlyWindowName: "_blank",
                                       );
                                     } catch (e) {
                                       ScaffoldMessenger.of(context)
