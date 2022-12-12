@@ -12,6 +12,7 @@ import 'package:lhs_fencing/src/widgets/attendance_status_bar.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 import 'package:lhs_fencing/src/widgets/text_badge.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PracticePage extends ConsumerWidget {
   final Practice practice;
@@ -102,60 +103,60 @@ class PracticePage extends ConsumerWidget {
                 itemCount: absentFencers.length + 1,
                 itemBuilder: (context, index) {
                   if (index == 0) {
-                    return Container();
-                    // return Padding(
-                    //   padding: const EdgeInsets.all(8.0),
-                    //   child: OutlinedButton.icon(
-                    //     onPressed: () {
-                    //       showDialog(
-                    //         context: context,
-                    //         builder: (context) => AlertDialog(
-                    //           title: const Text("Send An Email"),
-                    //           content: const Text(
-                    //               "Do you want to send an email to all of the students not present for this practice?"),
-                    //           actions: [
-                    //             TextButton(
-                    //               onPressed: () => context.router.pop(),
-                    //               child: const Text("No, cancel"),
-                    //             ),
-                    //             TextButton(
-                    //               onPressed: () async {
-                    //                 UserData coach = ref
-                    //                     .read(userDataProvider)
-                    //                     .asData!
-                    //                     .value!;
-                    //                 Uri url = Uri(
-                    //                     scheme: "mailto",
-                    //                     path: coach.email,
-                    //                     query:
-                    //                         "bcc=${List.generate(absentFencers.length, (index) => absentFencers[index].email).join(",")}&subject=Absent from practice ${practice.startString}&body=Hello,\nOur records are showing that you were not at practice ${practice.startString}.\nIf you have not already provided a reason, please add a comment on the attendance site ASAP.\nThank you,\nCoach ${coach.firstName}");
-                    //                 try {
-                    //                   if (await canLaunchUrl(url)) {
-                    //                     launchUrl(
-                    //                       url,
-                    //                     ).then((value) => context.popRoute());
-                    //                   } else {
-                    //                     ScaffoldMessenger.of(context)
-                    //                         .showSnackBar(const SnackBar(
-                    //                             content:
-                    //                                 Text("Cannot launch URL")));
-                    //                   }
-                    //                 } catch (e) {
-                    //                   ScaffoldMessenger.of(context)
-                    //                       .showSnackBar(SnackBar(
-                    //                           content: Text(e.toString())));
-                    //                 }
-                    //               },
-                    //               child: const Text("Yes, please"),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       );
-                    //     },
-                    //     icon: const Text("Email Absent Fencers"),
-                    //     label: const Icon(Icons.email),
-                    //   ),
-                    // );
+                    // return Container();
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text("Send An Email"),
+                              content: const Text(
+                                  "Do you want to send an email to all of the students not present for this practice?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => context.router.pop(),
+                                  child: const Text("No, cancel"),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    UserData coach = ref
+                                        .read(userDataProvider)
+                                        .asData!
+                                        .value!;
+                                    Uri url = Uri(
+                                        scheme: "mailto",
+                                        path: coach.email,
+                                        query:
+                                            "bcc=${List.generate(absentFencers.length, (index) => absentFencers[index].email).join(",")}&subject=Absent from practice ${practice.startString}&body=Hello,\nOur records are showing that you were not at practice ${practice.startString}.\nIf you have not already provided a reason, please add a comment on the attendance site ASAP.\nThank you,\nCoach ${coach.firstName}");
+                                    try {
+                                      // if (await canLaunchUrl(url)) {
+                                      launchUrl(
+                                        url,
+                                      ).then((value) => context.popRoute());
+                                      // } else {
+                                      // ScaffoldMessenger.of(context)
+                                      //     .showSnackBar(const SnackBar(
+                                      //         content:
+                                      //             Text("Cannot launch URL")));
+                                      // }
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(e.toString())));
+                                    }
+                                  },
+                                  child: const Text("Yes, please"),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        icon: const Text("Email Absent Fencers"),
+                        label: const Icon(Icons.email),
+                      ),
+                    );
                   } else {
                     index--;
 
