@@ -133,7 +133,7 @@ class PracticePage extends ConsumerWidget {
                                     try {
                                       await launchUrl(
                                         url,
-                                        mode: LaunchMode.externalApplication,
+                                        // mode: LaunchMode.externalApplication,
                                         webOnlyWindowName: "_blank",
                                       );
                                     } catch (e) {
