@@ -136,9 +136,18 @@ class PracticePage extends ConsumerWidget {
                                               content: Text(
                                                   "Trying to launch: $url")));
                                       // if (await canLaunchUrl(url)) {
-                                      launchUrl(
+                                      bool retVal = await launchUrl(
                                         url,
-                                      ).then((value) => context.popRoute());
+                                        mode: LaunchMode.externalApplication,
+                                        webOnlyWindowName: "_blank",
+                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content:
+                                              Text("Return value: $retVal"),
+                                        ),
+                                      );
                                       // } else {
                                       // ScaffoldMessenger.of(context)
                                       //     .showSnackBar(const SnackBar(
