@@ -131,6 +131,10 @@ class PracticePage extends ConsumerWidget {
                                         query:
                                             "bcc=${List.generate(absentFencers.length, (index) => absentFencers[index].email).join(",")}&subject=Absent from practice ${practice.startString}&body=Hello,\nOur records are showing that you were not at practice ${practice.startString}.\nIf you have not already provided a reason, please add a comment on the attendance site ASAP.\nThank you,\nCoach ${coach.firstName}");
                                     try {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  "Trying to launch: $url")));
                                       // if (await canLaunchUrl(url)) {
                                       launchUrl(
                                         url,
