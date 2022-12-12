@@ -121,6 +121,12 @@ class PracticePage extends ConsumerWidget {
                                 ),
                                 TextButton(
                                   onPressed: () async {
+                                    int hour = DateTime.now().hour;
+                                    String tod = hour < 12
+                                        ? "Morning"
+                                        : hour < 18
+                                            ? "Afternoon"
+                                            : "Evening";
                                     UserData coach = ref
                                         .read(userDataProvider)
                                         .asData!
@@ -129,7 +135,7 @@ class PracticePage extends ConsumerWidget {
                                         scheme: "mailto",
                                         path: coach.email,
                                         query:
-                                            "bcc=${List.generate(absentFencers.length, (index) => absentFencers[index].email).join(",")}&subject=${practice.emailDate} Practice&body=Hello,\nOur records are showing that you were not at practice ${practice.emailDate}.\nIf you have not already provided a reason, please add a comment on the attendance site ASAP.\nThank you,\nCoach ${coach.firstName}");
+                                            "bcc=${List.generate(absentFencers.length, (index) => absentFencers[index].email).join(",")}&subject=${practice.emailDate} LHS Fencing Practice&body=Good $tod students,\nOur records are showing that you did not attend practice on ${practice.emailDate}.\nIf you have not already provided a reason, please add a comment on the attendance site ASAP.\nThank you,\nCoach ${coach.firstName}");
                                     try {
                                       launchUrl(url).then(
                                           (value) => context.router.pop());
