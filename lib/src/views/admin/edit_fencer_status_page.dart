@@ -176,7 +176,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               Text(
-                "Practice: ${widget.practice.startString}",
+                "Practice: ${widget.practice.emailDate}",
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),

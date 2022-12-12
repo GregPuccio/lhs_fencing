@@ -48,7 +48,7 @@ class FutureAttendances extends ConsumerWidget {
                 return Column(
                   children: [
                     ListTile(
-                      title: Text(practice.startString),
+                      title: Text(practice.emailDate),
                       subtitle: attendance.comments.isNotEmpty
                           ? Text(
                               "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",

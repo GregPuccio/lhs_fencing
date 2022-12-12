@@ -18,6 +18,10 @@ class Practice {
     return DateFormat("EEEE, MMM d @ h:mm aa").format(startTime);
   }
 
+  String get emailDate {
+    return "${DateFormat("MM/dd").format(startTime)} Practice";
+  }
+
   Practice copyWith({
     String? id,
     String? location,

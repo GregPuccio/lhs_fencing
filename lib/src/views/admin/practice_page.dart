@@ -44,7 +44,7 @@ class PracticePage extends ConsumerWidget {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-            title: Text(practice.startString),
+            title: Text(practice.emailDate),
             actions: const [],
             bottom: TabBar(
               tabs: [
@@ -129,7 +129,7 @@ class PracticePage extends ConsumerWidget {
                                         scheme: "mailto",
                                         path: coach.email,
                                         query:
-                                            "bcc=${List.generate(absentFencers.length, (index) => absentFencers[index].email).join(",")}&subject=Absent from practice ${practice.startString}&body=Hello,\nOur records are showing that you were not at practice ${practice.startString}.\nIf you have not already provided a reason, please add a comment on the attendance site ASAP.\nThank you,\nCoach ${coach.firstName}");
+                                            "bcc=${List.generate(absentFencers.length, (index) => absentFencers[index].email).join(",")}&subject=${practice.emailDate} Practice&body=Hello,\nOur records are showing that you were not at practice ${practice.emailDate}.\nIf you have not already provided a reason, please add a comment on the attendance site ASAP.\nThank you,\nCoach ${coach.firstName}");
                                     try {
                                       launchUrl(url).then(
                                           (value) => context.router.pop());
