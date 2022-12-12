@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
@@ -53,11 +54,13 @@ class TodaysAttendance extends ConsumerWidget {
               const Divider(),
               ListTile(
                 title: Text(
-                  todaysPractice.startString,
+                  DateFormat("EEE, MMM d @ h:mm aa")
+                      .format(todaysPractice.startTime),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color:
                             Theme.of(context).colorScheme.onSecondaryContainer,
                       ),
+                  maxLines: 1,
                 ),
                 subtitle: AttendanceInfo(todaysAttendance),
                 trailing: todaysAttendance.checkOut != null
