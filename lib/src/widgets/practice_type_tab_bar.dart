@@ -12,7 +12,7 @@ class PracticeTypeTabBar extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Column(
         children: [
           if (currentPractice != null)
@@ -49,7 +49,7 @@ class FencerPracticeTypeTabBar extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Column(
         children: [
           TodaysAttendance(attendances: attendances),
