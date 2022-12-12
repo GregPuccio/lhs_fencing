@@ -49,7 +49,7 @@ class TodaysPractice extends ConsumerWidget {
               const Divider(),
               ListTile(
                 title: Text(
-                  currentPractice.emailDate,
+                  currentPractice.startString,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color:
                             Theme.of(context).colorScheme.onSecondaryContainer,

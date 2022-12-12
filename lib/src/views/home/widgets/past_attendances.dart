@@ -54,7 +54,7 @@ class PastAttendances extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AttendanceStatusBar(attendance),
-                          Text(practice.emailDate),
+                          Text(practice.startString),
                         ],
                       ),
                       subtitle: AttendanceInfo(attendance),

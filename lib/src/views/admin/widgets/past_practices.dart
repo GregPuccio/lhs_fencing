@@ -57,7 +57,7 @@ class PastPractices extends ConsumerWidget {
                 return Column(
                   children: [
                     ListTile(
-                      title: Text(practice.emailDate),
+                      title: Text(practice.startString),
                       subtitle: Text(
                         "$presentFencers Checked In | $absentFencers Absent",
                       ),

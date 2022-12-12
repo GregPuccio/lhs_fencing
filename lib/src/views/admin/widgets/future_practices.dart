@@ -33,7 +33,7 @@ class FuturePractices extends StatelessWidget {
               return Column(
                 children: [
                   ListTile(
-                    title: Text(practice.emailDate),
+                    title: Text(practice.startString),
                     onTap: () => context.router.push(
                       PracticeRoute(practice: practice),
                     ),

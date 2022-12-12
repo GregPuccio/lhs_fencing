@@ -18,7 +18,7 @@ class Practice {
     return DateFormat("EEEE, MMM d @ h:mm aa").format(startTime);
   }
 
-  String get emailDate {
+  String get emailString {
     return DateFormat("MM/dd").format(startTime);
   }
 
