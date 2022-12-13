@@ -54,9 +54,3 @@ body {
   bottom: 0;
   right: 0;
 }
-
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #A5D6A7;
-  }
-}
