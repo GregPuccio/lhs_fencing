@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "site": "lhsfencing",
     "public": "build/web",
     "ignore": [
       "firebase.json",
