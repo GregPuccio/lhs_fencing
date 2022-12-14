@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
@@ -6,6 +7,7 @@ import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
+import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 
@@ -77,6 +79,9 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
                       : attendance.excusedAbsense
                           ? Colors.amber
                           : Colors.red,
+                ),
+                onTap: () => context.router.push(
+                  EditFencerStatusRoute(fencer: fencer, practice: practice),
                 ),
               );
             },
