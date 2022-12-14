@@ -49,6 +49,7 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
           attendances.addAll(month.attendances);
         }
       }
+      practices.sort((a, b) => a.startTime.compareTo(b.startTime));
 
       return Scaffold(
           appBar: AppBar(
