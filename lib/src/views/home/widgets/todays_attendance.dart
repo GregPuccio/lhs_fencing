@@ -69,7 +69,7 @@ class TodaysAttendance extends ConsumerWidget {
                         ? CheckOutButton(attendance: todaysAttendance)
                         : CheckInButton(today: todayBool, practices: practices),
                 onTap: () => context.router
-                    .push(AttendanceRoute(attendanceID: todaysAttendance.id)),
+                    .push(AttendanceRoute(practiceID: todaysAttendance.id)),
               ),
             ],
           ),

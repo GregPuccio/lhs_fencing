@@ -1,9 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
+import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 import 'package:lhs_fencing/src/widgets/search_bar.dart';
@@ -96,6 +98,9 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                 title: Text(fencer.fullName),
                 subtitle: Text(
                     "Participated in ${fencerAttendances.length} practices"),
+                onTap: () => context.router.push(
+                  FencerDetailsRoute(fencerID: fencer.id),
+                ),
               );
             },
             separatorBuilder: (context, index) => const Divider(),

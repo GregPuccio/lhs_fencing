@@ -175,11 +175,12 @@ class PracticePage extends ConsumerWidget {
                           attendance: attendance,
                         ),
                       ),
-                      subtitle: attendance != null
-                          ? Text(
-                              "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",
-                            )
-                          : null,
+                      subtitle:
+                          attendance != null && attendance.comments.isNotEmpty
+                              ? Text(
+                                  "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",
+                                )
+                              : null,
                       trailing: const Icon(Icons.edit),
                     );
                   }

@@ -45,6 +45,16 @@ class _$AppRouter extends RootStackRouter {
         child: const FencerListPage(),
       );
     },
+    FencerDetailsRoute.name: (routeData) {
+      final args = routeData.argsAs<FencerDetailsRouteArgs>();
+      return AdaptivePage<dynamic>(
+        routeData: routeData,
+        child: FencerDetailsPage(
+          fencerID: args.fencerID,
+          key: args.key,
+        ),
+      );
+    },
     EditFencerStatusRoute.name: (routeData) {
       final args = routeData.argsAs<EditFencerStatusRouteArgs>();
       return AdaptivePage<dynamic>(
@@ -62,7 +72,7 @@ class _$AppRouter extends RootStackRouter {
       return AdaptivePage<dynamic>(
         routeData: routeData,
         child: AttendancePage(
-          practiceID: args.attendanceID,
+          practiceID: args.practiceID,
           key: args.key,
         ),
       );
@@ -86,6 +96,10 @@ class _$AppRouter extends RootStackRouter {
         RouteConfig(
           FencerListRoute.name,
           path: 'fencerList',
+        ),
+        RouteConfig(
+          FencerDetailsRoute.name,
+          path: 'fencerDetails',
         ),
         RouteConfig(
           EditFencerStatusRoute.name,
@@ -175,6 +189,40 @@ class FencerListRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [FencerDetailsPage]
+class FencerDetailsRoute extends PageRouteInfo<FencerDetailsRouteArgs> {
+  FencerDetailsRoute({
+    required String fencerID,
+    Key? key,
+  }) : super(
+          FencerDetailsRoute.name,
+          path: 'fencerDetails',
+          args: FencerDetailsRouteArgs(
+            fencerID: fencerID,
+            key: key,
+          ),
+        );
+
+  static const String name = 'FencerDetailsRoute';
+}
+
+class FencerDetailsRouteArgs {
+  const FencerDetailsRouteArgs({
+    required this.fencerID,
+    this.key,
+  });
+
+  final String fencerID;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'FencerDetailsRouteArgs{fencerID: $fencerID, key: $key}';
+  }
+}
+
+/// generated route for
 /// [EditFencerStatusPage]
 class EditFencerStatusRoute extends PageRouteInfo<EditFencerStatusRouteArgs> {
   EditFencerStatusRoute({
@@ -222,13 +270,13 @@ class EditFencerStatusRouteArgs {
 /// [AttendancePage]
 class AttendanceRoute extends PageRouteInfo<AttendanceRouteArgs> {
   AttendanceRoute({
-    required String attendanceID,
+    required String practiceID,
     Key? key,
   }) : super(
           AttendanceRoute.name,
           path: 'attendance',
           args: AttendanceRouteArgs(
-            attendanceID: attendanceID,
+            practiceID: practiceID,
             key: key,
           ),
         );
@@ -238,16 +286,16 @@ class AttendanceRoute extends PageRouteInfo<AttendanceRouteArgs> {
 
 class AttendanceRouteArgs {
   const AttendanceRouteArgs({
-    required this.attendanceID,
+    required this.practiceID,
     this.key,
   });
 
-  final String attendanceID;
+  final String practiceID;
 
   final Key? key;
 
   @override
   String toString() {
-    return 'AttendanceRouteArgs{attendanceID: $attendanceID, key: $key}';
+    return 'AttendanceRouteArgs{practiceID: $practiceID, key: $key}';
   }
 }

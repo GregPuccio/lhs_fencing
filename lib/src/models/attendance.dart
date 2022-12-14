@@ -17,6 +17,7 @@ class Attendance {
   DateTime? checkOut;
   UserData userData;
   List<Comment> comments;
+  bool excusedAbsense;
   Attendance({
     required this.id,
     required this.practiceStart,
@@ -25,6 +26,7 @@ class Attendance {
     this.checkOut,
     required this.userData,
     required this.comments,
+    required this.excusedAbsense,
   });
 
   static Attendance noUserCreate(Practice practice) {
@@ -40,6 +42,7 @@ class Attendance {
         admin: false,
       ),
       comments: [],
+      excusedAbsense: false,
     );
   }
 
@@ -50,6 +53,7 @@ class Attendance {
       practiceEnd: practice.endTime,
       userData: userData,
       comments: [],
+      excusedAbsense: false,
     );
   }
 
@@ -65,6 +69,7 @@ class Attendance {
     DateTime? checkOut,
     UserData? userData,
     List<Comment>? comments,
+    bool? excusedAbsense,
   }) {
     return Attendance(
       id: id ?? this.id,
@@ -74,11 +79,12 @@ class Attendance {
       checkOut: checkOut ?? this.checkOut,
       userData: userData ?? this.userData,
       comments: comments ?? this.comments,
+      excusedAbsense: excusedAbsense ?? this.excusedAbsense,
     );
   }
 
   bool get attended {
-    return checkIn != null;
+    return excusedAbsense ? false : checkIn != null;
   }
 
   String get info {
@@ -117,6 +123,7 @@ class Attendance {
       'checkOut': checkOut?.millisecondsSinceEpoch,
       'userData': userData.toMap(),
       'comments': comments.map((x) => x.toMap()).toList(),
+      'excusedAbsense': excusedAbsense,
     };
   }
 
@@ -132,9 +139,9 @@ class Attendance {
           ? DateTime.fromMillisecondsSinceEpoch(map['checkOut'])
           : null,
       userData: UserData.fromMap(map['userData']),
-      comments: map['comments'] != null
-          ? List<Comment>.from(map['comments']?.map((x) => Comment.fromMap(x)))
-          : [],
+      comments: List<Comment>.from(
+          map['comments']?.map((x) => Comment.fromMap(x)) ?? []),
+      excusedAbsense: map['excusedAbsense'] ?? false,
     );
   }
 
@@ -145,7 +152,7 @@ class Attendance {
 
   @override
   String toString() {
-    return 'Attendance(id: $id, practiceStart: $practiceStart, practiceEnd: $practiceEnd, checkIn: $checkIn, checkOut: $checkOut, userData: $userData, comments: $comments)';
+    return 'Attendance(id: $id, practiceStart: $practiceStart, practiceEnd: $practiceEnd, checkIn: $checkIn, checkOut: $checkOut, userData: $userData, comments: $comments, excusedAbsense: $excusedAbsense)';
   }
 
   @override
@@ -159,7 +166,8 @@ class Attendance {
         other.checkIn == checkIn &&
         other.checkOut == checkOut &&
         other.userData == userData &&
-        listEquals(other.comments, comments);
+        listEquals(other.comments, comments) &&
+        other.excusedAbsense == excusedAbsense;
   }
 
   @override
@@ -170,6 +178,7 @@ class Attendance {
         checkIn.hashCode ^
         checkOut.hashCode ^
         userData.hashCode ^
-        comments.hashCode;
+        comments.hashCode ^
+        excusedAbsense.hashCode;
   }
 }

@@ -55,7 +55,7 @@ class FutureAttendances extends ConsumerWidget {
                             )
                           : null,
                       onTap: () => context.router.push(
-                        AttendanceRoute(attendanceID: attendance.id),
+                        AttendanceRoute(practiceID: attendance.id),
                       ),
                     ),
                     if (index != futurePractices.length - 1) const Divider(),

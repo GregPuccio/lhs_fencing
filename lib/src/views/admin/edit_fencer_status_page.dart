@@ -29,6 +29,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
   late bool selectCheckOutTime;
   late TimeOfDay endTime;
   late TextEditingController controller;
+  late bool excusedAbsense;
   List<Comment> comments = [];
 
   @override
@@ -55,6 +56,8 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
     );
     selectCheckInTime = widget.attendance?.checkIn != null;
     selectCheckOutTime = widget.attendance?.checkOut != null;
+    comments = widget.attendance?.comments ?? [];
+    excusedAbsense = widget.attendance?.excusedAbsense ?? false;
     super.initState();
   }
 
@@ -81,7 +84,8 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
     );
     Attendance newAttendance =
         widget.attendance ?? Attendance.create(widget.practice, widget.fencer);
-    newAttendance.copyWith(comments: comments);
+    newAttendance = newAttendance.copyWith(
+        comments: comments, excusedAbsense: excusedAbsense);
     newAttendance.checkIn = selectCheckInTime ? checkIn : null;
     newAttendance.checkOut = selectCheckOutTime ? checkOut : null;
 
@@ -139,6 +143,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
         orElse: () => Attendance.create(widget.practice, widget.fencer),
       );
       attendance.comments.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      comments = attendance.comments.toList();
       return Scaffold(
         appBar: AppBar(
           title: const Text("Edit Fencer Status"),
@@ -181,36 +186,45 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
               ),
               const SizedBox(height: 8),
               CheckboxListTile(
-                title: const Text("Include Check In Time"),
-                value: selectCheckInTime,
+                title: const Text("Absense Excused"),
+                value: excusedAbsense,
                 onChanged: (value) =>
-                    setState(() => selectCheckInTime = value ?? true),
+                    setState(() => excusedAbsense = value ?? true),
               ),
               const SizedBox(height: 8),
-              if (selectCheckInTime) ...[
-                ListTile(
-                  title: const Text("Check In Time"),
-                  subtitle: Text(startTime.format(context)),
-                  trailing: const Icon(Icons.av_timer),
-                  onTap: () => setTime(startTime),
+              if (!excusedAbsense) ...[
+                CheckboxListTile(
+                  title: const Text("Include Check In Time"),
+                  value: selectCheckInTime,
+                  onChanged: (value) =>
+                      setState(() => selectCheckInTime = value ?? true),
                 ),
                 const SizedBox(height: 8),
-              ],
-              CheckboxListTile(
-                title: const Text("Include Check Out Time"),
-                value: selectCheckOutTime,
-                onChanged: (value) =>
-                    setState(() => selectCheckOutTime = value ?? true),
-              ),
-              const SizedBox(height: 8),
-              if (selectCheckOutTime) ...[
-                ListTile(
-                  title: const Text("Check Out Time"),
-                  subtitle: Text(endTime.format(context)),
-                  trailing: const Icon(Icons.time_to_leave),
-                  onTap: () => setTime(endTime, start: false),
+                if (selectCheckInTime) ...[
+                  ListTile(
+                    title: const Text("Check In Time"),
+                    subtitle: Text(startTime.format(context)),
+                    trailing: const Icon(Icons.av_timer),
+                    onTap: () => setTime(startTime),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                CheckboxListTile(
+                  title: const Text("Include Check Out Time"),
+                  value: selectCheckOutTime,
+                  onChanged: (value) =>
+                      setState(() => selectCheckOutTime = value ?? true),
                 ),
                 const SizedBox(height: 8),
+                if (selectCheckOutTime) ...[
+                  ListTile(
+                    title: const Text("Check Out Time"),
+                    subtitle: Text(endTime.format(context)),
+                    trailing: const Icon(Icons.time_to_leave),
+                    onTap: () => setTime(endTime, start: false),
+                  ),
+                  const SizedBox(height: 8),
+                ],
               ],
               OutlinedButton.icon(
                 onPressed: () async {
