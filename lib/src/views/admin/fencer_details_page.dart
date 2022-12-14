@@ -63,16 +63,20 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
               );
 
               return ListTile(
-                tileColor: attendance.attended
-                    ? Colors.green
-                    : attendance.excusedAbsense
-                        ? Colors.amber
-                        : Colors.red,
                 title: Text(practice.startString),
                 subtitle: Text(
-                    "${attendance.isLate ? "Late Arrival" : ""}${attendance.isLate && attendance.leftEarly ? " | " : " "}${attendance.leftEarly ? "Left Early" : ""}"),
+                    "${attendance.isLate ? "Arrived Late" : ""}${attendance.isLate && attendance.leftEarly ? " | " : " "}${attendance.leftEarly ? "Left Early" : ""}"),
                 trailing: Icon(
-                  attendance.attended ? Icons.check : Icons.cancel,
+                  attendance.attended
+                      ? Icons.check
+                      : attendance.excusedAbsense
+                          ? Icons.admin_panel_settings
+                          : Icons.cancel,
+                  color: attendance.attended
+                      ? Colors.green
+                      : attendance.excusedAbsense
+                          ? Colors.amber
+                          : Colors.red,
                 ),
               );
             },
