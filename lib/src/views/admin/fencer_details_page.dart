@@ -82,7 +82,11 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
                           : Colors.red,
                 ),
                 onTap: () => context.router.push(
-                  EditFencerStatusRoute(fencer: fencer, practice: practice),
+                  EditFencerStatusRoute(
+                    fencer: fencer,
+                    practice: practice,
+                    attendance: attendance,
+                  ),
                 ),
               );
             },
