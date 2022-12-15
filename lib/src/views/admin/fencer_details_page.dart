@@ -62,7 +62,7 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
 
               Attendance attendance = attendances.firstWhere(
                 (element) => element.id == practice.id,
-                orElse: () => Attendance.noUserCreate(practice),
+                orElse: () => Attendance.create(practice, fencer),
               );
 
               return ListTile(
