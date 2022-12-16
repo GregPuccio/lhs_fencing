@@ -13,12 +13,8 @@ class FuturePractices extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateTime now = DateTime.now();
-    DateTime today = DateTime(now.year, now.month, now.day);
-    List<Practice> futurePractices = practices
-        .where((p) => p.startTime.isAfter(today.add(const Duration(hours: 24))))
-        .toList();
-    futurePractices.sort((a, b) => a.startTime.compareTo(b.startTime));
+    practices.sort((a, b) => a.startTime.compareTo(b.startTime));
+
     return CustomScrollView(
       key: const PageStorageKey<String>("future"),
       slivers: <Widget>[
@@ -30,7 +26,7 @@ class FuturePractices extends StatelessWidget {
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                Practice practice = futurePractices[index];
+                Practice practice = practices[index];
 
                 return Column(
                   children: [
@@ -41,11 +37,11 @@ class FuturePractices extends StatelessWidget {
                         PracticeRoute(practiceID: practice.id),
                       ),
                     ),
-                    if (index != futurePractices.length - 1) const Divider(),
+                    if (index != practices.length - 1) const Divider(),
                   ],
                 );
               },
-              childCount: futurePractices.length,
+              childCount: practices.length,
             ),
           ),
         ),

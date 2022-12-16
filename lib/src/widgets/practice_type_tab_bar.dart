@@ -6,7 +6,7 @@ import 'package:lhs_fencing/src/views/admin/widgets/todays_practice.dart';
 import 'package:lhs_fencing/src/views/home/widgets/todays_attendance.dart';
 
 class PracticeTypeTabBar extends SliverPersistentHeaderDelegate {
-  Practice? currentPractice;
+  Practice currentPractice;
   PracticeTypeTabBar(this.currentPractice);
   @override
   Widget build(
@@ -15,8 +15,8 @@ class PracticeTypeTabBar extends SliverPersistentHeaderDelegate {
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Column(
         children: [
-          if (currentPractice != null)
-            TodaysPractice(currentPractice: currentPractice!)
+          if (currentPractice.endTime.isAfter(DateTime.now()))
+            TodaysPractice(currentPractice: currentPractice)
           else
             const NoPracticeToday(),
           const TabBar(

@@ -20,9 +20,7 @@ class PastPractices extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<Practice> pastPractices =
-        practices.where((p) => p.endTime.isBefore(DateTime.now())).toList();
-    pastPractices.sort((a, b) => -a.startTime.compareTo(b.startTime));
+    practices.sort((a, b) => -a.startTime.compareTo(b.startTime));
 
     List<UserData> fencers = [];
     Widget whenData(List<AttendanceMonth> attendanceMonths) {
@@ -37,7 +35,7 @@ class PastPractices extends ConsumerWidget {
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  Practice practice = pastPractices[index];
+                  Practice practice = practices[index];
                   List<Attendance> attendances = [];
                   for (var month in attendanceMonths) {
                     for (var attendance in month.attendances) {
@@ -66,11 +64,11 @@ class PastPractices extends ConsumerWidget {
                         onTap: () => context.router
                             .push(PracticeRoute(practiceID: practice.id)),
                       ),
-                      if (index != pastPractices.length - 1) const Divider(),
+                      if (index != practices.length - 1) const Divider(),
                     ],
                   );
                 },
-                childCount: pastPractices.length,
+                childCount: practices.length,
               ),
             ),
           ),
