@@ -63,7 +63,7 @@ class PracticePage extends ConsumerWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(PracticeShowState.values[index].type),
+                      Text(PracticeShowState.values[index].fencerType),
                       const SizedBox(width: 8),
                       TextBadge(text: "${fencerLists[index].length}"),
                     ],

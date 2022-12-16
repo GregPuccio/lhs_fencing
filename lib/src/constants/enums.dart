@@ -93,4 +93,17 @@ enum PracticeShowState {
         return "Absent";
     }
   }
+
+  String get fencerType {
+    switch (this) {
+      case PracticeShowState.all:
+        return "All Fencers";
+      case PracticeShowState.attended:
+        return "Attendees";
+      case PracticeShowState.excused:
+        return "Excused";
+      case PracticeShowState.absent:
+        return "Absent";
+    }
+  }
 }
