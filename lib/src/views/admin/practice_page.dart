@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
@@ -14,6 +15,8 @@ import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 import 'package:lhs_fencing/src/widgets/text_badge.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+PracticeShowState practiceShowState = PracticeShowState.all;
 
 class PracticePage extends ConsumerWidget {
   final String practiceID;
@@ -32,18 +35,16 @@ class PracticePage extends ConsumerWidget {
           }
         }
       }
-      List<Attendance> presentFencers =
-          attendances.where((attendance) => attendance.attended).toList();
-      presentFencers
-          .sort((a, b) => a.userData.lastName.compareTo(b.userData.lastName));
-      List<UserData> absentFencers = fencers
-          .where((fencer) => !attendances.any((attendance) =>
-              attendance.userData.id == fencer.id && attendance.attended))
-          .toList();
-      absentFencers.sort((a, b) => a.lastName.compareTo(b.lastName));
+      fencers.sort();
+      List<List<UserData>> fencerLists = [
+        fencers,
+        getShownFencers(fencers, attendances, PracticeShowState.attended),
+        getShownFencers(fencers, attendances, PracticeShowState.excused),
+        getShownFencers(fencers, attendances, PracticeShowState.absent),
+      ];
 
       return DefaultTabController(
-        length: 2,
+        length: PracticeShowState.values.length,
         child: Scaffold(
           appBar: AppBar(
             title: Text(practice.startString),
@@ -55,152 +56,120 @@ class PracticePage extends ConsumerWidget {
               ),
             ],
             bottom: TabBar(
-              tabs: [
-                Tab(
+              isScrollable: true,
+              tabs: List.generate(
+                PracticeShowState.values.length,
+                (index) => Tab(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Present"),
+                      Text(PracticeShowState.values[index].type),
                       const SizedBox(width: 8),
-                      TextBadge(text: "${presentFencers.length}"),
+                      TextBadge(text: "${fencerLists[index].length}"),
                     ],
                   ),
                 ),
-                Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Not Present"),
-                      const SizedBox(width: 8),
-                      TextBadge(text: "${absentFencers.length}"),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
           body: TabBarView(
-            children: [
-              ListView.separated(
+            children: List.generate(
+              PracticeShowState.values.length,
+              (index) => ListView.separated(
                 padding: const EdgeInsets.only(bottom: 60),
-                itemCount: presentFencers.length,
-                itemBuilder: (context, index) {
-                  Attendance attendance = presentFencers[index];
-
+                itemCount: fencerLists[index].length +
+                    (index == PracticeShowState.values.length - 1 ? 1 : 0),
+                itemBuilder: (context, i) {
+                  if (index == PracticeShowState.values.length - 1) {
+                    if (i == 0) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text("Send An Email"),
+                                content: const Text(
+                                    "Do you want to send an email to all of the students not present for this practice?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => context.router.pop(),
+                                    child: const Text("No, cancel"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      int hour = DateTime.now().hour;
+                                      String tod = hour < 12
+                                          ? "Morning"
+                                          : hour < 18
+                                              ? "Afternoon"
+                                              : "Evening";
+                                      UserData coach = ref
+                                          .read(userDataProvider)
+                                          .asData!
+                                          .value!;
+                                      Uri url = Uri(
+                                          scheme: "mailto",
+                                          path: coach.email,
+                                          query:
+                                              "bcc=${List.generate(fencerLists.last.length, (index) => fencerLists.last[index].email).join(",")}&subject=${practice.emailString} LHS Fencing Practice&body=Good $tod students,\nOur records are showing that you did not attend practice on ${practice.emailString}.\nIf you have not already provided a reason, please add a comment on the attendance site ASAP.\nThank you,\nCoach ${coach.firstName}");
+                                      try {
+                                        launchUrl(url).then(
+                                            (value) => context.router.pop());
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context)
+                                            .clearSnackBars();
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text(e.toString())));
+                                      }
+                                    },
+                                    child: const Text("Yes, please"),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          icon: const Text("Email Absent Fencers"),
+                          label: const Icon(Icons.email),
+                        ),
+                      );
+                    } else {
+                      i--;
+                    }
+                  }
+                  UserData fencer = fencerLists[index][i];
+                  int attIndex =
+                      attendances.indexWhere((a) => a.userData.id == fencer.id);
+                  Attendance? attendance;
+                  if (attIndex != -1) {
+                    attendance = attendances[attIndex];
+                  }
                   return ListTile(
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AttendanceStatusBar(attendance),
-                        Text(attendance.userData.fullName),
+                        if (attendance != null) AttendanceStatusBar(attendance),
+                        Text(fencer.fullName),
                       ],
                     ),
                     onTap: () => context.router.push(
                       EditFencerStatusRoute(
-                        fencer: attendance.userData,
+                        fencer: fencer,
                         practice: practice,
                         attendance: attendance,
                       ),
                     ),
-                    subtitle: AttendanceInfo(attendance, null),
+                    subtitle: attendance != null
+                        ? AttendanceInfo(attendance, null)
+                        : null,
                     trailing: const Icon(Icons.edit),
                   );
                 },
                 separatorBuilder: (context, index) => const Divider(),
               ),
-              ListView.separated(
-                padding: const EdgeInsets.only(bottom: 60),
-                itemCount: absentFencers.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    // return Container();
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: OutlinedButton.icon(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text("Send An Email"),
-                              content: const Text(
-                                  "Do you want to send an email to all of the students not present for this practice?"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => context.router.pop(),
-                                  child: const Text("No, cancel"),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    int hour = DateTime.now().hour;
-                                    String tod = hour < 12
-                                        ? "Morning"
-                                        : hour < 18
-                                            ? "Afternoon"
-                                            : "Evening";
-                                    UserData coach = ref
-                                        .read(userDataProvider)
-                                        .asData!
-                                        .value!;
-                                    Uri url = Uri(
-                                        scheme: "mailto",
-                                        path: coach.email,
-                                        query:
-                                            "bcc=${List.generate(absentFencers.length, (index) => absentFencers[index].email).join(",")}&subject=${practice.emailString} LHS Fencing Practice&body=Good $tod students,\nOur records are showing that you did not attend practice on ${practice.emailString}.\nIf you have not already provided a reason, please add a comment on the attendance site ASAP.\nThank you,\nCoach ${coach.firstName}");
-                                    try {
-                                      launchUrl(url).then(
-                                          (value) => context.router.pop());
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(context)
-                                          .clearSnackBars();
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text(e.toString())));
-                                    }
-                                  },
-                                  child: const Text("Yes, please"),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        icon: const Text("Email Absent Fencers"),
-                        label: const Icon(Icons.email),
-                      ),
-                    );
-                  } else {
-                    index--;
-
-                    UserData fencer = absentFencers[index];
-                    int attendanceIndex = attendances.indexWhere(
-                        (attendance) => attendance.userData.id == fencer.id);
-                    Attendance? attendance;
-                    if (attendanceIndex != -1) {
-                      attendance = attendances[attendanceIndex];
-                    }
-
-                    return ListTile(
-                      title: Text(fencer.fullName),
-                      onTap: () => context.router.push(
-                        EditFencerStatusRoute(
-                          fencer: fencer,
-                          practice: practice,
-                          attendance: attendance,
-                        ),
-                      ),
-                      subtitle:
-                          attendance != null && attendance.comments.isNotEmpty
-                              ? Text(
-                                  "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",
-                                )
-                              : null,
-                      trailing: const Icon(Icons.edit),
-                    );
-                  }
-                },
-                separatorBuilder: (context, index) =>
-                    index != 0 ? const Divider() : Container(),
-              ),
-            ],
+            ),
           ),
         ),
       );
@@ -231,4 +200,23 @@ class PracticePage extends ConsumerWidget {
           loading: () => const LoadingPage(),
         );
   }
+}
+
+List<UserData> getShownFencers(List<UserData> fencers,
+    List<Attendance> attendances, PracticeShowState practiceShowState) {
+  return fencers.where((p) {
+    switch (practiceShowState) {
+      case PracticeShowState.all:
+        return true;
+      case PracticeShowState.attended:
+        return attendances.any((a) => p.id == a.userData.id && a.attended);
+      case PracticeShowState.excused:
+        return attendances
+            .any((a) => p.id == a.userData.id && a.excusedAbsense);
+      case PracticeShowState.absent:
+        return !attendances.any((a) =>
+            (p.id == a.userData.id && a.attended) ||
+            (p.id == a.userData.id && a.excusedAbsense));
+    }
+  }).toList();
 }

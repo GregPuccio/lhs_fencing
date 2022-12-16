@@ -84,7 +84,7 @@ enum PracticeShowState {
   String get type {
     switch (this) {
       case PracticeShowState.all:
-        return "All";
+        return "All Practices";
       case PracticeShowState.attended:
         return "Attended";
       case PracticeShowState.excused:
