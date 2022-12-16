@@ -81,22 +81,24 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            DropdownButton<TypePractice>(
-                isExpanded: true,
-                value: typePractice,
-                items: List.generate(
-                  TypePractice.values.length,
-                  (index) => DropdownMenuItem(
-                    value: TypePractice.values[index],
-                    child: Text(TypePractice.values[index].type),
+            ListTile(
+              title: const Text("Type"),
+              trailing: DropdownButton<TypePractice>(
+                  value: typePractice,
+                  items: List.generate(
+                    TypePractice.values.length,
+                    (index) => DropdownMenuItem(
+                      value: TypePractice.values[index],
+                      child: Text(TypePractice.values[index].type),
+                    ),
                   ),
-                ),
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    typePractice = value;
-                  });
-                }),
+                  onChanged: (value) {
+                    if (value == null) return;
+                    setState(() {
+                      typePractice = value;
+                    });
+                  }),
+            ),
             const Divider(),
             ListTile(
               title: const Text("Date Range"),
