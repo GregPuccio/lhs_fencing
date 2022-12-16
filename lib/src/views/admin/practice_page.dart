@@ -151,6 +151,8 @@ class PracticePage extends ConsumerWidget {
                                           (value) => context.router.pop());
                                     } catch (e) {
                                       ScaffoldMessenger.of(context)
+                                          .clearSnackBars();
+                                      ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                               content: Text(e.toString())));
                                     }

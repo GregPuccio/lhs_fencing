@@ -47,6 +47,7 @@ class _AuthPageState extends State<AuthPage> {
           await AuthService().register(email.text, newPassword.text);
       if (result.runtimeType == String) {
         if (mounted) {
+          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(result as String)),
           );
@@ -56,6 +57,7 @@ class _AuthPageState extends State<AuthPage> {
       dynamic result = await AuthService().signIn(email.text, password.text);
       if (result.runtimeType == String) {
         if (mounted) {
+          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(result as String)),
           );

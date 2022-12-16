@@ -233,6 +233,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                 onPressed: () async {
                   await saveStatus();
                   if (mounted) {
+                    ScaffoldMessenger.of(context).clearSnackBars();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Fencer Status Updated!"),
