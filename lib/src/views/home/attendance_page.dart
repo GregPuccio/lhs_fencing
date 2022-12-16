@@ -56,11 +56,16 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
       return Scaffold(
         appBar: AppBar(
           title: Text(attendance.practiceStartString),
-          bottom: attendance.info.isNotEmpty
-              ? PreferredSize(
-                  preferredSize: const Size.fromHeight(38),
-                  child: Center(child: Text(attendance.info)))
-              : null,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1),
+            child: Center(
+              child: attendance.attended
+                  ? Text("${practice.type.type} | ${attendance.info}")
+                  : attendance.excusedAbsense
+                      ? Text("${practice.type.type} | Excused Absense")
+                      : Text("${practice.type.type} | Did not check in"),
+            ),
+          ),
         ),
         body: ListView.separated(
           itemCount: attendance.comments.length + 1,
