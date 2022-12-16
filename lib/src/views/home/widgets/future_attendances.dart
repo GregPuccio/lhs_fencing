@@ -19,12 +19,8 @@ class FutureAttendances extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    DateTime now = DateTime.now();
-    DateTime today = DateTime(now.year, now.month, now.day);
-    List<Practice> futurePractices = practices
-        .where((p) => p.startTime.isAfter(today.add(const Duration(hours: 24))))
-        .toList();
-    futurePractices.sort((a, b) => a.startTime.compareTo(b.startTime));
+    practices.sort((a, b) => a.startTime.compareTo(b.startTime));
+
     Widget whenData(List<AttendanceMonth> attendanceMonths) {
       List<Attendance> attendances = [];
       for (var month in attendanceMonths) {
@@ -41,7 +37,7 @@ class FutureAttendances extends ConsumerWidget {
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  Practice practice = futurePractices[index];
+                  Practice practice = practices[index];
                   Attendance attendance = attendances.firstWhere(
                     (element) => element.id == practice.id,
                     orElse: () => Attendance.noUserCreate(practice),
@@ -65,11 +61,11 @@ class FutureAttendances extends ConsumerWidget {
                           AttendanceRoute(practiceID: attendance.id),
                         ),
                       ),
-                      if (index != futurePractices.length - 1) const Divider(),
+                      if (index != practices.length - 1) const Divider(),
                     ],
                   );
                 },
-                childCount: futurePractices.length,
+                childCount: practices.length,
               ),
             ),
           ),

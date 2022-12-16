@@ -43,8 +43,9 @@ class PracticeTypeTabBar extends SliverPersistentHeaderDelegate {
 }
 
 class FencerPracticeTypeTabBar extends SliverPersistentHeaderDelegate {
+  Practice practice;
   List<Attendance> attendances;
-  FencerPracticeTypeTabBar(this.attendances);
+  FencerPracticeTypeTabBar(this.attendances, this.practice);
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
@@ -52,7 +53,7 @@ class FencerPracticeTypeTabBar extends SliverPersistentHeaderDelegate {
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Column(
         children: [
-          TodaysAttendance(attendances: attendances),
+          TodaysAttendance(attendances: attendances, practice: practice),
           const TabBar(
             tabs: [
               Tab(text: "Past Practices & Meets"),

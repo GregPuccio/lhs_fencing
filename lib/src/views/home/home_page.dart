@@ -35,6 +35,26 @@ class _HomePageState extends ConsumerState<HomePage> {
         attendances.addAll(month.attendances);
       }
 
+      Practice upcomingPractice = practices.reduce((a, b) {
+        DateTime now = DateTime.now();
+        if (a.endTime.add(const Duration(minutes: 15)).isAfter(now) &&
+            b.endTime.add(const Duration(minutes: 15)).isAfter(now)) {
+          return a.startTime.compareTo(b.startTime).isNegative ? a : b;
+        } else if (a.endTime.add(const Duration(minutes: 15)).isAfter(now)) {
+          return a;
+        } else {
+          return b;
+        }
+      });
+
+      List<Practice> pastPractices =
+          practices.where((p) => p.endTime.isBefore(DateTime.now())).toList();
+      List<Practice> futurePractices =
+          practices.where((p) => p.startTime.isAfter(DateTime.now())).toList();
+
+      pastPractices.remove(upcomingPractice);
+      futurePractices.remove(upcomingPractice);
+
       return DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -57,15 +77,16 @@ class _HomePageState extends ConsumerState<HomePage> {
                       NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                   sliver: SliverPersistentHeader(
                     pinned: true,
-                    delegate: FencerPracticeTypeTabBar(attendances),
+                    delegate:
+                        FencerPracticeTypeTabBar(attendances, upcomingPractice),
                   ),
                 ),
               ];
             },
             body: TabBarView(
               children: [
-                PastAttendances(practices: practices),
-                FutureAttendances(practices: practices),
+                PastAttendances(practices: pastPractices),
+                FutureAttendances(practices: futurePractices),
               ],
             ),
           ),
