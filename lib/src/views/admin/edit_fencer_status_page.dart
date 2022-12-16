@@ -162,12 +162,15 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                         child: const Text("No, cancel"),
                       ),
                       TextButton(
-                        onPressed: deleteAttendance,
+                        onPressed: () => deleteAttendance()
+                            .then((value) => context.router.pop(true)),
                         child: const Text("Yes, delete"),
                       ),
                     ],
                   ),
-                ),
+                ).then((value) {
+                  if (value == true) context.router.pop();
+                }),
                 icon: const Icon(Icons.delete),
               ),
           ],
