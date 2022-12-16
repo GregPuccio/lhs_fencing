@@ -4,16 +4,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/comment.dart';
+import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/firestore/functions/attendance_functions.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 
 class CheckOutButton extends ConsumerWidget {
   final Attendance attendance;
+  final Practice practice;
 
   const CheckOutButton({
     Key? key,
     required this.attendance,
+    required this.practice,
   }) : super(key: key);
 
   @override
@@ -43,18 +46,19 @@ class CheckOutButton extends ConsumerWidget {
         DateTime now = DateTime.now();
         final practiceEnd = attendance.practiceEnd;
         // if we are too early to check in (more than 15 minutes before practice)
+        String practiceType = practice.type.type;
         if (now.isBefore(practiceEnd.subtract(const Duration(minutes: 15)))) {
           TextEditingController controller = TextEditingController();
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text("Leaving Practice Early"),
+              title: Text("Leaving $practiceType Early"),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                        "Please note that you are leaving practive early and must provide a reason."),
+                    Text(
+                        "Please note that you are leaving the $practiceType early and must provide a reason."),
                     const SizedBox(height: 8),
                     TextField(
                       controller: controller,
@@ -87,9 +91,9 @@ class CheckOutButton extends ConsumerWidget {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text("Practice Check Out"),
+              title: Text("$practiceType Check Out"),
               content: const Text(
-                  "Thank you for letting us know when you leave! It makes it easier to keep track of everybody. See you next practice."),
+                  "Thank you for letting us know when you leave! It makes it easier to keep track of everybody. See you next time."),
               actions: [
                 TextButton(
                   onPressed: () async {

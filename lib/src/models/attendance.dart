@@ -93,7 +93,7 @@ class Attendance {
 
     String? checkedOut =
         checkOut != null ? DateFormat('h:mm aa').format(checkOut!) : null;
-    return "${checkedIn != null ? "Checked in: $checkedIn" : ""}${checkedOut != null ? "\nChecked out: $checkedOut" : ""}";
+    return "${checkedIn ?? ""}${checkedOut != null ? " - $checkedOut" : ""}";
   }
 
   bool get isLate {

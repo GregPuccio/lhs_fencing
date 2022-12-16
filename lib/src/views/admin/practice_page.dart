@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
+import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
@@ -15,17 +16,18 @@ import 'package:lhs_fencing/src/widgets/text_badge.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PracticePage extends ConsumerWidget {
-  final Practice practice;
-  const PracticePage({required this.practice, super.key});
+  final String practiceID;
+  const PracticePage({required this.practiceID, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     List<UserData> fencers = [];
+    late Practice practice;
     Widget whenData(List<AttendanceMonth> attendanceMonths) {
       List<Attendance> attendances = [];
       for (var month in attendanceMonths) {
         for (var attendance in month.attendances) {
-          if (attendance.id == practice.id) {
+          if (attendance.id == practiceID) {
             attendances.add(attendance);
           }
         }
@@ -45,7 +47,13 @@ class PracticePage extends ConsumerWidget {
         child: Scaffold(
           appBar: AppBar(
             title: Text(practice.startString),
-            actions: const [],
+            actions: [
+              IconButton(
+                onPressed: () =>
+                    context.router.push(EditPracticeRoute(practice: practice)),
+                icon: const Icon(Icons.edit),
+              ),
+            ],
             bottom: TabBar(
               tabs: [
                 Tab(
@@ -93,7 +101,7 @@ class PracticePage extends ConsumerWidget {
                         attendance: attendance,
                       ),
                     ),
-                    subtitle: AttendanceInfo(attendance),
+                    subtitle: AttendanceInfo(attendance, practice),
                     trailing: const Icon(Icons.edit),
                   );
                 },
@@ -194,10 +202,21 @@ class PracticePage extends ConsumerWidget {
       );
     }
 
-    Widget whenFencerData(List<UserData> data) {
-      fencers = data;
+    Widget whenPracticeData(List<PracticeMonth> data) {
+      PracticeMonth month = data.firstWhere((element) =>
+          element.practices.any((element) => element.id == practiceID));
+      practice =
+          month.practices.firstWhere((element) => element.id == practiceID);
       return ref.watch(allAttendancesProvider).when(
           data: whenData,
+          error: (error, stackTrace) => const ErrorPage(),
+          loading: () => const LoadingPage());
+    }
+
+    Widget whenFencerData(List<UserData> data) {
+      fencers = data;
+      return ref.watch(practicesProvider).when(
+          data: whenPracticeData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage());
     }

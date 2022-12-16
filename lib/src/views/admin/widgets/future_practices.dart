@@ -35,7 +35,7 @@ class FuturePractices extends StatelessWidget {
                   ListTile(
                     title: Text(practice.startString),
                     onTap: () => context.router.push(
-                      PracticeRoute(practice: practice),
+                      PracticeRoute(practiceID: practice.id),
                     ),
                   ),
                   if (index != futurePractices.length - 1) const Divider(),

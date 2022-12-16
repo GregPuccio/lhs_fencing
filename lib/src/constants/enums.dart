@@ -45,3 +45,30 @@ enum DayOfWeek {
     }
   }
 }
+
+enum TypePractice {
+  practice,
+  meet,
+  quad,
+  tournament,
+  fundraiser;
+
+  String get type {
+    switch (this) {
+      case TypePractice.practice:
+        return "Practice";
+      case TypePractice.meet:
+        return "Dual Meet";
+      case TypePractice.quad:
+        return "Quad Meet";
+      case TypePractice.tournament:
+        return "Tournament";
+      case TypePractice.fundraiser:
+        return "Fundraiser";
+    }
+  }
+
+  String toMap() => name;
+  static TypePractice fromMap(String map) =>
+      values.byName(map.isEmpty ? "practice" : map);
+}

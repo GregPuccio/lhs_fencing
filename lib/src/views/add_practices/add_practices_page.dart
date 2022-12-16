@@ -22,6 +22,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
   late DateTimeRange dateRange;
   late TimeOfDay startTime;
   late TimeOfDay endTime;
+  TypePractice typePractice = TypePractice.practice;
   List<DayOfWeek> daysOfWeek = [];
   List<Practice> practices = [];
 
@@ -80,6 +81,23 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            DropdownButton<TypePractice>(
+                isExpanded: true,
+                value: typePractice,
+                items: List.generate(
+                  TypePractice.values.length,
+                  (index) => DropdownMenuItem(
+                    value: TypePractice.values[index],
+                    child: Text(TypePractice.values[index].type),
+                  ),
+                ),
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() {
+                    typePractice = value;
+                  });
+                }),
+            const Divider(),
             ListTile(
               title: const Text("Date Range"),
               subtitle: Text(
@@ -157,6 +175,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                         dateRange.start.day + (i),
                         endTime.hour,
                         endTime.minute),
+                    type: typePractice,
                   ),
                 );
                 List<PracticeMonth> months =

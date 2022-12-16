@@ -29,12 +29,22 @@ class _$AppRouter extends RootStackRouter {
         child: const AddPracticesPage(),
       );
     },
+    EditPracticeRoute.name: (routeData) {
+      final args = routeData.argsAs<EditPracticeRouteArgs>();
+      return AdaptivePage<dynamic>(
+        routeData: routeData,
+        child: EditPracticePage(
+          practice: args.practice,
+          key: args.key,
+        ),
+      );
+    },
     PracticeRoute.name: (routeData) {
       final args = routeData.argsAs<PracticeRouteArgs>();
       return AdaptivePage<dynamic>(
         routeData: routeData,
         child: PracticePage(
-          practice: args.practice,
+          practiceID: args.practiceID,
           key: args.key,
         ),
       );
@@ -90,6 +100,10 @@ class _$AppRouter extends RootStackRouter {
           path: 'addPractices',
         ),
         RouteConfig(
+          EditPracticeRoute.name,
+          path: 'editPractice',
+        ),
+        RouteConfig(
           PracticeRoute.name,
           path: 'practice',
         ),
@@ -143,25 +157,25 @@ class AddPracticesRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [PracticePage]
-class PracticeRoute extends PageRouteInfo<PracticeRouteArgs> {
-  PracticeRoute({
+/// [EditPracticePage]
+class EditPracticeRoute extends PageRouteInfo<EditPracticeRouteArgs> {
+  EditPracticeRoute({
     required Practice practice,
     Key? key,
   }) : super(
-          PracticeRoute.name,
-          path: 'practice',
-          args: PracticeRouteArgs(
+          EditPracticeRoute.name,
+          path: 'editPractice',
+          args: EditPracticeRouteArgs(
             practice: practice,
             key: key,
           ),
         );
 
-  static const String name = 'PracticeRoute';
+  static const String name = 'EditPracticeRoute';
 }
 
-class PracticeRouteArgs {
-  const PracticeRouteArgs({
+class EditPracticeRouteArgs {
+  const EditPracticeRouteArgs({
     required this.practice,
     this.key,
   });
@@ -172,7 +186,41 @@ class PracticeRouteArgs {
 
   @override
   String toString() {
-    return 'PracticeRouteArgs{practice: $practice, key: $key}';
+    return 'EditPracticeRouteArgs{practice: $practice, key: $key}';
+  }
+}
+
+/// generated route for
+/// [PracticePage]
+class PracticeRoute extends PageRouteInfo<PracticeRouteArgs> {
+  PracticeRoute({
+    required String practiceID,
+    Key? key,
+  }) : super(
+          PracticeRoute.name,
+          path: 'practice',
+          args: PracticeRouteArgs(
+            practiceID: practiceID,
+            key: key,
+          ),
+        );
+
+  static const String name = 'PracticeRoute';
+}
+
+class PracticeRouteArgs {
+  const PracticeRouteArgs({
+    required this.practiceID,
+    this.key,
+  });
+
+  final String practiceID;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'PracticeRouteArgs{practiceID: $practiceID, key: $key}';
   }
 }
 

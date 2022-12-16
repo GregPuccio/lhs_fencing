@@ -57,12 +57,24 @@ class PastAttendances extends ConsumerWidget {
                           Text(practice.startString),
                         ],
                       ),
-                      subtitle: AttendanceInfo(attendance),
+                      subtitle: AttendanceInfo(attendance, practice),
                       onTap: () {
                         context.router.push(
                           AttendanceRoute(practiceID: attendance.id),
                         );
                       },
+                      trailing: Icon(
+                        attendance.attended
+                            ? Icons.check
+                            : attendance.excusedAbsense
+                                ? Icons.admin_panel_settings
+                                : Icons.cancel,
+                        color: attendance.attended
+                            ? Colors.green
+                            : attendance.excusedAbsense
+                                ? Colors.amber
+                                : Colors.red,
+                      ),
                     ),
                     if (index != pastPractices.length - 1) const Divider(),
                   ],

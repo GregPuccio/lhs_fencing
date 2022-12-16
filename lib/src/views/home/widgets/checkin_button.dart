@@ -11,12 +11,12 @@ import 'package:lhs_fencing/src/services/providers/providers.dart';
 
 class CheckInButton extends ConsumerWidget {
   final bool today;
-  final List<Practice> practices;
+  final Practice practice;
 
   const CheckInButton({
     Key? key,
     required this.today,
-    required this.practices,
+    required this.practice,
   }) : super(key: key);
 
   @override
@@ -43,20 +43,16 @@ class CheckInButton extends ConsumerWidget {
       onPressed: today
           ? () {
               DateTime now = DateTime.now();
-              final todaysPractice = practices.reduce((a, b) =>
-                  a.startTime.difference(now).abs() <
-                          b.startTime.difference(now).abs()
-                      ? a
-                      : b);
+              String practiceType = practice.type.type;
               // if we are too early to check in (more than 15 minutes before practice)
-              if (now.isBefore(todaysPractice.startTime
-                  .subtract(const Duration(minutes: 15)))) {
+              if (now.isBefore(
+                  practice.startTime.subtract(const Duration(minutes: 15)))) {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
                     title: const Text("Too Early For Check In"),
-                    content: const Text(
-                        "You cannot check in for attendance before practice has started. Make sure it is time for practice before you try checking in again."),
+                    content: Text(
+                        "You cannot check in for attendance before the $practiceType has started. Make sure it is less than 15 minutes ahead of the $practiceType before you try checking in again."),
                     actions: [
                       TextButton(
                         onPressed: () => context.popRoute(),
@@ -71,21 +67,21 @@ class CheckInButton extends ConsumerWidget {
               // if we are within 15 minutes of starting
               // (since we didnt get caught at the previous if)
               // and have not ended practice yet
-              else if (now.isBefore(todaysPractice.endTime)) {
+              else if (now.isBefore(practice.endTime)) {
                 // if the student is later than 15 minutes to practice
-                if (now.isAfter(todaysPractice.startTime
-                    .add(const Duration(minutes: 15)))) {
+                if (now.isAfter(
+                    practice.startTime.add(const Duration(minutes: 15)))) {
                   TextEditingController controller = TextEditingController();
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text("Late Practice Check In"),
+                      title: Text("Late $practiceType Check In"),
                       content: SingleChildScrollView(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Text(
-                                "Please note that you are late to practice and must provide a reason."),
+                            Text(
+                                "Please note that you are late to the $practiceType and must provide a reason."),
                             const SizedBox(height: 8),
                             TextField(
                               controller: controller,
@@ -93,8 +89,8 @@ class CheckInButton extends ConsumerWidget {
                               maxLines: 5,
                             ),
                             const SizedBox(height: 8),
-                            const Text(
-                                "Please only check in when you are at practice. Are you currently in the fencing gym?"),
+                            Text(
+                                "Please only check in when you are at the $practiceType. Are you currently at the ${practice.location}?"),
                           ],
                         ),
                       ),
@@ -106,7 +102,7 @@ class CheckInButton extends ConsumerWidget {
                         TextButton(
                           onPressed: () async {
                             await checkIn(
-                              todaysPractice,
+                              practice,
                               lateReason: controller.text.isNotEmpty
                                   ? "Late: ${controller.text}"
                                   : null,
@@ -124,9 +120,9 @@ class CheckInButton extends ConsumerWidget {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text("Check In To Practice"),
-                      content: const Text(
-                          "Please only check in when you are at practice. Are you currently in the fencing gym?"),
+                      title: Text("Check In To $practiceType"),
+                      content: Text(
+                          "Please only check in when you are at the $practiceType. Are you currently at the ${practice.location}?"),
                       actions: [
                         TextButton(
                           onPressed: () => context.popRoute(),
@@ -134,7 +130,7 @@ class CheckInButton extends ConsumerWidget {
                         ),
                         TextButton(
                           onPressed: () async {
-                            await checkIn(todaysPractice);
+                            await checkIn(practice);
 
                             context.router.pop();
                           },
@@ -149,8 +145,8 @@ class CheckInButton extends ConsumerWidget {
                   context: context,
                   builder: (context) => AlertDialog(
                     title: const Text("Too Late For Check In"),
-                    content: const Text(
-                        "You cannot check in after practice has ended. Make sure to let a coach know that you attended practice and try not to forget again in the future."),
+                    content: Text(
+                        "You cannot check in after the $practiceType has ended. Make sure to let a coach know that you attended and try not to forget again in the future."),
                     actions: [
                       TextButton(
                         onPressed: () => context.popRoute(),

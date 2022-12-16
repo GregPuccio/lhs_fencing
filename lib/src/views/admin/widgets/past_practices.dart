@@ -59,10 +59,10 @@ class PastPractices extends ConsumerWidget {
                     ListTile(
                       title: Text(practice.startString),
                       subtitle: Text(
-                        "$presentFencers Checked In | $absentFencers Absent",
+                        "${practice.type.type} | $presentFencers Checked In • $absentFencers Absent",
                       ),
                       onTap: () => context.router
-                          .push(PracticeRoute(practice: practice)),
+                          .push(PracticeRoute(practiceID: practice.id)),
                     ),
                     if (index != pastPractices.length - 1) const Divider(),
                   ],

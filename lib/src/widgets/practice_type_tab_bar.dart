@@ -55,8 +55,8 @@ class FencerPracticeTypeTabBar extends SliverPersistentHeaderDelegate {
           TodaysAttendance(attendances: attendances),
           const TabBar(
             tabs: [
-              Tab(text: "Past Practices"),
-              Tab(text: "Future Practices"),
+              Tab(text: "Past Practices & Meets"),
+              Tab(text: "Future Practices & Meets"),
             ],
           ),
         ],

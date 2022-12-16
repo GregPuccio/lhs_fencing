@@ -2,16 +2,20 @@ import 'dart:convert';
 
 import 'package:intl/intl.dart';
 
+import 'package:lhs_fencing/src/constants/enums.dart';
+
 class Practice {
   String id;
   String location;
   DateTime startTime;
   DateTime endTime;
+  TypePractice type;
   Practice({
     required this.id,
     required this.location,
     required this.startTime,
     required this.endTime,
+    required this.type,
   });
 
   String get startString {
@@ -27,12 +31,14 @@ class Practice {
     String? location,
     DateTime? startTime,
     DateTime? endTime,
+    TypePractice? type,
   }) {
     return Practice(
       id: id ?? this.id,
       location: location ?? this.location,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
+      type: type ?? this.type,
     );
   }
 
@@ -42,6 +48,7 @@ class Practice {
       'location': location,
       'startTime': startTime.millisecondsSinceEpoch,
       'endTime': endTime.millisecondsSinceEpoch,
+      'type': type.toMap(),
     };
   }
 
@@ -51,6 +58,7 @@ class Practice {
       location: map['location'] ?? '',
       startTime: DateTime.fromMillisecondsSinceEpoch(map['startTime']),
       endTime: DateTime.fromMillisecondsSinceEpoch(map['endTime']),
+      type: TypePractice.fromMap(map['type'] ?? ""),
     );
   }
 
@@ -61,7 +69,7 @@ class Practice {
 
   @override
   String toString() {
-    return 'Practice(id: $id, location: $location, startTime: $startTime, endTime: $endTime)';
+    return 'Practice(id: $id, location: $location, startTime: $startTime, endTime: $endTime, type: $type)';
   }
 
   @override
@@ -72,7 +80,8 @@ class Practice {
         other.id == id &&
         other.location == location &&
         other.startTime == startTime &&
-        other.endTime == endTime;
+        other.endTime == endTime &&
+        other.type == type;
   }
 
   @override
@@ -80,6 +89,7 @@ class Practice {
     return id.hashCode ^
         location.hashCode ^
         startTime.hashCode ^
-        endTime.hashCode;
+        endTime.hashCode ^
+        type.hashCode;
   }
 }

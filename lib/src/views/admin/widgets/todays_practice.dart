@@ -56,11 +56,11 @@ class TodaysPractice extends ConsumerWidget {
                       ),
                 ),
                 subtitle: Text(
-                  "$presentFencers Checked In | $absentFencers Absent",
+                  "${currentPractice.type.type} | $presentFencers Checked In • $absentFencers Absent",
                 ),
                 trailing: const Icon(Icons.arrow_forward),
                 onTap: () => context.router.push(
-                  PracticeRoute(practice: currentPractice),
+                  PracticeRoute(practiceID: currentPractice.id),
                 ),
               ),
             ],

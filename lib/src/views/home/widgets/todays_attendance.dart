@@ -9,7 +9,6 @@ import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/views/home/widgets/checkin_button.dart';
 import 'package:lhs_fencing/src/views/home/widgets/checkout_button.dart';
-import 'package:lhs_fencing/src/widgets/attendance_info.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 
@@ -48,7 +47,9 @@ class TodaysAttendance extends ConsumerWidget {
           child: Column(
             children: [
               Text(
-                todayBool ? "Today's Practice" : "Next Practice",
+                todayBool
+                    ? "Today's ${todaysPractice.type.type}"
+                    : "Next ${todaysPractice.type.type}",
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const Divider(),
@@ -62,12 +63,30 @@ class TodaysAttendance extends ConsumerWidget {
                       ),
                   maxLines: 1,
                 ),
-                subtitle: AttendanceInfo(todaysAttendance),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    todaysAttendance.attended
+                        ? Text(todaysAttendance.info)
+                        : todaysAttendance.excusedAbsense
+                            ? const Text("Excused Absense")
+                            : const Text("Did not check in"),
+                    if (todaysAttendance.comments.isNotEmpty)
+                      Text(
+                        "View ${todaysAttendance.comments.length} comment${todaysAttendance.comments.length == 1 ? "" : "s"}",
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                  ],
+                ),
                 trailing: todaysAttendance.checkOut != null
                     ? null
                     : todaysAttendance.attended
-                        ? CheckOutButton(attendance: todaysAttendance)
-                        : CheckInButton(today: todayBool, practices: practices),
+                        ? CheckOutButton(
+                            attendance: todaysAttendance,
+                            practice: todaysPractice,
+                          )
+                        : CheckInButton(
+                            today: todayBool, practice: todaysPractice),
                 onTap: () => context.router
                     .push(AttendanceRoute(practiceID: todaysAttendance.id)),
               ),
