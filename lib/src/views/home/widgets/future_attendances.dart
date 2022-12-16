@@ -49,11 +49,16 @@ class FutureAttendances extends ConsumerWidget {
                   children: [
                     ListTile(
                       title: Text(practice.startString),
-                      subtitle: attendance.comments.isNotEmpty
-                          ? Text(
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(practice.type.type),
+                          if (attendance.comments.isNotEmpty)
+                            Text(
                               "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",
-                            )
-                          : null,
+                            ),
+                        ],
+                      ),
                       onTap: () => context.router.push(
                         AttendanceRoute(practiceID: attendance.id),
                       ),

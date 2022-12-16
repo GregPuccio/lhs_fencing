@@ -34,6 +34,7 @@ class FuturePractices extends StatelessWidget {
                 children: [
                   ListTile(
                     title: Text(practice.startString),
+                    subtitle: Text(practice.type.type),
                     onTap: () => context.router.push(
                       PracticeRoute(practiceID: practice.id),
                     ),
