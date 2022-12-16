@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
@@ -23,6 +24,7 @@ class FencerDetailsPage extends ConsumerStatefulWidget {
 
 class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
   late TextEditingController controller;
+  PracticeShowState practiceShowState = PracticeShowState.all;
 
   @override
   void initState() {
@@ -50,7 +52,7 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
           attendances.addAll(month.attendances);
         }
       }
-      practices.sort((a, b) => a.startTime.compareTo(b.startTime));
+      practices.sort((a, b) => -a.startTime.compareTo(b.startTime));
       int numAttended = attendances
           .where((a) => practices.any((p) => p.id == a.id) && a.attended)
           .length;
@@ -58,6 +60,33 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
           .where((a) => practices.any((p) => p.id == a.id) && a.excusedAbsense)
           .length;
       int numAbsent = practices.length - numAttended - numExcused;
+      List<String> practiceShowValues = [
+        practices.length.toString(),
+        numAttended.toString(),
+        numExcused.toString(),
+        numAbsent.toString(),
+      ];
+      List<Color> practiceShowColors = [
+        Theme.of(context).colorScheme.primaryContainer,
+        Theme.of(context).colorScheme.secondaryContainer,
+        Theme.of(context).colorScheme.tertiaryContainer,
+        Theme.of(context).colorScheme.errorContainer,
+      ];
+
+      List<Practice> shownPractices = practices.where((p) {
+        switch (practiceShowState) {
+          case PracticeShowState.all:
+            return true;
+          case PracticeShowState.attended:
+            return attendances.any((a) => p.id == a.id && a.attended);
+          case PracticeShowState.excused:
+            return attendances.any((a) => p.id == a.id && a.excusedAbsense);
+          case PracticeShowState.absent:
+            return !attendances.any((a) =>
+                (p.id == a.id && a.attended) ||
+                (p.id == a.id && a.excusedAbsense));
+        }
+      }).toList();
 
       return Scaffold(
           appBar: AppBar(
@@ -66,40 +95,27 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
               preferredSize: const Size.fromHeight(kToolbarHeight),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  BoxedInfo(
-                    value: practices.length.toString(),
-                    title: "Total",
-                    backgroundColor:
-                        Theme.of(context).colorScheme.primaryContainer,
+                children: List.generate(
+                  PracticeShowState.values.length,
+                  (index) => BoxedInfo(
+                    onTap: () => setState(
+                      () => practiceShowState = PracticeShowState.values[index],
+                    ),
+                    isSelected:
+                        practiceShowState == PracticeShowState.values[index],
+                    value: practiceShowValues[index],
+                    title: PracticeShowState.values[index].type,
+                    backgroundColor: practiceShowColors[index],
                   ),
-                  BoxedInfo(
-                    value: numAttended.toString(),
-                    title: "Attended",
-                    backgroundColor:
-                        Theme.of(context).colorScheme.secondaryContainer,
-                  ),
-                  BoxedInfo(
-                    value: numExcused.toString(),
-                    title: "Excused",
-                    backgroundColor:
-                        Theme.of(context).colorScheme.tertiaryContainer,
-                  ),
-                  BoxedInfo(
-                    value: numAbsent.toString(),
-                    title: "Absent",
-                    backgroundColor:
-                        Theme.of(context).colorScheme.errorContainer,
-                  ),
-                ],
+                ),
               ),
             ),
           ),
           body: ListView.separated(
             padding: const EdgeInsets.only(bottom: 60),
-            itemCount: practices.length,
+            itemCount: shownPractices.length,
             itemBuilder: (context, index) {
-              Practice practice = practices[index];
+              Practice practice = shownPractices[index];
 
               Attendance attendance = attendances.firstWhere(
                 (element) => element.id == practice.id,

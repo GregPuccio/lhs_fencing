@@ -72,3 +72,25 @@ enum TypePractice {
   static TypePractice fromMap(String map) =>
       values.byName(map.isEmpty ? "practice" : map);
 }
+
+enum PracticeShowState {
+  all,
+  attended,
+  excused,
+  absent;
+
+  const PracticeShowState();
+
+  String get type {
+    switch (this) {
+      case PracticeShowState.all:
+        return "All";
+      case PracticeShowState.attended:
+        return "Attended";
+      case PracticeShowState.excused:
+        return "Excused";
+      case PracticeShowState.absent:
+        return "Absent";
+    }
+  }
+}
