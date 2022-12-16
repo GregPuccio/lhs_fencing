@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
-class UserData {
+class UserData extends Comparable<UserData> {
   String id;
   String email;
   String firstName;
@@ -105,5 +105,14 @@ class UserData {
         firstName.hashCode ^
         lastName.hashCode ^
         admin.hashCode;
+  }
+
+  @override
+  int compareTo(UserData other) {
+    if (lastName == other.lastName) {
+      return firstName.compareTo(other.firstName);
+    } else {
+      return lastName.compareTo(other.lastName);
+    }
   }
 }

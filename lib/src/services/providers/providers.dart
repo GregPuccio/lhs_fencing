@@ -57,6 +57,7 @@ final fencersProvider = StreamProvider<List<UserData>>((ref) {
     path: FirestorePath.users(),
     queryBuilder: (query) =>
         query.where("admin", isEqualTo: false).orderBy("lastName"),
+    sort: (lhs, rhs) => lhs.compareTo(rhs),
     builder: (map, docID) {
       return UserData.fromMap(map!).copyWith(id: docID);
     },
