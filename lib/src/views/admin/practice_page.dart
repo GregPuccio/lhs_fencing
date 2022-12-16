@@ -82,6 +82,7 @@ class PracticePage extends ConsumerWidget {
           body: TabBarView(
             children: [
               ListView.separated(
+                padding: const EdgeInsets.only(bottom: 60),
                 itemCount: presentFencers.length,
                 itemBuilder: (context, index) {
                   Attendance attendance = presentFencers[index];
@@ -101,13 +102,14 @@ class PracticePage extends ConsumerWidget {
                         attendance: attendance,
                       ),
                     ),
-                    subtitle: AttendanceInfo(attendance, practice),
+                    subtitle: AttendanceInfo(attendance, null),
                     trailing: const Icon(Icons.edit),
                   );
                 },
                 separatorBuilder: (context, index) => const Divider(),
               ),
               ListView.separated(
+                padding: const EdgeInsets.only(bottom: 60),
                 itemCount: absentFencers.length + 1,
                 itemBuilder: (context, index) {
                   if (index == 0) {

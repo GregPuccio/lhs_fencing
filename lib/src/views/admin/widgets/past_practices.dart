@@ -32,43 +32,46 @@ class PastPractices extends ConsumerWidget {
           SliverOverlapInjector(
             handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                Practice practice = pastPractices[index];
-                List<Attendance> attendances = [];
-                for (var month in attendanceMonths) {
-                  for (var attendance in month.attendances) {
-                    if (attendance.id == practice.id) {
-                      attendances.add(attendance);
+          SliverPadding(
+            padding: const EdgeInsets.only(bottom: 60),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  Practice practice = pastPractices[index];
+                  List<Attendance> attendances = [];
+                  for (var month in attendanceMonths) {
+                    for (var attendance in month.attendances) {
+                      if (attendance.id == practice.id) {
+                        attendances.add(attendance);
+                      }
                     }
                   }
-                }
-                int presentFencers = fencers
-                    .where((fencer) => attendances.any((attendance) =>
-                        attendance.userData.id == fencer.id &&
-                        attendance.attended))
-                    .length;
-                int absentFencers = fencers
-                    .where((fencer) => !attendances.any((attendance) =>
-                        attendance.userData.id == fencer.id &&
-                        attendance.attended))
-                    .length;
-                return Column(
-                  children: [
-                    ListTile(
-                      title: Text(practice.startString),
-                      subtitle: Text(
-                        "${practice.type.type} | $presentFencers Checked In • $absentFencers Absent",
+                  int presentFencers = fencers
+                      .where((fencer) => attendances.any((attendance) =>
+                          attendance.userData.id == fencer.id &&
+                          attendance.attended))
+                      .length;
+                  int absentFencers = fencers
+                      .where((fencer) => !attendances.any((attendance) =>
+                          attendance.userData.id == fencer.id &&
+                          attendance.attended))
+                      .length;
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(practice.startString),
+                        subtitle: Text(
+                          "${practice.type.type} | $presentFencers Checked In • $absentFencers Absent",
+                        ),
+                        onTap: () => context.router
+                            .push(PracticeRoute(practiceID: practice.id)),
                       ),
-                      onTap: () => context.router
-                          .push(PracticeRoute(practiceID: practice.id)),
-                    ),
-                    if (index != pastPractices.length - 1) const Divider(),
-                  ],
-                );
-              },
-              childCount: pastPractices.length,
+                      if (index != pastPractices.length - 1) const Divider(),
+                    ],
+                  );
+                },
+                childCount: pastPractices.length,
+              ),
             ),
           ),
         ],

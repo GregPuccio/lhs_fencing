@@ -25,25 +25,28 @@ class FuturePractices extends StatelessWidget {
         SliverOverlapInjector(
           handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
         ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              Practice practice = futurePractices[index];
+        SliverPadding(
+          padding: const EdgeInsets.only(bottom: 60),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                Practice practice = futurePractices[index];
 
-              return Column(
-                children: [
-                  ListTile(
-                    title: Text(practice.startString),
-                    subtitle: Text(practice.type.type),
-                    onTap: () => context.router.push(
-                      PracticeRoute(practiceID: practice.id),
+                return Column(
+                  children: [
+                    ListTile(
+                      title: Text(practice.startString),
+                      subtitle: Text(practice.type.type),
+                      onTap: () => context.router.push(
+                        PracticeRoute(practiceID: practice.id),
+                      ),
                     ),
-                  ),
-                  if (index != futurePractices.length - 1) const Divider(),
-                ],
-              );
-            },
-            childCount: futurePractices.length,
+                    if (index != futurePractices.length - 1) const Divider(),
+                  ],
+                );
+              },
+              childCount: futurePractices.length,
+            ),
           ),
         ),
       ],

@@ -36,51 +36,54 @@ class PastAttendances extends ConsumerWidget {
           SliverOverlapInjector(
             handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                Practice practice = pastPractices[index];
-                Attendance attendance = attendances.firstWhere(
-                  (element) => element.id == practice.id,
-                  orElse: () => Attendance.noUserCreate(practice),
-                );
-                return Column(
-                  children: [
-                    if (index == 0 &&
-                        (attendance.isLate || attendance.leftEarly))
-                      const SizedBox(height: 8),
-                    ListTile(
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AttendanceStatusBar(attendance),
-                          Text(practice.startString),
-                        ],
+          SliverPadding(
+            padding: const EdgeInsets.only(bottom: 60),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  Practice practice = pastPractices[index];
+                  Attendance attendance = attendances.firstWhere(
+                    (element) => element.id == practice.id,
+                    orElse: () => Attendance.noUserCreate(practice),
+                  );
+                  return Column(
+                    children: [
+                      if (index == 0 &&
+                          (attendance.isLate || attendance.leftEarly))
+                        const SizedBox(height: 8),
+                      ListTile(
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AttendanceStatusBar(attendance),
+                            Text(practice.startString),
+                          ],
+                        ),
+                        subtitle: AttendanceInfo(attendance, practice),
+                        onTap: () {
+                          context.router.push(
+                            AttendanceRoute(practiceID: attendance.id),
+                          );
+                        },
+                        trailing: Icon(
+                          attendance.attended
+                              ? Icons.check
+                              : attendance.excusedAbsense
+                                  ? Icons.admin_panel_settings
+                                  : Icons.cancel,
+                          color: attendance.attended
+                              ? Colors.green
+                              : attendance.excusedAbsense
+                                  ? Colors.amber
+                                  : Colors.red,
+                        ),
                       ),
-                      subtitle: AttendanceInfo(attendance, practice),
-                      onTap: () {
-                        context.router.push(
-                          AttendanceRoute(practiceID: attendance.id),
-                        );
-                      },
-                      trailing: Icon(
-                        attendance.attended
-                            ? Icons.check
-                            : attendance.excusedAbsense
-                                ? Icons.admin_panel_settings
-                                : Icons.cancel,
-                        color: attendance.attended
-                            ? Colors.green
-                            : attendance.excusedAbsense
-                                ? Colors.amber
-                                : Colors.red,
-                      ),
-                    ),
-                    if (index != pastPractices.length - 1) const Divider(),
-                  ],
-                );
-              },
-              childCount: pastPractices.length,
+                      if (index != pastPractices.length - 1) const Divider(),
+                    ],
+                  );
+                },
+                childCount: pastPractices.length,
+              ),
             ),
           ),
         ],

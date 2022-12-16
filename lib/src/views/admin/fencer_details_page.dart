@@ -56,6 +56,7 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
             title: Text("${fencer.fullName}'s Practices"),
           ),
           body: ListView.separated(
+            padding: const EdgeInsets.only(bottom: 60),
             itemCount: practices.length,
             itemBuilder: (context, index) {
               Practice practice = practices[index];

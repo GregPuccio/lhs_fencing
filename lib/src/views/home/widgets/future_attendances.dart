@@ -36,38 +36,41 @@ class FutureAttendances extends ConsumerWidget {
           SliverOverlapInjector(
             handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                Practice practice = futurePractices[index];
-                Attendance attendance = attendances.firstWhere(
-                  (element) => element.id == practice.id,
-                  orElse: () => Attendance.noUserCreate(practice),
-                );
+          SliverPadding(
+            padding: const EdgeInsets.only(bottom: 60),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  Practice practice = futurePractices[index];
+                  Attendance attendance = attendances.firstWhere(
+                    (element) => element.id == practice.id,
+                    orElse: () => Attendance.noUserCreate(practice),
+                  );
 
-                return Column(
-                  children: [
-                    ListTile(
-                      title: Text(practice.startString),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(practice.type.type),
-                          if (attendance.comments.isNotEmpty)
-                            Text(
-                              "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",
-                            ),
-                        ],
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(practice.startString),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(practice.type.type),
+                            if (attendance.comments.isNotEmpty)
+                              Text(
+                                "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",
+                              ),
+                          ],
+                        ),
+                        onTap: () => context.router.push(
+                          AttendanceRoute(practiceID: attendance.id),
+                        ),
                       ),
-                      onTap: () => context.router.push(
-                        AttendanceRoute(practiceID: attendance.id),
-                      ),
-                    ),
-                    if (index != futurePractices.length - 1) const Divider(),
-                  ],
-                );
-              },
-              childCount: futurePractices.length,
+                      if (index != futurePractices.length - 1) const Divider(),
+                    ],
+                  );
+                },
+                childCount: futurePractices.length,
+              ),
             ),
           ),
         ],

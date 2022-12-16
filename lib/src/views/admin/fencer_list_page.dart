@@ -86,21 +86,23 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
             bottom: SearchBar(controller),
           ),
           body: ListView.separated(
+            padding: const EdgeInsets.only(bottom: 60),
             itemCount: filteredFencers.length,
             itemBuilder: (context, index) {
               UserData fencer = filteredFencers[index];
 
               List<Attendance> fencerAttendances = attendances
-                  .where((att) => att.userData.id == fencer.id)
+                  .where((att) => att.userData.id == fencer.id && att.attended)
                   .toList();
 
               return ListTile(
                 title: Text(fencer.fullName),
-                subtitle: Text(
-                    "Participated in ${fencerAttendances.length} practices"),
+                subtitle:
+                    Text("Attended ${fencerAttendances.length} practices"),
                 onTap: () => context.router.push(
                   FencerDetailsRoute(fencerID: fencer.id),
                 ),
+                trailing: const Icon(Icons.arrow_forward),
               );
             },
             separatorBuilder: (context, index) => const Divider(),

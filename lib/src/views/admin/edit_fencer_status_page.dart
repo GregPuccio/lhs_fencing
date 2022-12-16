@@ -301,7 +301,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                         backgroundColor: coachComment
                             ? Theme.of(context).colorScheme.primaryContainer
                             : Theme.of(context).colorScheme.secondaryContainer,
-                        child: Text(attendance.userData.initials),
+                        child: Text(comment.user.initials),
                       ),
                       title: Text(comment.text),
                       subtitle: Text(comment.createdAtString),
