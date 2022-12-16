@@ -8,6 +8,7 @@ import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
+import 'package:lhs_fencing/src/widgets/boxed_info.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 
@@ -50,10 +51,49 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
         }
       }
       practices.sort((a, b) => a.startTime.compareTo(b.startTime));
+      int numAttended = attendances
+          .where((a) => practices.any((p) => p.id == a.id) && a.attended)
+          .length;
+      int numExcused = attendances
+          .where((a) => practices.any((p) => p.id == a.id) && a.excusedAbsense)
+          .length;
+      int numAbsent = practices.length - numAttended - numExcused;
 
       return Scaffold(
           appBar: AppBar(
             title: Text("${fencer.fullName}'s Practices"),
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  BoxedInfo(
+                    value: practices.length.toString(),
+                    title: "Total",
+                    backgroundColor:
+                        Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                  BoxedInfo(
+                    value: numAttended.toString(),
+                    title: "Attended",
+                    backgroundColor:
+                        Theme.of(context).colorScheme.secondaryContainer,
+                  ),
+                  BoxedInfo(
+                    value: numExcused.toString(),
+                    title: "Excused",
+                    backgroundColor:
+                        Theme.of(context).colorScheme.tertiaryContainer,
+                  ),
+                  BoxedInfo(
+                    value: numAbsent.toString(),
+                    title: "Absent",
+                    backgroundColor:
+                        Theme.of(context).colorScheme.errorContainer,
+                  ),
+                ],
+              ),
+            ),
           ),
           body: ListView.separated(
             padding: const EdgeInsets.only(bottom: 60),
