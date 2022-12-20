@@ -33,7 +33,7 @@ class Practice {
 &body=Good $tod students,
 
 Our records are showing that you did not attend the ${type.type} on $emailString.
-If you have not already provided a reason, please add a comment on the attendance site ASAP. Make sure you do this ahead of time for future absenses.
+Please provide a reason on the attendance site ASAP. Make sure you do this ahead of time for future absenses.
 
 lhsfencing.web.app
 
