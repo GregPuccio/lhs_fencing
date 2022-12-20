@@ -113,8 +113,8 @@ class PracticePage extends ConsumerWidget {
                                       Uri url = Uri(
                                           scheme: "mailto",
                                           path: coach.email,
-                                          query:
-                                              "bcc=${List.generate(fencerLists.last.length, (index) => fencerLists.last[index].email).join(",")}&subject=${practice.emailString} LHS Fencing Practice&body=Good $tod students,\nOur records are showing that you did not attend practice on ${practice.emailString}.\nIf you have not already provided a reason, please add a comment on the attendance site ASAP.\nThank you,\nCoach ${coach.firstName}");
+                                          query: practice.emailMessage(
+                                              fencerLists, tod, coach));
                                       try {
                                         launchUrl(url).then(
                                             (value) => context.router.pop());

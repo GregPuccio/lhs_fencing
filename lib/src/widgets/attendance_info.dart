@@ -19,8 +19,11 @@ class AttendanceInfo extends StatelessWidget {
             : attendance.excusedAbsense
                 ? Text(
                     "${practice != null ? "${practice!.type.type} | " : ""}Excused Absense")
-                : Text(
-                    "${practice != null ? "${practice!.type.type} | " : ""}Did not check in"),
+                : attendance.unexcusedAbsense
+                    ? Text(
+                        "${practice != null ? "${practice!.type.type} | " : ""}Unexcused Absense")
+                    : Text(
+                        "${practice != null ? "${practice!.type.type} | " : ""}Did not check in"),
         if (attendance.comments.isNotEmpty)
           Text(
             "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",

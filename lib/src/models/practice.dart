@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 
 import 'package:lhs_fencing/src/constants/enums.dart';
+import 'package:lhs_fencing/src/models/user_data.dart';
 
 class Practice {
   String id;
@@ -24,6 +25,21 @@ class Practice {
 
   String get emailString {
     return DateFormat("MM/dd").format(startTime);
+  }
+
+  String emailMessage(
+      List<List<UserData>> fencerLists, String tod, UserData coach) {
+    return """bcc=${List.generate(fencerLists.last.length, (index) => fencerLists.last[index].email).join(",")}&subject=$emailString LHS Fencing Practice
+&body=Good $tod students,
+
+Our records are showing that you did not attend the ${type.type} on $emailString.
+If you have not already provided a reason, please add a comment on the attendance site ASAP. Make sure you do this ahead of time for future absenses.
+
+lhsfencing.web.app
+
+Thank you,
+Coach ${coach.firstName}
+    """;
   }
 
   Practice copyWith({
