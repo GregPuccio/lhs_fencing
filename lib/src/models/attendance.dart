@@ -18,6 +18,7 @@ class Attendance {
   UserData userData;
   List<Comment> comments;
   bool excusedAbsense;
+  bool unexcusedAbsense;
   Attendance({
     required this.id,
     required this.practiceStart,
@@ -27,6 +28,7 @@ class Attendance {
     required this.userData,
     required this.comments,
     required this.excusedAbsense,
+    required this.unexcusedAbsense,
   });
 
   static Attendance noUserCreate(Practice practice) {
@@ -43,6 +45,7 @@ class Attendance {
       ),
       comments: [],
       excusedAbsense: false,
+      unexcusedAbsense: false,
     );
   }
 
@@ -54,6 +57,7 @@ class Attendance {
       userData: userData,
       comments: [],
       excusedAbsense: false,
+      unexcusedAbsense: false,
     );
   }
 
@@ -70,6 +74,7 @@ class Attendance {
     UserData? userData,
     List<Comment>? comments,
     bool? excusedAbsense,
+    bool? unexcusedAbsense,
   }) {
     return Attendance(
       id: id ?? this.id,
@@ -80,6 +85,7 @@ class Attendance {
       userData: userData ?? this.userData,
       comments: comments ?? this.comments,
       excusedAbsense: excusedAbsense ?? this.excusedAbsense,
+      unexcusedAbsense: unexcusedAbsense ?? this.unexcusedAbsense,
     );
   }
 
@@ -124,6 +130,7 @@ class Attendance {
       'userData': userData.toMap(),
       'comments': comments.map((x) => x.toMap()).toList(),
       'excusedAbsense': excusedAbsense,
+      'unexcusedAbsense': unexcusedAbsense,
     };
   }
 
@@ -142,6 +149,7 @@ class Attendance {
       comments: List<Comment>.from(
           map['comments']?.map((x) => Comment.fromMap(x)) ?? []),
       excusedAbsense: map['excusedAbsense'] ?? false,
+      unexcusedAbsense: map['unexcusedAbsense'] ?? false,
     );
   }
 
@@ -152,7 +160,7 @@ class Attendance {
 
   @override
   String toString() {
-    return 'Attendance(id: $id, practiceStart: $practiceStart, practiceEnd: $practiceEnd, checkIn: $checkIn, checkOut: $checkOut, userData: $userData, comments: $comments, excusedAbsense: $excusedAbsense)';
+    return 'Attendance(id: $id, practiceStart: $practiceStart, practiceEnd: $practiceEnd, checkIn: $checkIn, checkOut: $checkOut, userData: $userData, comments: $comments, excusedAbsense: $excusedAbsense, unexcusedAbsense: $unexcusedAbsense)';
   }
 
   @override
@@ -167,7 +175,8 @@ class Attendance {
         other.checkOut == checkOut &&
         other.userData == userData &&
         listEquals(other.comments, comments) &&
-        other.excusedAbsense == excusedAbsense;
+        other.excusedAbsense == excusedAbsense &&
+        other.unexcusedAbsense == unexcusedAbsense;
   }
 
   @override
@@ -179,6 +188,7 @@ class Attendance {
         checkOut.hashCode ^
         userData.hashCode ^
         comments.hashCode ^
-        excusedAbsense.hashCode;
+        excusedAbsense.hashCode ^
+        unexcusedAbsense.hashCode;
   }
 }

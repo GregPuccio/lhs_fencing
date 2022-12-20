@@ -77,7 +77,8 @@ enum PracticeShowState {
   all,
   attended,
   excused,
-  absent;
+  unexcused,
+  noReason;
 
   const PracticeShowState();
 
@@ -89,8 +90,10 @@ enum PracticeShowState {
         return "Attended";
       case PracticeShowState.excused:
         return "Excused";
-      case PracticeShowState.absent:
-        return "Absent";
+      case PracticeShowState.unexcused:
+        return "Unexcused";
+      case PracticeShowState.noReason:
+        return "Uncategorized";
     }
   }
 
@@ -102,8 +105,10 @@ enum PracticeShowState {
         return "Attendees";
       case PracticeShowState.excused:
         return "Excused";
-      case PracticeShowState.absent:
-        return "Absent";
+      case PracticeShowState.unexcused:
+        return "Unexcused";
+      case PracticeShowState.noReason:
+        return "Uncategorized";
     }
   }
 }

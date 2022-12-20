@@ -58,7 +58,8 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
         practices,
         getShownPractices(practices, attendances, PracticeShowState.attended),
         getShownPractices(practices, attendances, PracticeShowState.excused),
-        getShownPractices(practices, attendances, PracticeShowState.absent),
+        getShownPractices(practices, attendances, PracticeShowState.unexcused),
+        getShownPractices(practices, attendances, PracticeShowState.noReason),
       ];
 
       return DefaultTabController(
@@ -109,12 +110,16 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
                           ? Icons.check
                           : attendance.excusedAbsense
                               ? Icons.admin_panel_settings
-                              : Icons.cancel,
+                              : attendance.unexcusedAbsense
+                                  ? Icons.cancel
+                                  : Icons.question_mark,
                       color: attendance.attended
                           ? Colors.green
                           : attendance.excusedAbsense
                               ? Colors.amber
-                              : Colors.red,
+                              : attendance.unexcusedAbsense
+                                  ? Colors.red
+                                  : Colors.purple,
                     ),
                     onTap: () => context.router.push(
                       EditFencerStatusRoute(
@@ -171,9 +176,12 @@ List<Practice> getShownPractices(List<Practice> practices,
         return attendances.any((a) => p.id == a.id && a.attended);
       case PracticeShowState.excused:
         return attendances.any((a) => p.id == a.id && a.excusedAbsense);
-      case PracticeShowState.absent:
+      case PracticeShowState.unexcused:
+        return attendances.any((a) => p.id == a.id && a.unexcusedAbsense);
+      case PracticeShowState.noReason:
         return !attendances.any((a) =>
-            (p.id == a.id && a.attended) || (p.id == a.id && a.excusedAbsense));
+            p.id == a.id &&
+            (a.attended || a.excusedAbsense || a.unexcusedAbsense));
     }
   }).toList();
 }

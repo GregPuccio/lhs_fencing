@@ -29,7 +29,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
   late bool selectCheckOutTime;
   late TimeOfDay endTime;
   late TextEditingController controller;
-  late bool excusedAbsense;
+  late List<bool> attendanceStatus;
   List<Comment> comments = [];
 
   @override
@@ -57,7 +57,11 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
     selectCheckInTime = widget.attendance?.checkIn != null;
     selectCheckOutTime = widget.attendance?.checkOut != null;
     comments = widget.attendance?.comments ?? [];
-    excusedAbsense = widget.attendance?.excusedAbsense ?? false;
+    attendanceStatus = [
+      selectCheckInTime == true,
+      widget.attendance?.excusedAbsense ?? false,
+      widget.attendance?.unexcusedAbsense ?? false
+    ];
     super.initState();
   }
 
@@ -85,7 +89,9 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
     Attendance newAttendance =
         widget.attendance ?? Attendance.create(widget.practice, widget.fencer);
     newAttendance = newAttendance.copyWith(
-        comments: comments, excusedAbsense: excusedAbsense);
+        comments: comments,
+        excusedAbsense: attendanceStatus[1],
+        unexcusedAbsense: attendanceStatus[2]);
     newAttendance.checkIn = selectCheckInTime ? checkIn : null;
     newAttendance.checkOut = selectCheckOutTime ? checkOut : null;
 
@@ -187,15 +193,42 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                 "Practice: ${widget.practice.startString}",
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              const SizedBox(height: 8),
-              CheckboxListTile(
-                title: const Text("Absense Excused"),
-                value: excusedAbsense,
-                onChanged: (value) =>
-                    setState(() => excusedAbsense = value ?? true),
+              const Divider(),
+              Text(
+                "Attendance Status",
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
-              if (!excusedAbsense) ...[
+              ToggleButtons(
+                isSelected: attendanceStatus,
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Present"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Absent: Excused"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Absent: Unexcused"),
+                  )
+                ],
+                onPressed: (index) {
+                  setState(() {
+                    for (int i = 0; i < 3; i++) {
+                      if (i == index) {
+                        attendanceStatus[i] = true;
+                      } else {
+                        attendanceStatus[i] = false;
+                      }
+                    }
+                  });
+                },
+              ),
+              if (attendanceStatus[0]) ...[
+                const Divider(),
                 CheckboxListTile(
                   title: const Text("Include Check In Time"),
                   value: selectCheckInTime,
@@ -212,6 +245,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                   ),
                   const SizedBox(height: 8),
                 ],
+                const Divider(),
                 CheckboxListTile(
                   title: const Text("Include Check Out Time"),
                   value: selectCheckOutTime,
@@ -229,6 +263,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                   const SizedBox(height: 8),
                 ],
               ],
+              const Divider(),
               OutlinedButton.icon(
                 onPressed: () async {
                   await saveStatus();

@@ -68,12 +68,16 @@ class PastAttendances extends ConsumerWidget {
                               ? Icons.check
                               : attendance.excusedAbsense
                                   ? Icons.admin_panel_settings
-                                  : Icons.cancel,
+                                  : attendance.unexcusedAbsense
+                                      ? Icons.cancel
+                                      : Icons.question_mark,
                           color: attendance.attended
                               ? Colors.green
                               : attendance.excusedAbsense
                                   ? Colors.amber
-                                  : Colors.red,
+                                  : attendance.unexcusedAbsense
+                                      ? Colors.red
+                                      : Colors.purple,
                         ),
                       ),
                       if (index != practices.length - 1) const Divider(),

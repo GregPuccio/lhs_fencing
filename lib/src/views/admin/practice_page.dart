@@ -40,7 +40,8 @@ class PracticePage extends ConsumerWidget {
         fencers,
         getShownFencers(fencers, attendances, PracticeShowState.attended),
         getShownFencers(fencers, attendances, PracticeShowState.excused),
-        getShownFencers(fencers, attendances, PracticeShowState.absent),
+        getShownFencers(fencers, attendances, PracticeShowState.unexcused),
+        getShownFencers(fencers, attendances, PracticeShowState.noReason),
       ];
 
       return DefaultTabController(
@@ -213,10 +214,13 @@ List<UserData> getShownFencers(List<UserData> fencers,
       case PracticeShowState.excused:
         return attendances
             .any((a) => p.id == a.userData.id && a.excusedAbsense);
-      case PracticeShowState.absent:
+      case PracticeShowState.unexcused:
+        return attendances
+            .any((a) => p.id == a.userData.id && a.unexcusedAbsense);
+      case PracticeShowState.noReason:
         return !attendances.any((a) =>
-            (p.id == a.userData.id && a.attended) ||
-            (p.id == a.userData.id && a.excusedAbsense));
+            p.id == a.userData.id &&
+            (a.attended || a.excusedAbsense || a.unexcusedAbsense));
     }
   }).toList();
 }
