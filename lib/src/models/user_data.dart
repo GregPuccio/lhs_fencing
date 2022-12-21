@@ -109,10 +109,6 @@ class UserData extends Comparable<UserData> {
 
   @override
   int compareTo(UserData other) {
-    if (lastName == other.lastName) {
-      return firstName.compareTo(other.firstName);
-    } else {
-      return lastName.compareTo(other.lastName);
-    }
+    return fullName.compareTo(other.fullName);
   }
 }
