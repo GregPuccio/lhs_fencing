@@ -48,10 +48,10 @@ class ProfilePage extends ConsumerWidget {
         ),
       );
     }
+    // https://member.usafencing.org/search/members?first=${userData.firstName}&last=${userData.lastName}&division=&inactive=true&country=&id=#find
 
     Future getWebsiteData() async {
-      final url = Uri.parse(
-          'https://member.usafencing.org/search/members?first=${userData.firstName}&last=${userData.lastName}&division=&inactive=true&country=&id=#find');
+      final url = Uri.parse('https://www.amazon.com/s?k=iphone');
       final response = await http.get(
         url,
         headers: {
@@ -62,8 +62,7 @@ class ProfilePage extends ConsumerWidget {
       );
       dom.Document html = dom.Document.html(response.body);
       final titles = html
-          .querySelectorAll(
-              '#search > div > div > table > tbody > tr:nth-child(2) > td:nth-child(1)')
+          .querySelectorAll('h2 > a > span')
           .map((e) => e.innerHtml.trim())
           .toList();
 
@@ -120,15 +119,17 @@ class ProfilePage extends ConsumerWidget {
                     .setThemeMode(val ? ThemeMode.system : ThemeMode.light);
               }),
         ),
-        ListTile(
-          leading: const Icon(Icons.dark_mode),
-          title: const Text("Dark Mode"),
-          trailing: Switch.adaptive(
-              value: controller.themeMode == ThemeMode.dark,
-              onChanged: (val) {
-                controller.setThemeMode(val ? ThemeMode.dark : ThemeMode.light);
-              }),
-        ),
+        if (controller.themeMode != ThemeMode.system)
+          ListTile(
+            leading: const Icon(Icons.dark_mode),
+            title: const Text("Dark Mode"),
+            trailing: Switch.adaptive(
+                value: controller.themeMode == ThemeMode.dark,
+                onChanged: (val) {
+                  controller
+                      .setThemeMode(val ? ThemeMode.dark : ThemeMode.light);
+                }),
+          ),
         ListTile(
           title: const Text("Need to leave?"),
           trailing: OutlinedButton.icon(
