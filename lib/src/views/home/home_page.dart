@@ -89,18 +89,8 @@ class HomePage extends StatelessWidget {
     return ListView(
       children: [
         const WelcomeHeader(),
-        // const Divider(),
-        ListTile(
-          title: Text(
-            userData.fullName,
-            style: Theme.of(context).textTheme.titleLarge,
-            textAlign: TextAlign.center,
-          ),
-          subtitle: Text(
-            "${userData.schoolYear.type} | ${userData.weapon.type} Fencer | ${userData.team.type} Team",
-            textAlign: TextAlign.center,
-          ),
-        ),
+        const Divider(),
+
         Row(
           children: <Widget>[
             const SizedBox(

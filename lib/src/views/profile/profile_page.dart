@@ -48,6 +48,17 @@ class ProfilePage extends ConsumerWidget {
 
     return ListView(
       children: [
+        ListTile(
+          title: Text(
+            userData.fullName,
+            style: Theme.of(context).textTheme.titleLarge,
+            textAlign: TextAlign.center,
+          ),
+          subtitle: Text(
+            "${userData.schoolYear.type} | ${userData.weapon.type} Fencer | ${userData.team.type} Team",
+            textAlign: TextAlign.center,
+          ),
+        ),
         const ListTile(
           title: Text("A2016"),
           subtitle: Text("USA Fencing Rating"),
