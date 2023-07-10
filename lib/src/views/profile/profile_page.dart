@@ -70,6 +70,7 @@ class ProfilePage extends ConsumerWidget {
             "Access-Control-Request-Method": "GET",
             "X-Requested-With": "XMLHttpRequest",
             "Access-Control-Allow-Origin": "https://lhsfencing.web.app",
+            "Content-Type": "text/plain",
           },
         );
         dom.Document html = dom.Document.html(response.body);
