@@ -48,11 +48,17 @@ class ProfilePage extends ConsumerWidget {
         ),
       );
     }
-    // https://member.usafencing.org/search/members?first=${userData.firstName}&last=${userData.lastName}&division=&inactive=true&country=&id=#find
 
     Future getWebsiteData() async {
       try {
-        final url = Uri.parse('https://www.amazon.com/s?k=iphone');
+        final url = Uri.https('member.usafencing.org', '/search/members', {
+          'first': userData.firstName,
+          'last': userData.lastName,
+          'division': '',
+          'inactive': 'true',
+          'country': '',
+          'id': '',
+        });
         final response = await http.get(
           url,
           headers: {
