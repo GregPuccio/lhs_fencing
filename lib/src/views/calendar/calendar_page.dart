@@ -78,17 +78,21 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                       (attendance) => attendance.id == practice.id,
                       orElse: () => Attendance.noUserCreate(practice),
                     );
-                    IconData? icon;
+                    Icon? icon;
                     if (attendance.attended) {
-                      icon = Icons.check;
+                      icon = const Icon(Icons.check,
+                          size: 12, color: Colors.green);
                     } else if (attendance.excusedAbsense) {
-                      icon = Icons.shield;
+                      icon = const Icon(Icons.shield,
+                          size: 12, color: Colors.amber);
                     } else if (attendance.unexcusedAbsense) {
-                      icon = Icons.close;
+                      icon =
+                          const Icon(Icons.close, size: 12, color: Colors.red);
                     }
-                    return icon != null ? Icon(icon) : null;
+                    return icon;
                   },
                 ),
+                // calendarStyle:
                 onDaySelected: _onDaySelected,
                 availableCalendarFormats: const {CalendarFormat.month: "Month"},
                 onPageChanged: (focusedDay) {

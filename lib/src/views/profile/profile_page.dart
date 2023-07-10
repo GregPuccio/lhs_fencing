@@ -8,6 +8,8 @@ import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/auth/auth_service.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/settings/theme_controller.dart';
+import 'package:html/dom.dart' as dom;
+import 'package:http/http.dart' as http;
 
 class ProfilePage extends ConsumerWidget {
   final UserData userData;
@@ -47,39 +49,47 @@ class ProfilePage extends ConsumerWidget {
       );
     }
 
-    // Future getWebsiteData() async {
-    //   try {
-    //     final url = Uri.https('member.usafencing.org', '/search/members', {
-    //       'first': userData.firstName,
-    //       'last': userData.lastName,
-    //       'division': '',
-    //       'inactive': 'true',
-    //       'country': '',
-    //       'id': '',
-    //     });
-    //     final response = await http.get(
-    //       url,
-    //       // headers: {'Content-Type': 'text/plain'},
-    //     );
-    //     dom.Document html = dom.Document.html(response.body);
-    //     final titles = html
-    //         .querySelectorAll('tr[itemprop]="member"')
-    //         .map((e) => e.innerHtml.trim())
-    //         .toList();
+    Future getWebsiteData() async {
+      try {
+        final url = Uri.https('member.usafencing.org', '/search/members', {
+          'first': userData.firstName,
+          'last': userData.lastName,
+          'division': '',
+          'inactive': 'true',
+          'country': '',
+          'id': '',
+        });
+        final response = await http.get(
+          url,
+          headers: {
+            'Origin': 'https://lhsfencing.web.app',
+            'Referer': 'https://lhsfencing.web.app/index.html',
+            'User-Agent':
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Request-Headers': 'Content-Type',
+            'Access-Control-Request-Method': 'GET'
+          },
+        );
+        dom.Document html = dom.Document.html(response.body);
+        final titles = html
+            .querySelectorAll('tr[itemprop]="member"')
+            .map((e) => e.innerHtml.trim())
+            .toList();
 
-    //     ScaffoldMessenger.of(context)
-    //         .showSnackBar(SnackBar(content: Text('Count: ${titles.length}')));
-    //     for (final title in titles) {
-    //       ScaffoldMessenger.of(context)
-    //           .showSnackBar(SnackBar(content: Text(title)));
-    //     }
-    //   } catch (e) {
-    //     ScaffoldMessenger.of(context)
-    //         .showSnackBar(SnackBar(content: Text(e.toString())));
-    //   }
-    // }
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Count: ${titles.length}')));
+        for (final title in titles) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(title)));
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    }
 
-    // getWebsiteData();
+    getWebsiteData();
     return ListView(
       children: [
         ListTile(
