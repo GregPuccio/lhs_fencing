@@ -54,7 +54,11 @@ class ProfilePage extends ConsumerWidget {
           'https://member.usafencing.org/search/members?first=${userData.firstName}&last=${userData.lastName}&division=&inactive=true&country=&id=#find');
       final response = await http.get(
         url,
-        headers: {"content-type": "html"},
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          'Content-Type': 'application/json',
+          'Accept': '*/*'
+        },
       );
       dom.Document html = dom.Document.html(response.body);
       final titles = html
