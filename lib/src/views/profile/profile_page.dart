@@ -67,7 +67,9 @@ class ProfilePage extends ConsumerWidget {
             "User-Agent":
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36",
             "Access-Control-Request-Headers": "Content-Type, Authorization",
-            "Access-Control-Request-Method": "GET"
+            "Access-Control-Request-Method": "GET",
+            "X-Requested-With": "XMLHttpRequest",
+            "Access-Control-Allow-Origin": "https://lhsfencing.web.app",
           },
         );
         dom.Document html = dom.Document.html(response.body);
