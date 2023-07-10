@@ -6,7 +6,6 @@ import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
-import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 
@@ -49,7 +48,6 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
       futurePractices.remove(upcomingPractice);
 
       return Scaffold(
-        appBar: const DefaultAppBar(),
         body: Column(
           children: [
             const WelcomeHeader(),

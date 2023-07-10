@@ -82,6 +82,16 @@ class ProfilePage extends ConsumerWidget {
         ),
         const Divider(),
         ListTile(
+          leading: const Icon(Icons.sync),
+          title: const Text("Follow System Theming"),
+          trailing: Switch.adaptive(
+              value: controller.themeMode == ThemeMode.system,
+              onChanged: (val) {
+                controller
+                    .setThemeMode(val ? ThemeMode.system : ThemeMode.light);
+              }),
+        ),
+        ListTile(
           leading: const Icon(Icons.dark_mode),
           title: const Text("Dark Mode"),
           trailing: Switch.adaptive(

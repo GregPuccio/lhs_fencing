@@ -130,12 +130,12 @@ class UserData extends Comparable<UserData> {
       firstName: map['firstName'] ?? '',
       lastName: map['lastName'] ?? '',
       team: Team.fromMap(map['team'] ?? ""),
-      weapon: Weapon.fromMap(map['weapon']),
-      schoolYear: SchoolYear.fromMap(map['schoolYear']),
+      weapon: Weapon.fromMap(map['weapon'] ?? ""),
+      schoolYear: SchoolYear.fromMap(map['schoolYear'] ?? ""),
       yoe: map['yoe']?.toInt() ?? 0,
-      foodAllergies: List<String>.from(map['foodAllergies']),
+      foodAllergies: List<String>.from(map['foodAllergies'] ?? []),
       clubDays: List<DayOfWeek>.from(
-          map['clubDays']?.map((x) => DayOfWeek.values[x])),
+          map['clubDays']?.map((x) => DayOfWeek.values[x]) ?? []),
       admin: map['admin'] ?? false,
     );
   }
