@@ -62,13 +62,12 @@ class ProfilePage extends ConsumerWidget {
         final response = await http.get(
           url,
           headers: {
-            'Origin': 'https://lhsfencing.web.app',
-            'Referer': 'https://lhsfencing.web.app/index.html',
-            'User-Agent':
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Request-Headers': 'Content-Type',
-            'Access-Control-Request-Method': 'GET'
+            "Origin": "https://lhsfencing.web.app",
+            "Referer": "https://lhsfencing.web.app",
+            "User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36",
+            "Access-Control-Request-Headers": "Content-Type, Authorization",
+            "Access-Control-Request-Method": "GET"
           },
         );
         dom.Document html = dom.Document.html(response.body);
