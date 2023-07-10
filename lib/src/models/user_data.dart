@@ -2,11 +2,16 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:lhs_fencing/src/constants/enums.dart';
+
 class UserData extends Comparable<UserData> {
   String id;
   String email;
   String firstName;
   String lastName;
+  Team team;
+  Weapon weapon;
+  SchoolYear schoolYear;
 
   bool admin;
   UserData({
@@ -14,8 +19,24 @@ class UserData extends Comparable<UserData> {
     required this.email,
     required this.firstName,
     required this.lastName,
+    required this.team,
+    required this.weapon,
+    required this.schoolYear,
     required this.admin,
   });
+
+  static UserData noUserCreate() {
+    return UserData(
+      id: "",
+      email: "",
+      firstName: "",
+      lastName: "",
+      admin: false,
+      team: Team.boys,
+      weapon: Weapon.foil,
+      schoolYear: SchoolYear.freshman,
+    );
+  }
 
   static UserData create(User user) {
     String firstName =
@@ -30,6 +51,9 @@ class UserData extends Comparable<UserData> {
       firstName: firstName,
       lastName: lastName,
       admin: false,
+      team: Team.boys,
+      weapon: Weapon.foil,
+      schoolYear: SchoolYear.freshman,
     );
   }
 
@@ -46,13 +70,20 @@ class UserData extends Comparable<UserData> {
     String? email,
     String? firstName,
     String? lastName,
+    Team? team,
+    Weapon? weapon,
+    SchoolYear? schoolYear,
+    bool? admin,
   }) {
     return UserData(
       id: id ?? this.id,
       email: email ?? this.email,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
-      admin: admin,
+      team: team ?? this.team,
+      weapon: weapon ?? this.weapon,
+      schoolYear: schoolYear ?? this.schoolYear,
+      admin: admin ?? this.admin,
     );
   }
 
@@ -62,6 +93,9 @@ class UserData extends Comparable<UserData> {
       'email': email,
       'firstName': firstName,
       'lastName': lastName,
+      'team': team.toMap(),
+      'weapon': weapon.toMap(),
+      'schoolYear': schoolYear.toMap(),
       'admin': admin,
     };
   }
@@ -72,6 +106,9 @@ class UserData extends Comparable<UserData> {
       email: map['email'] ?? '',
       firstName: map['firstName'] ?? '',
       lastName: map['lastName'] ?? '',
+      team: Team.fromMap(map['team'] ?? ""),
+      weapon: Weapon.fromMap(map['weapon'] ?? ""),
+      schoolYear: SchoolYear.fromMap(map['schoolYear'] ?? ""),
       admin: map['admin'] ?? false,
     );
   }
@@ -83,7 +120,7 @@ class UserData extends Comparable<UserData> {
 
   @override
   String toString() {
-    return 'UserData(id: $id, email: $email, firstName: $firstName, lastName: $lastName, admin: $admin)';
+    return 'UserData(id: $id, email: $email, firstName: $firstName, lastName: $lastName, team: $team, weapon: $weapon, schoolYear: $schoolYear, admin: $admin)';
   }
 
   @override
@@ -95,6 +132,9 @@ class UserData extends Comparable<UserData> {
         other.email == email &&
         other.firstName == firstName &&
         other.lastName == lastName &&
+        other.team == team &&
+        other.weapon == weapon &&
+        other.schoolYear == schoolYear &&
         other.admin == admin;
   }
 
@@ -104,6 +144,9 @@ class UserData extends Comparable<UserData> {
         email.hashCode ^
         firstName.hashCode ^
         lastName.hashCode ^
+        team.hashCode ^
+        weapon.hashCode ^
+        schoolYear.hashCode ^
         admin.hashCode;
   }
 

@@ -8,22 +8,20 @@ import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/views/home/widgets/checkin_button.dart';
 import 'package:lhs_fencing/src/views/home/widgets/checkout_button.dart';
 import 'package:lhs_fencing/src/widgets/attendance_info.dart';
+import 'package:lhs_fencing/src/models/activities.dart';
 
 class TodaysAttendance extends ConsumerWidget {
-  final List<Attendance> attendances;
+  final Attendance todaysAttendance;
   final Practice practice;
   const TodaysAttendance(
-      {required this.attendances, required this.practice, super.key});
+      {required this.todaysAttendance, required this.practice, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     bool todayBool = DateTime.now().day == practice.startTime.day;
-    final todaysAttendance = attendances.firstWhere(
-      (a) => a.id == practice.id,
-      orElse: () => Attendance.noUserCreate(practice),
-    );
+    Map<DateTime, String> activities = Activities(practice).activities;
 
-    return Card(
+    return Container(
       color: Theme.of(context).colorScheme.primaryContainer,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -31,20 +29,14 @@ class TodaysAttendance extends ConsumerWidget {
           children: [
             Text(
               todayBool
-                  ? "Today's ${practice.type.type}"
-                  : "Next ${practice.type.type}",
+                  ? "Today's ${practice.type.type} @ ${DateFormat("h:mm aa").format(practice.startTime)}"
+                  : "Next: ${DateFormat("EEEE").format(practice.startTime)}'s ${practice.type.type}",
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            const Divider(),
             ListTile(
-              title: Text(
-                DateFormat("EEE, MMM d @ h:mm aa").format(practice.startTime),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSecondaryContainer,
-                    ),
-                maxLines: 1,
-              ),
-              subtitle: AttendanceInfo(todaysAttendance, practice),
+              title: Text(DateFormat("MM/dd${todayBool ? "" : " @ h:mm aa"}")
+                  .format(practice.startTime)),
+              subtitle: AttendanceInfo(todaysAttendance),
               trailing: todaysAttendance.checkOut != null
                   ? null
                   : todaysAttendance.attended
@@ -55,6 +47,51 @@ class TodaysAttendance extends ConsumerWidget {
                       : CheckInButton(today: todayBool, practice: practice),
               onTap: () => context.router
                   .push(AttendanceRoute(practiceID: todaysAttendance.id)),
+            ),
+            DataTable(
+              border: TableBorder.all(
+                  color: Theme.of(context).colorScheme.onBackground),
+              headingTextStyle: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  ?.copyWith(fontWeight: FontWeight.bold),
+              columns: const [
+                DataColumn(
+                  label: Expanded(
+                    child: Text(
+                      "Time",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Expanded(
+                      child: Text(
+                    "Activity",
+                    textAlign: TextAlign.center,
+                  )),
+                ),
+              ],
+              rows: List.generate(
+                activities.length,
+                (index) => DataRow(cells: [
+                  DataCell(
+                    Text(
+                      DateFormat("hh:mm aa").format(
+                        activities.keys.elementAt(index),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    Center(
+                      child: Text(
+                        activities.values.elementAt(index),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
             ),
           ],
         ),

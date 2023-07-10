@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SearchBar extends ConsumerWidget implements PreferredSizeWidget {
+class SearchBarWidget extends ConsumerWidget implements PreferredSizeWidget {
   final TextEditingController controller;
   final String text;
 
-  const SearchBar(
+  const SearchBarWidget(
     this.controller, {
     this.text = 'Search by name',
     Key? key,

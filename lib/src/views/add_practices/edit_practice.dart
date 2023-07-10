@@ -9,6 +9,7 @@ import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 
+@RoutePage()
 class EditPracticePage extends ConsumerStatefulWidget {
   final Practice practice;
   const EditPracticePage({required this.practice, super.key});

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/auth/auth_service.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
@@ -76,6 +77,46 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   readOnly: true,
                   decoration: const InputDecoration(labelText: "Email Address"),
                   initialValue: user.email,
+                ),
+                const SizedBox(height: 16),
+                Wrap(
+                  runSpacing: 16,
+                  alignment: WrapAlignment.spaceEvenly,
+                  children: [
+                    ToggleButtons(
+                      isSelected: List.generate(
+                          Team.values.length - 1,
+                          (index) =>
+                              userData.team.type == Team.values[index].type),
+                      children: List.generate(
+                        Team.values.length - 1,
+                        (index) => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(Team.values[index].type),
+                        ),
+                      ),
+                      onPressed: (index) => setState(() {
+                        userData.team = Team.values[index];
+                      }),
+                    ),
+                    ToggleButtons(
+                      isSelected: List.generate(
+                          Weapon.values.length,
+                          (index) =>
+                              userData.weapon.type ==
+                              Weapon.values[index].type),
+                      children: List.generate(
+                        Weapon.values.length,
+                        (index) => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(Weapon.values[index].type),
+                        ),
+                      ),
+                      onPressed: (index) => setState(() {
+                        userData.weapon = Weapon.values[index];
+                      }),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 8),
                 OutlinedButton.icon(

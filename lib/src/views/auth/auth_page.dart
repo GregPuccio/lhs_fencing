@@ -1,10 +1,8 @@
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:lhs_fencing/google_keys.dart';
 import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
-import 'package:lhs_fencing/src/services/auth/auth_service.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({Key? key}) : super(key: key);
@@ -41,32 +39,6 @@ class _AuthPageState extends State<AuthPage> {
     super.dispose();
   }
 
-  void tryCompleteForm() async {
-    if (isNewUser) {
-      dynamic result =
-          await AuthService().register(email.text, newPassword.text);
-      if (result.runtimeType == String) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(result as String)),
-          );
-        }
-      }
-    } else {
-      dynamic result = await AuthService().signIn(email.text, password.text);
-      if (result.runtimeType == String) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(result as String)),
-          );
-        }
-      }
-    }
-    TextInput.finishAutofillContext();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,19 +51,24 @@ class _AuthPageState extends State<AuthPage> {
             children: [
               const SizedBox(height: 20),
               Text(
-                "Welcome to the Livingston Highschool Fencing Team's Attendance App.",
+                "Welcome to the LHS Fencing Team's Attendance App",
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
               Text(
-                "This will give you access to your past attendance as well as the ability to sign in when you are at practice.",
+                "Please use this app to check in at all practices and team related events.",
                 style: Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
               OAuthProviderButton(
                 provider: GoogleProvider(clientId: googleClientID),
+              ),
+              Text(
+                "Make sure to use your school email when signing in!",
+                style: Theme.of(context).textTheme.titleSmall,
+                textAlign: TextAlign.center,
               ),
             ],
           ),

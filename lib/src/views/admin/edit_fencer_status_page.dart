@@ -11,6 +11,7 @@ import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 
+@RoutePage()
 class EditFencerStatusPage extends ConsumerStatefulWidget {
   final UserData fencer;
   final Practice practice;

@@ -49,6 +49,7 @@ enum DayOfWeek {
 enum TypePractice {
   practice,
   meet,
+  awayMeet,
   quad,
   tournament,
   fundraiser;
@@ -58,7 +59,9 @@ enum TypePractice {
       case TypePractice.practice:
         return "Practice";
       case TypePractice.meet:
-        return "Dual Meet";
+        return "Dual Meet (Home)";
+      case TypePractice.awayMeet:
+        return "Dual Meet (Away)";
       case TypePractice.quad:
         return "Quad Meet";
       case TypePractice.tournament:
@@ -111,4 +114,78 @@ enum PracticeShowState {
         return "Uncategorized";
     }
   }
+}
+
+enum Team {
+  boys,
+  girls,
+  both;
+
+  const Team();
+
+  String get type {
+    switch (this) {
+      case boys:
+        return "Boy's Fencing";
+      case girls:
+        return "Girl's Fencing";
+      case both:
+        return "Both Teams";
+    }
+  }
+
+  String toMap() => name;
+  static Team fromMap(String map) => values.byName(map.isEmpty ? "both" : map);
+}
+
+enum Weapon {
+  saber,
+  foil,
+  epee,
+  unsure;
+
+  const Weapon();
+
+  String get type {
+    switch (this) {
+      case saber:
+        return "Saber";
+      case foil:
+        return "Foil";
+      case epee:
+        return "Epee";
+      case unsure:
+        return "Unsure";
+    }
+  }
+
+  String toMap() => name;
+  static Weapon fromMap(String map) =>
+      values.byName(map.isEmpty ? "foil" : map);
+}
+
+enum SchoolYear {
+  freshman,
+  sophomore,
+  junior,
+  senior;
+
+  const SchoolYear();
+
+  String get type {
+    switch (this) {
+      case SchoolYear.freshman:
+        return "Freshman";
+      case SchoolYear.sophomore:
+        return "Sophomore";
+      case SchoolYear.junior:
+        return "Junior";
+      case SchoolYear.senior:
+        return "Senior";
+    }
+  }
+
+  String toMap() => name;
+  static SchoolYear fromMap(String map) =>
+      values.byName(map.isEmpty ? "freshman" : map);
 }

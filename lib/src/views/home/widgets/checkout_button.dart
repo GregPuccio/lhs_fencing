@@ -74,13 +74,12 @@ class CheckOutButton extends ConsumerWidget {
                   child: const Text("Cancel"),
                 ),
                 TextButton(
-                  onPressed: () async {
-                    await checkOut(
+                  onPressed: () {
+                    checkOut(
                       earlyLeaveReason: controller.text.isNotEmpty
                           ? "Left Early: ${controller.text}"
                           : null,
-                    );
-                    context.router.pop();
+                    ).then((value) => context.router.pop());
                   },
                   child: const Text("Complete check out"),
                 ),
@@ -96,9 +95,8 @@ class CheckOutButton extends ConsumerWidget {
                   "Thank you for letting us know when you leave! It makes it easier to keep track of everybody. See you next time."),
               actions: [
                 TextButton(
-                  onPressed: () async {
-                    await checkOut();
-                    context.router.pop();
+                  onPressed: () {
+                    checkOut().then((value) => context.router.pop());
                   },
                   child: const Text(
                     "Bye!",

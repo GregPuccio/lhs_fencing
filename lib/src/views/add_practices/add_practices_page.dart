@@ -10,6 +10,7 @@ import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:uuid/uuid.dart';
 
+@RoutePage()
 class AddPracticesPage extends ConsumerStatefulWidget {
   const AddPracticesPage({super.key});
 
@@ -23,6 +24,8 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
   late TimeOfDay startTime;
   late TimeOfDay endTime;
   TypePractice typePractice = TypePractice.practice;
+  Team team = Team.both;
+  String location = "Livingston Aux Gym";
   List<DayOfWeek> daysOfWeek = [];
   List<Practice> practices = [];
 
@@ -82,6 +85,24 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
         child: Column(
           children: [
             ListTile(
+              title: const Text("Team"),
+              trailing: DropdownButton<Team>(
+                  value: team,
+                  items: List.generate(
+                    Team.values.length,
+                    (index) => DropdownMenuItem(
+                      value: Team.values[index],
+                      child: Text(Team.values[index].type),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    if (value == null) return;
+                    setState(() {
+                      team = value;
+                    });
+                  }),
+            ),
+            ListTile(
               title: const Text("Type"),
               trailing: DropdownButton<TypePractice>(
                   value: typePractice,
@@ -134,6 +155,16 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                 },
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                decoration: const InputDecoration(
+                  label: Text("Location"),
+                  hintText: "Defaults to Livingston Aux Gym",
+                ),
+                onChanged: (value) => location = value,
+              ),
+            ),
             const Divider(),
             Row(
               children: [
@@ -164,7 +195,8 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                   daysToGenerate + 1,
                   (i) => Practice(
                     id: const Uuid().v4(),
-                    location: "Auxillary Gym",
+                    location:
+                        location.isEmpty ? "Livingston Aux Gym" : location,
                     startTime: DateTime(
                         dateRange.start.year,
                         dateRange.start.month,
@@ -178,6 +210,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                         endTime.hour,
                         endTime.minute),
                     type: typePractice,
+                    team: team,
                   ),
                 );
                 List<PracticeMonth> months =

@@ -8,7 +8,7 @@ class TextBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle? textStyle = style ?? Theme.of(context).textTheme.bodyText2;
+    TextStyle? textStyle = style ?? Theme.of(context).textTheme.bodyMedium;
     Color? color = boxColor ?? Theme.of(context).colorScheme.secondaryContainer;
     return Container(
       decoration: BoxDecoration(

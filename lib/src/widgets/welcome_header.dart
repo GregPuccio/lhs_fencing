@@ -1,11 +1,9 @@
 import 'dart:async';
 
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
-import 'package:lhs_fencing/src/services/auth/auth_service.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
@@ -44,29 +42,6 @@ class _WelcomeHeaderState extends ConsumerState<WelcomeHeader> {
 
   @override
   Widget build(BuildContext context) {
-    void logOff() {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text("Sign Out"),
-          content: const Text("Are you sure you would like to sign out?"),
-          actions: [
-            TextButton(
-              onPressed: () => context.popRoute(),
-              child: const Text("No, cancel"),
-            ),
-            TextButton(
-              onPressed: () async {
-                AuthService().signOut();
-                context.router.pop();
-              },
-              child: const Text("Yes, sign out"),
-            ),
-          ],
-        ),
-      );
-    }
-
     Widget whenData(UserData? userData) {
       if (userData != null) {
         int hour = DateTime.now().hour;
@@ -78,11 +53,11 @@ class _WelcomeHeaderState extends ConsumerState<WelcomeHeader> {
         return ListTile(
           title: Text("Good $tod, ${userData.firstName}"),
           subtitle: Text("It is currently $formattedTime"),
-          trailing: OutlinedButton.icon(
-            onPressed: logOff,
-            icon: const Text("Sign Out"),
-            label: const Icon(Icons.logout),
-          ),
+          // trailing: OutlinedButton.icon(
+          //   onPressed: logOff,
+          //   icon: const Text("Sign Out"),
+          //   label: const Icon(Icons.logout),
+          // ),
         );
       } else {
         return const LoadingPage();

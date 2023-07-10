@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 class Instructions extends StatelessWidget {
@@ -5,11 +6,12 @@ class Instructions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: const Text("Instructions:"),
-      subtitle: Column(
+    return AlertDialog(
+      title: const Text("Instructions"),
+      content: const Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           Text("1) Check in when you arrive at practice"),
           Text("2) Check out when you are leaving practice"),
           Text(
@@ -17,6 +19,12 @@ class Instructions extends StatelessWidget {
           Text("4) Any issues? Contact one of the coaches ASAP")
         ],
       ),
+      actions: [
+        TextButton(
+          onPressed: () => context.popRoute(),
+          child: const Text("Got It!"),
+        )
+      ],
     );
   }
 }

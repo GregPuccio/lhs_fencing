@@ -8,9 +8,10 @@ import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
-import 'package:lhs_fencing/src/widgets/search_bar.dart';
+import 'package:lhs_fencing/src/widgets/search_bar_widget.dart';
 import 'package:lhs_fencing/src/widgets/text_badge.dart';
 
+@RoutePage()
 class FencerListPage extends ConsumerStatefulWidget {
   const FencerListPage({super.key});
 
@@ -83,7 +84,7 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
             //     },
             //   )
             // ],
-            bottom: SearchBar(controller),
+            bottom: SearchBarWidget(controller),
           ),
           body: ListView.separated(
             padding: const EdgeInsets.only(bottom: 60),

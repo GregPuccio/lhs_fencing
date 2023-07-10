@@ -100,14 +100,13 @@ class CheckInButton extends ConsumerWidget {
                           child: const Text("No, cancel"),
                         ),
                         TextButton(
-                          onPressed: () async {
-                            await checkIn(
+                          onPressed: () {
+                            checkIn(
                               practice,
                               lateReason: controller.text.isNotEmpty
                                   ? "Late: ${controller.text}"
                                   : null,
-                            );
-                            context.router.pop();
+                            ).then((value) => context.router.pop());
                           },
                           child: const Text("Yes, check in"),
                         ),
@@ -129,10 +128,9 @@ class CheckInButton extends ConsumerWidget {
                           child: const Text("No, cancel"),
                         ),
                         TextButton(
-                          onPressed: () async {
-                            await checkIn(practice);
-
-                            context.router.pop();
+                          onPressed: () {
+                            checkIn(practice)
+                                .then((value) => context.router.pop());
                           },
                           child: const Text("Yes, check in"),
                         ),

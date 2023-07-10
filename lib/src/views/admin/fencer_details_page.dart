@@ -13,6 +13,7 @@ import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 import 'package:lhs_fencing/src/widgets/text_badge.dart';
 
+@RoutePage()
 class FencerDetailsPage extends ConsumerStatefulWidget {
   final String fencerID;
   const FencerDetailsPage({required this.fencerID, super.key});

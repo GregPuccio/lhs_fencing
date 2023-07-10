@@ -57,7 +57,7 @@ class PastAttendances extends ConsumerWidget {
                             Text(practice.startString),
                           ],
                         ),
-                        subtitle: AttendanceInfo(attendance, practice),
+                        subtitle: AttendanceInfo(attendance),
                         onTap: () {
                           context.router.push(
                             AttendanceRoute(practiceID: attendance.id),

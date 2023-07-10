@@ -1,37 +1,29 @@
-// **************************************************************************
-// AutoRouteGenerator
-// **************************************************************************
-
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
-// AutoRouteGenerator
+// AutoRouterGenerator
 // **************************************************************************
-//
+
 // ignore_for_file: type=lint
+// coverage:ignore-file
 
 part of 'router.dart';
 
-class _$AppRouter extends RootStackRouter {
-  _$AppRouter([GlobalKey<NavigatorState>? navigatorKey]) : super(navigatorKey);
+abstract class _$AppRouter extends RootStackRouter {
+  // ignore: unused_element
+  _$AppRouter({super.navigatorKey});
 
   @override
   final Map<String, PageFactory> pagesMap = {
-    AuthWrapperRoute.name: (routeData) {
-      return AdaptivePage<dynamic>(
-        routeData: routeData,
-        child: const AuthWrapperPage(),
-      );
-    },
     AddPracticesRoute.name: (routeData) {
-      return AdaptivePage<dynamic>(
+      return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const AddPracticesPage(),
       );
     },
     EditPracticeRoute.name: (routeData) {
       final args = routeData.argsAs<EditPracticeRouteArgs>();
-      return AdaptivePage<dynamic>(
+      return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: EditPracticePage(
           practice: args.practice,
@@ -39,35 +31,19 @@ class _$AppRouter extends RootStackRouter {
         ),
       );
     },
-    PracticeRoute.name: (routeData) {
-      final args = routeData.argsAs<PracticeRouteArgs>();
-      return AdaptivePage<dynamic>(
+    AttendanceRoute.name: (routeData) {
+      final args = routeData.argsAs<AttendanceRouteArgs>();
+      return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: PracticePage(
+        child: AttendancePage(
           practiceID: args.practiceID,
-          key: args.key,
-        ),
-      );
-    },
-    FencerListRoute.name: (routeData) {
-      return AdaptivePage<dynamic>(
-        routeData: routeData,
-        child: const FencerListPage(),
-      );
-    },
-    FencerDetailsRoute.name: (routeData) {
-      final args = routeData.argsAs<FencerDetailsRouteArgs>();
-      return AdaptivePage<dynamic>(
-        routeData: routeData,
-        child: FencerDetailsPage(
-          fencerID: args.fencerID,
           key: args.key,
         ),
       );
     },
     EditFencerStatusRoute.name: (routeData) {
       final args = routeData.argsAs<EditFencerStatusRouteArgs>();
-      return AdaptivePage<dynamic>(
+      return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: EditFencerStatusPage(
           args.fencer,
@@ -77,83 +53,53 @@ class _$AppRouter extends RootStackRouter {
         ),
       );
     },
-    AttendanceRoute.name: (routeData) {
-      final args = routeData.argsAs<AttendanceRouteArgs>();
-      return AdaptivePage<dynamic>(
+    PracticeRoute.name: (routeData) {
+      final args = routeData.argsAs<PracticeRouteArgs>();
+      return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: AttendancePage(
+        child: PracticePage(
           practiceID: args.practiceID,
           key: args.key,
         ),
       );
     },
+    FencerListRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const FencerListPage(),
+      );
+    },
+    FencerDetailsRoute.name: (routeData) {
+      final args = routeData.argsAs<FencerDetailsRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: FencerDetailsPage(
+          fencerID: args.fencerID,
+          key: args.key,
+        ),
+      );
+    },
+    AuthWrapperRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const AuthWrapperPage(),
+      );
+    },
   };
-
-  @override
-  List<RouteConfig> get routes => [
-        RouteConfig(
-          AuthWrapperRoute.name,
-          path: '/',
-        ),
-        RouteConfig(
-          AddPracticesRoute.name,
-          path: 'addPractices',
-        ),
-        RouteConfig(
-          EditPracticeRoute.name,
-          path: 'editPractice',
-        ),
-        RouteConfig(
-          PracticeRoute.name,
-          path: 'practice',
-        ),
-        RouteConfig(
-          FencerListRoute.name,
-          path: 'fencerList',
-        ),
-        RouteConfig(
-          FencerDetailsRoute.name,
-          path: 'fencerDetails',
-        ),
-        RouteConfig(
-          EditFencerStatusRoute.name,
-          path: 'editFencerStatus',
-        ),
-        RouteConfig(
-          AttendanceRoute.name,
-          path: 'attendance',
-        ),
-        RouteConfig(
-          '*#redirect',
-          path: '*',
-          redirectTo: '/',
-          fullMatch: true,
-        ),
-      ];
-}
-
-/// generated route for
-/// [AuthWrapperPage]
-class AuthWrapperRoute extends PageRouteInfo<void> {
-  const AuthWrapperRoute()
-      : super(
-          AuthWrapperRoute.name,
-          path: '/',
-        );
-
-  static const String name = 'AuthWrapperRoute';
 }
 
 /// generated route for
 /// [AddPracticesPage]
 class AddPracticesRoute extends PageRouteInfo<void> {
-  const AddPracticesRoute()
+  const AddPracticesRoute({List<PageRouteInfo>? children})
       : super(
           AddPracticesRoute.name,
-          path: 'addPractices',
+          initialChildren: children,
         );
 
   static const String name = 'AddPracticesRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
@@ -162,16 +108,20 @@ class EditPracticeRoute extends PageRouteInfo<EditPracticeRouteArgs> {
   EditPracticeRoute({
     required Practice practice,
     Key? key,
+    List<PageRouteInfo>? children,
   }) : super(
           EditPracticeRoute.name,
-          path: 'editPractice',
           args: EditPracticeRouteArgs(
             practice: practice,
             key: key,
           ),
+          initialChildren: children,
         );
 
   static const String name = 'EditPracticeRoute';
+
+  static const PageInfo<EditPracticeRouteArgs> page =
+      PageInfo<EditPracticeRouteArgs>(name);
 }
 
 class EditPracticeRouteArgs {
@@ -191,25 +141,29 @@ class EditPracticeRouteArgs {
 }
 
 /// generated route for
-/// [PracticePage]
-class PracticeRoute extends PageRouteInfo<PracticeRouteArgs> {
-  PracticeRoute({
+/// [AttendancePage]
+class AttendanceRoute extends PageRouteInfo<AttendanceRouteArgs> {
+  AttendanceRoute({
     required String practiceID,
     Key? key,
+    List<PageRouteInfo>? children,
   }) : super(
-          PracticeRoute.name,
-          path: 'practice',
-          args: PracticeRouteArgs(
+          AttendanceRoute.name,
+          args: AttendanceRouteArgs(
             practiceID: practiceID,
             key: key,
           ),
+          initialChildren: children,
         );
 
-  static const String name = 'PracticeRoute';
+  static const String name = 'AttendanceRoute';
+
+  static const PageInfo<AttendanceRouteArgs> page =
+      PageInfo<AttendanceRouteArgs>(name);
 }
 
-class PracticeRouteArgs {
-  const PracticeRouteArgs({
+class AttendanceRouteArgs {
+  const AttendanceRouteArgs({
     required this.practiceID,
     this.key,
   });
@@ -220,53 +174,7 @@ class PracticeRouteArgs {
 
   @override
   String toString() {
-    return 'PracticeRouteArgs{practiceID: $practiceID, key: $key}';
-  }
-}
-
-/// generated route for
-/// [FencerListPage]
-class FencerListRoute extends PageRouteInfo<void> {
-  const FencerListRoute()
-      : super(
-          FencerListRoute.name,
-          path: 'fencerList',
-        );
-
-  static const String name = 'FencerListRoute';
-}
-
-/// generated route for
-/// [FencerDetailsPage]
-class FencerDetailsRoute extends PageRouteInfo<FencerDetailsRouteArgs> {
-  FencerDetailsRoute({
-    required String fencerID,
-    Key? key,
-  }) : super(
-          FencerDetailsRoute.name,
-          path: 'fencerDetails',
-          args: FencerDetailsRouteArgs(
-            fencerID: fencerID,
-            key: key,
-          ),
-        );
-
-  static const String name = 'FencerDetailsRoute';
-}
-
-class FencerDetailsRouteArgs {
-  const FencerDetailsRouteArgs({
-    required this.fencerID,
-    this.key,
-  });
-
-  final String fencerID;
-
-  final Key? key;
-
-  @override
-  String toString() {
-    return 'FencerDetailsRouteArgs{fencerID: $fencerID, key: $key}';
+    return 'AttendanceRouteArgs{practiceID: $practiceID, key: $key}';
   }
 }
 
@@ -278,18 +186,22 @@ class EditFencerStatusRoute extends PageRouteInfo<EditFencerStatusRouteArgs> {
     required Practice practice,
     Attendance? attendance,
     Key? key,
+    List<PageRouteInfo>? children,
   }) : super(
           EditFencerStatusRoute.name,
-          path: 'editFencerStatus',
           args: EditFencerStatusRouteArgs(
             fencer: fencer,
             practice: practice,
             attendance: attendance,
             key: key,
           ),
+          initialChildren: children,
         );
 
   static const String name = 'EditFencerStatusRoute';
+
+  static const PageInfo<EditFencerStatusRouteArgs> page =
+      PageInfo<EditFencerStatusRouteArgs>(name);
 }
 
 class EditFencerStatusRouteArgs {
@@ -315,25 +227,29 @@ class EditFencerStatusRouteArgs {
 }
 
 /// generated route for
-/// [AttendancePage]
-class AttendanceRoute extends PageRouteInfo<AttendanceRouteArgs> {
-  AttendanceRoute({
+/// [PracticePage]
+class PracticeRoute extends PageRouteInfo<PracticeRouteArgs> {
+  PracticeRoute({
     required String practiceID,
     Key? key,
+    List<PageRouteInfo>? children,
   }) : super(
-          AttendanceRoute.name,
-          path: 'attendance',
-          args: AttendanceRouteArgs(
+          PracticeRoute.name,
+          args: PracticeRouteArgs(
             practiceID: practiceID,
             key: key,
           ),
+          initialChildren: children,
         );
 
-  static const String name = 'AttendanceRoute';
+  static const String name = 'PracticeRoute';
+
+  static const PageInfo<PracticeRouteArgs> page =
+      PageInfo<PracticeRouteArgs>(name);
 }
 
-class AttendanceRouteArgs {
-  const AttendanceRouteArgs({
+class PracticeRouteArgs {
+  const PracticeRouteArgs({
     required this.practiceID,
     this.key,
   });
@@ -344,6 +260,72 @@ class AttendanceRouteArgs {
 
   @override
   String toString() {
-    return 'AttendanceRouteArgs{practiceID: $practiceID, key: $key}';
+    return 'PracticeRouteArgs{practiceID: $practiceID, key: $key}';
   }
+}
+
+/// generated route for
+/// [FencerListPage]
+class FencerListRoute extends PageRouteInfo<void> {
+  const FencerListRoute({List<PageRouteInfo>? children})
+      : super(
+          FencerListRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'FencerListRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [FencerDetailsPage]
+class FencerDetailsRoute extends PageRouteInfo<FencerDetailsRouteArgs> {
+  FencerDetailsRoute({
+    required String fencerID,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          FencerDetailsRoute.name,
+          args: FencerDetailsRouteArgs(
+            fencerID: fencerID,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'FencerDetailsRoute';
+
+  static const PageInfo<FencerDetailsRouteArgs> page =
+      PageInfo<FencerDetailsRouteArgs>(name);
+}
+
+class FencerDetailsRouteArgs {
+  const FencerDetailsRouteArgs({
+    required this.fencerID,
+    this.key,
+  });
+
+  final String fencerID;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'FencerDetailsRouteArgs{fencerID: $fencerID, key: $key}';
+  }
+}
+
+/// generated route for
+/// [AuthWrapperPage]
+class AuthWrapperRoute extends PageRouteInfo<void> {
+  const AuthWrapperRoute({List<PageRouteInfo>? children})
+      : super(
+          AuthWrapperRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'AuthWrapperRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }

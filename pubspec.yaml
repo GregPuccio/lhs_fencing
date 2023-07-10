@@ -12,25 +12,27 @@ dependencies:
   cupertino_icons: ^1.0.5
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  flutter_riverpod: ^2.1.1
-  firebase_core: ^2.3.0
+  flutter_riverpod: ^2.3.6
+  firebase_core: ^2.14.0
   url_strategy: ^0.2.0
-  auto_route: ^5.0.4
-  firebase_auth: ^4.1.5
-  cloud_firestore: ^4.1.0
-  flex_color_scheme: ^6.1.1
-  google_fonts: ^3.0.1
-  google_sign_in: ^5.4.2
-  firebase_ui_auth: ^1.1.1
-  firebase_ui_oauth_google: ^1.0.8
-  intl: ^0.17.0
+  auto_route: ^7.7.0
+  firebase_auth: ^4.6.3
+  cloud_firestore: ^4.8.2
+  flex_color_scheme: ^7.1.2
+  google_fonts: ^5.1.0
+  google_sign_in: ^6.1.4
+  firebase_ui_auth: ^1.5.0
+  firebase_ui_oauth_google: ^1.2.4
+  intl: ^0.18.0
   uuid: ^3.0.7
-  url_launcher: ^6.1.7
-  flutter_native_splash: ^2.2.16
+  url_launcher: ^6.1.12
+  flutter_native_splash: ^2.3.1
+  table_calendar: ^3.0.9
+  fl_chart: ^0.63.0
 
 dev_dependencies:
-  auto_route_generator: ^5.0.3
-  build_runner: ^2.3.2
+  auto_route_generator: ^7.2.0
+  build_runner: ^2.4.6
   flutter_test:
     sdk: flutter
 
@@ -39,7 +41,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

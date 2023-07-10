@@ -18,6 +18,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 PracticeShowState practiceShowState = PracticeShowState.all;
 
+@RoutePage()
 class PracticePage extends ConsumerWidget {
   final String practiceID;
   const PracticePage({required this.practiceID, super.key});
@@ -162,9 +163,8 @@ class PracticePage extends ConsumerWidget {
                         attendance: attendance,
                       ),
                     ),
-                    subtitle: attendance != null
-                        ? AttendanceInfo(attendance, null)
-                        : null,
+                    subtitle:
+                        attendance != null ? AttendanceInfo(attendance) : null,
                     trailing: const Icon(Icons.edit),
                   );
                 },

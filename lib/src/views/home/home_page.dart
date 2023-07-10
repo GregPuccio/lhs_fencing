@@ -1,129 +1,173 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
-import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
-import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
-import 'package:lhs_fencing/src/services/providers/providers.dart';
-import 'package:lhs_fencing/src/views/home/widgets/future_attendances.dart';
-import 'package:lhs_fencing/src/views/home/widgets/instructions.dart';
-import 'package:lhs_fencing/src/views/home/widgets/past_attendances.dart';
-import 'package:lhs_fencing/src/widgets/practice_type_tab_bar.dart';
+import 'package:lhs_fencing/src/views/admin/fencer_details_page.dart';
+import 'package:lhs_fencing/src/views/home/widgets/todays_attendance.dart';
+import 'package:lhs_fencing/src/views/home/widgets/todays_schedule.dart';
+import 'package:lhs_fencing/src/widgets/indicator.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
-import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
-import 'package:lhs_fencing/src/widgets/error.dart';
-import 'package:lhs_fencing/src/widgets/loading.dart';
 
-class HomePage extends ConsumerStatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
-}
-
-class _HomePageState extends ConsumerState<HomePage> {
-  int currentIndex = 0;
-  late UserData userData;
-  List<Practice> practices = [];
-
+class HomePage extends StatelessWidget {
+  final Attendance todaysAttendance;
+  final Practice upcomingPractice;
+  final List<Practice> practices;
+  final List<Attendance> attendances;
+  final UserData userData;
+  const HomePage({
+    super.key,
+    required this.todaysAttendance,
+    required this.upcomingPractice,
+    required this.practices,
+    required this.attendances,
+    required this.userData,
+  });
   @override
   Widget build(BuildContext context) {
-    Widget whenAttendanceData(List<AttendanceMonth> attendanceMonths) {
-      List<Attendance> attendances = [];
-      for (var month in attendanceMonths) {
-        attendances.addAll(month.attendances);
-      }
+    List<Practice> pracs = practices.toList();
+    pracs.sort((a, b) => -a.startTime.compareTo(b.startTime));
+    pracs.retainWhere((p) => p.endTime.isBefore(DateTime.now()));
 
-      Practice upcomingPractice = practices.reduce((a, b) {
-        DateTime now = DateTime.now();
-        if (a.endTime.add(const Duration(minutes: 15)).isAfter(now) &&
-            b.endTime.add(const Duration(minutes: 15)).isAfter(now)) {
-          return a.startTime.compareTo(b.startTime).isNegative ? a : b;
-        } else if (a.endTime.add(const Duration(minutes: 15)).isAfter(now)) {
-          return a;
-        } else {
-          return b;
-        }
-      });
+    List<PieChartSectionData> showingSections = [
+      PieChartSectionData(
+        value: getShownPractices(
+              pracs,
+              attendances,
+              PracticeShowState.attended,
+            ).length /
+            pracs.length,
+        title: "${getShownPractices(
+          pracs,
+          attendances,
+          PracticeShowState.attended,
+        ).length}",
+        color: Theme.of(context).colorScheme.primaryContainer,
+      ),
+      PieChartSectionData(
+        value: getShownPractices(
+              pracs,
+              attendances,
+              PracticeShowState.excused,
+            ).length /
+            pracs.length,
+        title: "${getShownPractices(
+          pracs,
+          attendances,
+          PracticeShowState.excused,
+        ).length}",
+        color: Theme.of(context).colorScheme.secondaryContainer,
+      ),
+      PieChartSectionData(
+        value: getShownPractices(
+              pracs,
+              attendances,
+              PracticeShowState.unexcused,
+            ).length /
+            pracs.length,
+        title: "${getShownPractices(
+          pracs,
+          attendances,
+          PracticeShowState.unexcused,
+        ).length}",
+        color: Theme.of(context).colorScheme.errorContainer,
+      ),
+      PieChartSectionData(
+        value: getShownPractices(pracs, attendances, PracticeShowState.noReason)
+                .length /
+            pracs.length,
+        title: "${getShownPractices(
+          pracs,
+          attendances,
+          PracticeShowState.noReason,
+        ).length}",
+        color: Theme.of(context).colorScheme.tertiaryContainer,
+      ),
+    ];
 
-      List<Practice> pastPractices =
-          practices.where((p) => p.endTime.isBefore(DateTime.now())).toList();
-      List<Practice> futurePractices =
-          practices.where((p) => p.startTime.isAfter(DateTime.now())).toList();
-
-      pastPractices.remove(upcomingPractice);
-      futurePractices.remove(upcomingPractice);
-
-      return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: const DefaultAppBar(),
-          body: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: const [
-                      WelcomeHeader(),
-                      Divider(),
-                      Instructions(),
-                      Divider(),
-                    ],
-                  ),
-                ),
-                SliverOverlapAbsorber(
-                  handle:
-                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  sliver: SliverPersistentHeader(
-                    pinned: true,
-                    delegate:
-                        FencerPracticeTypeTabBar(attendances, upcomingPractice),
-                  ),
-                ),
-              ];
-            },
-            body: TabBarView(
-              children: [
-                PastAttendances(practices: pastPractices),
-                FutureAttendances(practices: futurePractices),
-              ],
-            ),
+    return ListView(
+      children: [
+        const WelcomeHeader(),
+        // const Divider(),
+        ListTile(
+          title: Text(
+            userData.fullName,
+            style: Theme.of(context).textTheme.titleLarge,
+            textAlign: TextAlign.center,
+          ),
+          subtitle: Text(
+            "${userData.schoolYear.type} | ${userData.weapon.type} Fencer | ${userData.team.type} Team",
+            textAlign: TextAlign.center,
           ),
         ),
-      );
-    }
-
-    Widget whenPracticeData(List<PracticeMonth> practiceMonths) {
-      practices.clear();
-      for (var month in practiceMonths) {
-        practices.addAll(month.practices);
-      }
-      practices.sort((a, b) => -a.startTime.compareTo(b.startTime));
-      return ref.watch(attendancesProvider).when(
-            data: whenAttendanceData,
-            error: (error, stackTrace) => const ErrorPage(),
-            loading: () => const LoadingPage(),
-          );
-    }
-
-    Widget whenData(UserData? data) {
-      if (data != null) {
-        userData = data;
-        return ref.watch(practicesProvider).when(
-              data: whenPracticeData,
-              error: (error, stackTrace) => const ErrorPage(),
-              loading: () => const LoadingPage(),
-            );
-      } else {
-        return const LoadingPage();
-      }
-    }
-
-    return ref.watch(userDataProvider).when(
-          data: whenData,
-          error: (error, stackTrace) => const ErrorPage(),
-          loading: () => const LoadingPage(),
-        );
+        Row(
+          children: <Widget>[
+            const SizedBox(
+              height: 18,
+            ),
+            Expanded(
+              child: AspectRatio(
+                aspectRatio: 2,
+                child: PieChart(
+                  PieChartData(
+                    borderData: FlBorderData(
+                      show: false,
+                    ),
+                    sectionsSpace: 0,
+                    centerSpaceRadius: 40,
+                    sections: showingSections,
+                  ),
+                ),
+              ),
+            ),
+            IntrinsicWidth(
+              child: Column(
+                children: [
+                  Text(
+                    "${pracs.length} Total Attendances",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Divider(),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate(showingSections.length, (index) {
+                      String percentage = (showingSections[index].value * 100)
+                          .toStringAsFixed(2);
+                      return Column(
+                        children: [
+                          Indicator(
+                            color: showingSections[index].color,
+                            text:
+                                "${PracticeShowState.values[index + 1].type}|$percentage%",
+                            isSquare: true,
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              width: 28,
+            ),
+          ],
+        ),
+        TodaysAttendance(
+          todaysAttendance: todaysAttendance,
+          practice: upcomingPractice,
+        ),
+        // const Divider(),
+        TodaysSchedule(practice: upcomingPractice),
+      ],
+    );
   }
 }

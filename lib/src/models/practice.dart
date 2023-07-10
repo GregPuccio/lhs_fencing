@@ -11,12 +11,14 @@ class Practice {
   DateTime startTime;
   DateTime endTime;
   TypePractice type;
+  Team team;
   Practice({
     required this.id,
     required this.location,
     required this.startTime,
     required this.endTime,
     required this.type,
+    required this.team,
   });
 
   String get startString {
@@ -48,6 +50,7 @@ Coach ${coach.firstName}
     DateTime? startTime,
     DateTime? endTime,
     TypePractice? type,
+    Team? team,
   }) {
     return Practice(
       id: id ?? this.id,
@@ -55,6 +58,7 @@ Coach ${coach.firstName}
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       type: type ?? this.type,
+      team: team ?? this.team,
     );
   }
 
@@ -65,6 +69,7 @@ Coach ${coach.firstName}
       'startTime': startTime.millisecondsSinceEpoch,
       'endTime': endTime.millisecondsSinceEpoch,
       'type': type.toMap(),
+      'team': team.toMap(),
     };
   }
 
@@ -75,6 +80,7 @@ Coach ${coach.firstName}
       startTime: DateTime.fromMillisecondsSinceEpoch(map['startTime']),
       endTime: DateTime.fromMillisecondsSinceEpoch(map['endTime']),
       type: TypePractice.fromMap(map['type'] ?? ""),
+      team: Team.fromMap(map['team'] ?? ""),
     );
   }
 
@@ -85,7 +91,7 @@ Coach ${coach.firstName}
 
   @override
   String toString() {
-    return 'Practice(id: $id, location: $location, startTime: $startTime, endTime: $endTime, type: $type)';
+    return 'Practice(id: $id, location: $location, startTime: $startTime, endTime: $endTime, type: $type, team: $team)';
   }
 
   @override
@@ -97,7 +103,8 @@ Coach ${coach.firstName}
         other.location == location &&
         other.startTime == startTime &&
         other.endTime == endTime &&
-        other.type == type;
+        other.type == type &&
+        other.team == team;
   }
 
   @override
@@ -106,6 +113,7 @@ Coach ${coach.firstName}
         location.hashCode ^
         startTime.hashCode ^
         endTime.hashCode ^
-        type.hashCode;
+        type.hashCode ^
+        team.hashCode;
   }
 }

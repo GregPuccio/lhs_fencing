@@ -5,9 +5,6 @@ import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
-import 'package:lhs_fencing/src/widgets/practice_type_tab_bar.dart';
-import 'package:lhs_fencing/src/views/admin/widgets/future_practices.dart';
-import 'package:lhs_fencing/src/views/admin/widgets/past_practices.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
 import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
@@ -51,51 +48,33 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
       pastPractices.remove(upcomingPractice);
       futurePractices.remove(upcomingPractice);
 
-      return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: const DefaultAppBar(),
-          body: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      const WelcomeHeader(),
-                      const Divider(),
-                      ListTile(
-                        title: const Text("Fencer List"),
-                        subtitle: const Text(
-                            "View fencers and their number of practices"),
-                        trailing: const Icon(Icons.arrow_forward),
-                        onTap: () =>
-                            context.router.push(const FencerListRoute()),
-                      ),
-                      const Divider(),
-                    ],
-                  ),
-                ),
-                SliverOverlapAbsorber(
-                  handle:
-                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  sliver: SliverPersistentHeader(
-                    pinned: true,
-                    delegate: PracticeTypeTabBar(upcomingPractice),
-                  ),
-                ),
-              ];
-            },
-            body: TabBarView(
-              children: [
-                PastPractices(practices: pastPractices),
-                FuturePractices(practices: futurePractices),
-              ],
+      return Scaffold(
+        appBar: const DefaultAppBar(),
+        body: Column(
+          children: [
+            const WelcomeHeader(),
+            const Divider(),
+            ListTile(
+              title: const Text("Fencer List"),
+              subtitle:
+                  const Text("View fencers and their number of practices"),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () => context.router.push(const FencerListRoute()),
             ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => context.pushRoute(const AddPracticesRoute()),
-            child: const Icon(Icons.add),
-          ),
+            const Divider(),
+          ],
+        ),
+
+        //   TabBarView(
+        //     children: [
+        //       PastPractices(practices: pastPractices),
+        //       FuturePractices(practices: futurePractices),
+        //     ],
+        //   ),
+        // ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => context.pushRoute(const AddPracticesRoute()),
+          child: const Icon(Icons.add),
         ),
       );
     }
