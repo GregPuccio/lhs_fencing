@@ -98,7 +98,7 @@ class HomePage extends StatelessWidget {
             ),
             Expanded(
               child: AspectRatio(
-                aspectRatio: 2,
+                aspectRatio: 1.5,
                 child: PieChart(
                   PieChartData(
                     borderData: FlBorderData(
@@ -117,7 +117,7 @@ class HomePage extends StatelessWidget {
                   Text(
                     "${pracs.length} Total Attendances",
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
