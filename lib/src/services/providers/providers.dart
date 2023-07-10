@@ -10,7 +10,7 @@ import 'package:lhs_fencing/src/settings/theme_service.dart';
 import 'package:lhs_fencing/src/settings/theme_service_hive.dart';
 
 final themeServiceProvider =
-    Provider<ThemeService>((ref) => ThemeServiceHive('tournado_theming'));
+    Provider<ThemeService>((ref) => ThemeServiceHive('lhsfencing23'));
 
 final themeControllerProvider = ChangeNotifierProvider<ThemeController>((ref) {
   final themeService = ref.watch(themeServiceProvider);

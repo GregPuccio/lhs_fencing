@@ -126,9 +126,9 @@ enum Team {
   String get type {
     switch (this) {
       case boys:
-        return "Boy's Fencing";
+        return "Boys Fencing";
       case girls:
-        return "Girl's Fencing";
+        return "Girls Fencing";
       case both:
         return "Both Teams";
     }

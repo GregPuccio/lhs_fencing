@@ -39,19 +39,19 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
           body: SizedBox(
             width: 600,
             child: ListView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 16),
+              padding: const EdgeInsets.all(16),
               children: [
                 const Text(
-                  'Welcome to LHS Fencing!',
+                  "Welcome to the '23-'24 Season!",
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 25),
                 ),
                 const Text(
-                  'Please confirm the information for your account below.',
+                  'Please fill out all fields below.',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16),
                 ),
+                const Divider(),
                 const SizedBox(height: 16),
                 Row(
                   children: [
@@ -60,6 +60,9 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                         decoration:
                             const InputDecoration(labelText: "First Name"),
                         initialValue: userData.firstName,
+                        onChanged: (value) => setState(() {
+                          userData.firstName = value;
+                        }),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -68,6 +71,9 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                         decoration:
                             const InputDecoration(labelText: "Last Name"),
                         initialValue: userData.lastName,
+                        onChanged: (value) => setState(() {
+                          userData.lastName = value;
+                        }),
                       ),
                     ),
                   ],
@@ -78,48 +84,122 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   decoration: const InputDecoration(labelText: "Email Address"),
                   initialValue: user.email,
                 ),
-                const SizedBox(height: 16),
-                Wrap(
-                  runSpacing: 16,
-                  alignment: WrapAlignment.spaceEvenly,
-                  children: [
-                    ToggleButtons(
-                      isSelected: List.generate(
-                          Team.values.length - 1,
-                          (index) =>
-                              userData.team.type == Team.values[index].type),
-                      children: List.generate(
+                const SizedBox(height: 8),
+                const Divider(),
+                ListTile(
+                  title: const Text("School Year"),
+                  trailing: DropdownButton(
+                    value: userData.schoolYear,
+                    items: List.generate(
+                      SchoolYear.values.length,
+                      (index) => DropdownMenuItem(
+                        value: SchoolYear.values[index],
+                        child: Text(SchoolYear.values[index].type),
+                      ),
+                    ),
+                    onChanged: (value) => setState(() {
+                      if (value != null) {
+                        userData.schoolYear = value;
+                      }
+                    }),
+                  ),
+                ),
+                ListTile(
+                  title: const Text("Team"),
+                  trailing: ToggleButtons(
+                    isSelected: List.generate(
                         Team.values.length - 1,
-                        (index) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(Team.values[index].type),
-                        ),
+                        (index) =>
+                            userData.team.type == Team.values[index].type),
+                    children: List.generate(
+                      Team.values.length - 1,
+                      (index) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(Team.values[index].type),
                       ),
-                      onPressed: (index) => setState(() {
-                        userData.team = Team.values[index];
-                      }),
                     ),
-                    ToggleButtons(
-                      isSelected: List.generate(
-                          Weapon.values.length,
-                          (index) =>
-                              userData.weapon.type ==
-                              Weapon.values[index].type),
-                      children: List.generate(
+                    onPressed: (index) => setState(() {
+                      userData.team = Team.values[index];
+                    }),
+                  ),
+                ),
+                ListTile(
+                  title: const Text("Weapon"),
+                  trailing: ToggleButtons(
+                    isSelected: List.generate(
                         Weapon.values.length,
-                        (index) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(Weapon.values[index].type),
-                        ),
+                        (index) =>
+                            userData.weapon.type == Weapon.values[index].type),
+                    children: List.generate(
+                      Weapon.values.length,
+                      (index) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(Weapon.values[index].type),
                       ),
-                      onPressed: (index) => setState(() {
-                        userData.weapon = Weapon.values[index];
-                      }),
                     ),
+                    onPressed: (index) => setState(() {
+                      userData.weapon = Weapon.values[index];
+                    }),
+                  ),
+                ),
+                const Divider(),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Flexible(
+                      flex: 2,
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                            labelText: "Club Affiliation",
+                            hintText: "V Fencing, Lilov, Wanglei etc."),
+                        initialValue: userData.club,
+                        onChanged: (value) => setState(() {
+                          userData.club = value;
+                        }),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                            labelText: "Rating", hintText: "U, C22, A23, etc."),
+                        initialValue: userData.club,
+                        onChanged: (value) => setState(() {
+                          userData.club = value;
+                        }),
+                      ),
+                    )
                   ],
                 ),
-                const SizedBox(height: 8),
-                OutlinedButton.icon(
+                if (userData.club.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  ListTile(
+                    title: const Text("Club Days"),
+                    trailing: ToggleButtons(
+                      isSelected: List.generate(
+                          DayOfWeek.values.length,
+                          (index) => userData.clubDays
+                              .contains(DayOfWeek.values[index])),
+                      children: List.generate(
+                        DayOfWeek.values.length,
+                        (index) => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(DayOfWeek.values[index].abbreviation),
+                        ),
+                      ),
+                      onPressed: (index) => setState(() {
+                        DayOfWeek dow = DayOfWeek.values[index];
+                        if (userData.clubDays.contains(dow)) {
+                          userData.clubDays.remove(dow);
+                        } else {
+                          userData.clubDays.add(dow);
+                        }
+                      }),
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 32),
+                ElevatedButton.icon(
                   onPressed: () {
                     // if (user.email != null &&
                     //     (user.email!.contains("livingston") ||
@@ -148,9 +228,9 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                     // }
                   },
                   icon: const Icon(Icons.check),
-                  label: const Text("Confirm My Information"),
+                  label: const Text("Save My Information"),
                 ),
-                const SizedBox(height: 60),
+                const SizedBox(height: 32),
                 const Divider(),
                 ListTile(
                   title: const Text("Need to come back later?"),

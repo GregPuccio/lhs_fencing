@@ -1,6 +1,6 @@
-String userCollection = "users";
-String practiceCollection = "practices";
-String attendanceCollection = "attendances";
+String userCollection = "users23";
+String practiceCollection = "practices23";
+String attendanceCollection = "attendances23";
 
 class FirestorePath {
   final FirestorePath firestorePath = FirestorePath();

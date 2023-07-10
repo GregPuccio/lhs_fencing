@@ -8,8 +8,6 @@ import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/auth/auth_service.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/settings/theme_controller.dart';
-import 'package:http/http.dart' as http;
-import 'package:html/dom.dart' as dom;
 
 class ProfilePage extends ConsumerWidget {
   final UserData userData;
@@ -49,39 +47,39 @@ class ProfilePage extends ConsumerWidget {
       );
     }
 
-    Future getWebsiteData() async {
-      try {
-        final url = Uri.https('member.usafencing.org', '/search/members', {
-          'first': userData.firstName,
-          'last': userData.lastName,
-          'division': '',
-          'inactive': 'true',
-          'country': '',
-          'id': '',
-        });
-        final response = await http.get(
-          url,
-          headers: {'Content-Type': 'text/plain'},
-        );
-        dom.Document html = dom.Document.html(response.body);
-        final titles = html
-            .querySelectorAll('tr[itemprop]="member"')
-            .map((e) => e.innerHtml.trim())
-            .toList();
+    // Future getWebsiteData() async {
+    //   try {
+    //     final url = Uri.https('member.usafencing.org', '/search/members', {
+    //       'first': userData.firstName,
+    //       'last': userData.lastName,
+    //       'division': '',
+    //       'inactive': 'true',
+    //       'country': '',
+    //       'id': '',
+    //     });
+    //     final response = await http.get(
+    //       url,
+    //       // headers: {'Content-Type': 'text/plain'},
+    //     );
+    //     dom.Document html = dom.Document.html(response.body);
+    //     final titles = html
+    //         .querySelectorAll('tr[itemprop]="member"')
+    //         .map((e) => e.innerHtml.trim())
+    //         .toList();
 
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Count: ${titles.length}')));
-        for (final title in titles) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(title)));
-        }
-      } catch (e) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.toString())));
-      }
-    }
+    //     ScaffoldMessenger.of(context)
+    //         .showSnackBar(SnackBar(content: Text('Count: ${titles.length}')));
+    //     for (final title in titles) {
+    //       ScaffoldMessenger.of(context)
+    //           .showSnackBar(SnackBar(content: Text(title)));
+    //     }
+    //   } catch (e) {
+    //     ScaffoldMessenger.of(context)
+    //         .showSnackBar(SnackBar(content: Text(e.toString())));
+    //   }
+    // }
 
-    getWebsiteData();
+    // getWebsiteData();
     return ListView(
       children: [
         ListTile(
@@ -95,25 +93,25 @@ class ProfilePage extends ConsumerWidget {
             textAlign: TextAlign.center,
           ),
         ),
-        const ListTile(
-          title: Text("A2016"),
-          subtitle: Text("USA Fencing Rating"),
+        const Divider(),
+        ListTile(
+          title: Text(userData.rating),
+          subtitle: const Text("USA Fencing Rating"),
         ),
         ListTile(
-          title: Text("${userData.yoe} Year${userData.yoe == 1 ? "" : "s"}"),
+          title: Text(
+              "${userData.startDate.difference(DateTime.now()).inDays / 365} Years"),
           subtitle: const Text("Years of Experience"),
         ),
-        const ListTile(
-          title: Text("Forward Fencing Academy"),
-          subtitle: Text("Club Affiliation"),
+        ListTile(
+          title: Text(userData.club),
+          subtitle: const Text("Club Affiliation"),
         ),
         ListTile(
-          title: Text(userData.clubDays.join(", ")),
+          title: Text(userData.clubDays.isEmpty
+              ? "None"
+              : userData.clubDays.join(", ")),
           subtitle: const Text("Days At Club"),
-        ),
-        ListTile(
-          title: Text(userData.foodAllergies.join(", ")),
-          subtitle: const Text("Food Allergies"),
         ),
         const Divider(),
         ListTile(
@@ -137,6 +135,7 @@ class ProfilePage extends ConsumerWidget {
                       .setThemeMode(val ? ThemeMode.dark : ThemeMode.light);
                 }),
           ),
+        const Divider(),
         ListTile(
           title: const Text("Need to leave?"),
           trailing: OutlinedButton.icon(

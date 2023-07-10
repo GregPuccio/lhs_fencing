@@ -13,9 +13,10 @@ class UserData extends Comparable<UserData> {
   Team team;
   Weapon weapon;
   SchoolYear schoolYear;
-  int yoe;
-  List<String> foodAllergies;
+  DateTime startDate;
   List<DayOfWeek> clubDays;
+  String rating;
+  String club;
 
   bool admin;
 
@@ -27,9 +28,10 @@ class UserData extends Comparable<UserData> {
     required this.team,
     required this.weapon,
     required this.schoolYear,
-    required this.yoe,
-    required this.foodAllergies,
+    required this.startDate,
     required this.clubDays,
+    required this.rating,
+    required this.club,
     required this.admin,
   });
 
@@ -41,11 +43,12 @@ class UserData extends Comparable<UserData> {
       lastName: "",
       admin: false,
       team: Team.boys,
-      weapon: Weapon.foil,
+      weapon: Weapon.unsure,
       schoolYear: SchoolYear.freshman,
-      yoe: 0,
-      foodAllergies: [],
+      startDate: DateTime.now(),
       clubDays: [],
+      rating: "",
+      club: "",
     );
   }
 
@@ -63,11 +66,12 @@ class UserData extends Comparable<UserData> {
       lastName: lastName,
       admin: false,
       team: Team.boys,
-      weapon: Weapon.foil,
+      weapon: Weapon.unsure,
       schoolYear: SchoolYear.freshman,
-      yoe: 0,
-      foodAllergies: [],
+      startDate: DateTime.now(),
       clubDays: [],
+      rating: "",
+      club: "",
     );
   }
 
@@ -87,9 +91,10 @@ class UserData extends Comparable<UserData> {
     Team? team,
     Weapon? weapon,
     SchoolYear? schoolYear,
-    int? yoe,
-    List<String>? foodAllergies,
+    DateTime? startDate,
     List<DayOfWeek>? clubDays,
+    String? rating,
+    String? club,
     bool? admin,
   }) {
     return UserData(
@@ -100,9 +105,10 @@ class UserData extends Comparable<UserData> {
       team: team ?? this.team,
       weapon: weapon ?? this.weapon,
       schoolYear: schoolYear ?? this.schoolYear,
-      yoe: yoe ?? this.yoe,
-      foodAllergies: foodAllergies ?? this.foodAllergies,
+      startDate: startDate ?? this.startDate,
       clubDays: clubDays ?? this.clubDays,
+      rating: rating ?? this.rating,
+      club: club ?? this.club,
       admin: admin ?? this.admin,
     );
   }
@@ -116,9 +122,10 @@ class UserData extends Comparable<UserData> {
       'team': team.toMap(),
       'weapon': weapon.toMap(),
       'schoolYear': schoolYear.toMap(),
-      'yoe': yoe,
-      'foodAllergies': foodAllergies,
+      'startDate': startDate.millisecondsSinceEpoch,
       'clubDays': clubDays.map((x) => x.index).toList(),
+      'rating': rating,
+      'club': club,
       'admin': admin,
     };
   }
@@ -132,10 +139,12 @@ class UserData extends Comparable<UserData> {
       team: Team.fromMap(map['team'] ?? ""),
       weapon: Weapon.fromMap(map['weapon'] ?? ""),
       schoolYear: SchoolYear.fromMap(map['schoolYear'] ?? ""),
-      yoe: map['yoe']?.toInt() ?? 0,
-      foodAllergies: List<String>.from(map['foodAllergies'] ?? []),
+      startDate: DateTime.fromMillisecondsSinceEpoch(
+          map['startDate'] ?? DateTime.now().millisecondsSinceEpoch),
       clubDays: List<DayOfWeek>.from(
-          map['clubDays']?.map((x) => DayOfWeek.values[x]) ?? []),
+          map['clubDays']?.map((x) => DayOfWeek.values[x])),
+      rating: map['rating'] ?? '',
+      club: map['club'] ?? '',
       admin: map['admin'] ?? false,
     );
   }
@@ -147,7 +156,7 @@ class UserData extends Comparable<UserData> {
 
   @override
   String toString() {
-    return 'UserData(id: $id, email: $email, firstName: $firstName, lastName: $lastName, team: $team, weapon: $weapon, schoolYear: $schoolYear, yoe: $yoe, foodAllergies: $foodAllergies, clubDays: $clubDays, admin: $admin)';
+    return 'UserData(id: $id, email: $email, firstName: $firstName, lastName: $lastName, team: $team, weapon: $weapon, schoolYear: $schoolYear, startDate: $startDate, clubDays: $clubDays, rating: $rating, club: $club, admin: $admin)';
   }
 
   @override
@@ -162,9 +171,10 @@ class UserData extends Comparable<UserData> {
         other.team == team &&
         other.weapon == weapon &&
         other.schoolYear == schoolYear &&
-        other.yoe == yoe &&
-        listEquals(other.foodAllergies, foodAllergies) &&
+        other.startDate == startDate &&
         listEquals(other.clubDays, clubDays) &&
+        other.rating == rating &&
+        other.club == club &&
         other.admin == admin;
   }
 
@@ -177,9 +187,10 @@ class UserData extends Comparable<UserData> {
         team.hashCode ^
         weapon.hashCode ^
         schoolYear.hashCode ^
-        yoe.hashCode ^
-        foodAllergies.hashCode ^
+        startDate.hashCode ^
         clubDays.hashCode ^
+        rating.hashCode ^
+        club.hashCode ^
         admin.hashCode;
   }
 
