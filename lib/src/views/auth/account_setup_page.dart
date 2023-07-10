@@ -167,9 +167,9 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                         textCapitalization: TextCapitalization.characters,
                         decoration: const InputDecoration(
                             labelText: "Rating", hintText: "U, C22, A23, etc."),
-                        initialValue: userData.club,
+                        initialValue: userData.rating,
                         onChanged: (value) => setState(() {
-                          userData.club = value;
+                          userData.rating = value;
                         }),
                       ),
                     )

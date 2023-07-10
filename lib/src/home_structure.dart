@@ -139,6 +139,17 @@ class _HomeStructureState extends ConsumerState<HomeStructure> {
       practices
           .retainWhere((p) => p.team == Team.both || p.team == userData.team);
       practices.sort((a, b) => -a.startTime.compareTo(b.startTime));
+      if (practices.isEmpty) {
+        practices.add(Practice(
+          id: "",
+          location: "Livingston Aux Gym",
+          startTime: DateTime.fromMillisecondsSinceEpoch(0),
+          endTime: DateTime.fromMillisecondsSinceEpoch(0)
+              .add(const Duration(minutes: 1)),
+          type: TypePractice.fundraiser,
+          team: Team.both,
+        ));
+      }
       return ref.watch(attendancesProvider).when(
             data: whenAttendanceData,
             error: (error, stackTrace) => const ErrorPage(),
