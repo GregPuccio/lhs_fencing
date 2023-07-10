@@ -51,26 +51,31 @@ class ProfilePage extends ConsumerWidget {
     // https://member.usafencing.org/search/members?first=${userData.firstName}&last=${userData.lastName}&division=&inactive=true&country=&id=#find
 
     Future getWebsiteData() async {
-      final url = Uri.parse('https://www.amazon.com/s?k=iphone');
-      final response = await http.get(
-        url,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          'Content-Type': 'application/json',
-          'Accept': '*/*'
-        },
-      );
-      dom.Document html = dom.Document.html(response.body);
-      final titles = html
-          .querySelectorAll('h2 > a > span')
-          .map((e) => e.innerHtml.trim())
-          .toList();
+      try {
+        final url = Uri.parse('https://www.amazon.com/s?k=iphone');
+        final response = await http.get(
+          url,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            'Content-Type': 'application/json',
+            'Accept': '*/*'
+          },
+        );
+        dom.Document html = dom.Document.html(response.body);
+        final titles = html
+            .querySelectorAll('h2 > a > span')
+            .map((e) => e.innerHtml.trim())
+            .toList();
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Count: ${titles.length}')));
-      for (final title in titles) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(title)));
+            .showSnackBar(SnackBar(content: Text('Count: ${titles.length}')));
+        for (final title in titles) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(title)));
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
       }
     }
 
