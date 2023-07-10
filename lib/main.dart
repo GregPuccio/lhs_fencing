@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/firebase_options.dart';
@@ -35,6 +36,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final fcmToken = await FirebaseMessaging.instance.getToken(
+      vapidKey:
+          "BDhaN8AsL56jL5bUFY15FYDvbE6yaGRmtsLdg3RCgAD_a7TVYg6DbnOGCdB-DqqSlplIkTw2SBRyuIZXWXlVkj4");
 
   // Run the app and pass in the SettingsController. The app listens to the
   // SettingsController for changes, then passes it further down to the
