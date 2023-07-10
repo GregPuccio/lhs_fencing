@@ -8,6 +8,8 @@ import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/auth/auth_service.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/settings/theme_controller.dart';
+import 'package:http/http.dart' as http;
+import 'package:html/dom.dart' as dom;
 
 class ProfilePage extends ConsumerWidget {
   final UserData userData;
@@ -47,6 +49,29 @@ class ProfilePage extends ConsumerWidget {
       );
     }
 
+    Future getWebsiteData() async {
+      final url = Uri.parse(
+          'https://member.usafencing.org/search/members?first=${userData.firstName}&last=${userData.lastName}&division=&inactive=true&country=&id=#find');
+      final response = await http.get(
+        url,
+        headers: {"content-type": "html"},
+      );
+      dom.Document html = dom.Document.html(response.body);
+      final titles = html
+          .querySelectorAll(
+              '#search > div > div > table > tbody > tr:nth-child(2) > td:nth-child(1)')
+          .map((e) => e.innerHtml.trim())
+          .toList();
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Count: ${titles.length}')));
+      for (final title in titles) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(title)));
+      }
+    }
+
+    getWebsiteData();
     return ListView(
       children: [
         ListTile(
