@@ -6,14 +6,14 @@ class Indicator extends StatelessWidget {
     required this.color,
     required this.text,
     required this.isSquare,
+    required this.isTouched,
     this.size = 16,
-    this.textColor,
   });
   final Color color;
   final String text;
   final bool isSquare;
   final double size;
-  final Color? textColor;
+  final bool isTouched;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,14 @@ class Indicator extends StatelessWidget {
         const SizedBox(
           width: 4,
         ),
-        Text(text, style: Theme.of(context).textTheme.bodyMedium)
+        Text(
+          text,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: isTouched ? FontWeight.bold : FontWeight.normal,
+            color: isTouched ? Theme.of(context).indicatorColor : null,
+          ),
+        )
       ],
     );
   }

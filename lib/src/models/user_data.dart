@@ -142,7 +142,7 @@ class UserData extends Comparable<UserData> {
       startDate: DateTime.fromMillisecondsSinceEpoch(
           map['startDate'] ?? DateTime.now().millisecondsSinceEpoch),
       clubDays: List<DayOfWeek>.from(
-          map['clubDays']?.map((x) => DayOfWeek.values[x])),
+          map['clubDays']?.map((x) => DayOfWeek.values[x]) ?? []),
       rating: map['rating'] ?? '',
       club: map['club'] ?? '',
       admin: map['admin'] ?? false,
