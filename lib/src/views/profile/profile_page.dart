@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
@@ -55,7 +56,7 @@ class ProfilePage extends ConsumerWidget {
             textAlign: TextAlign.center,
           ),
           subtitle: Text(
-            "${userData.schoolYear.type} | ${userData.weapon.type} Fencer | ${userData.team.type} Team",
+            "${userData.admin ? "Coach" : userData.schoolYear.type} | ${userData.weapon.type} Fencer | ${userData.team == Team.both ? userData.team.type : "${userData.team.type} Team"}",
             textAlign: TextAlign.center,
           ),
         ),
@@ -63,21 +64,21 @@ class ProfilePage extends ConsumerWidget {
           title: Text("A2016"),
           subtitle: Text("USA Fencing Rating"),
         ),
-        const ListTile(
-          title: Text("11 Years"),
-          subtitle: Text("Years of Experience"),
+        ListTile(
+          title: Text("${userData.yoe} Year${userData.yoe == 1 ? "" : "s"}"),
+          subtitle: const Text("Years of Experience"),
         ),
         const ListTile(
           title: Text("Forward Fencing Academy"),
           subtitle: Text("Club Affiliation"),
         ),
-        const ListTile(
-          title: Text("Mon, Wed, Fri"),
-          subtitle: Text("Days At Club"),
+        ListTile(
+          title: Text(userData.clubDays.join(", ")),
+          subtitle: const Text("Days At Club"),
         ),
-        const ListTile(
-          title: Text("None"),
-          subtitle: Text("Food Allergies"),
+        ListTile(
+          title: Text(userData.foodAllergies.join(", ")),
+          subtitle: const Text("Food Allergies"),
         ),
         const Divider(),
         ListTile(
