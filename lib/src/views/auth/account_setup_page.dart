@@ -57,6 +57,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   children: [
                     Flexible(
                       child: TextFormField(
+                        textCapitalization: TextCapitalization.words,
                         decoration:
                             const InputDecoration(labelText: "First Name"),
                         initialValue: userData.firstName,
@@ -68,6 +69,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                     const SizedBox(width: 8),
                     Flexible(
                       child: TextFormField(
+                        textCapitalization: TextCapitalization.words,
                         decoration:
                             const InputDecoration(labelText: "Last Name"),
                         initialValue: userData.lastName,
@@ -149,6 +151,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                     Flexible(
                       flex: 2,
                       child: TextFormField(
+                        textCapitalization: TextCapitalization.words,
                         decoration: const InputDecoration(
                             labelText: "Club Affiliation",
                             hintText: "V Fencing, Lilov, Wanglei etc."),
@@ -161,6 +164,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                     const SizedBox(width: 8),
                     Flexible(
                       child: TextFormField(
+                        textCapitalization: TextCapitalization.characters,
                         decoration: const InputDecoration(
                             labelText: "Rating", hintText: "U, C22, A23, etc."),
                         initialValue: userData.club,
@@ -175,31 +179,36 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   const SizedBox(height: 8),
                   ListTile(
                     title: const Text("Club Days"),
-                    trailing: ToggleButtons(
-                      isSelected: List.generate(
-                          DayOfWeek.values.length,
-                          (index) => userData.clubDays
-                              .contains(DayOfWeek.values[index])),
-                      children: List.generate(
-                        DayOfWeek.values.length,
-                        (index) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(DayOfWeek.values[index].abbreviation),
+                    subtitle: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ToggleButtons(
+                          isSelected: List.generate(
+                              DayOfWeek.values.length,
+                              (index) => userData.clubDays
+                                  .contains(DayOfWeek.values[index])),
+                          children: List.generate(
+                            DayOfWeek.values.length,
+                            (index) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(DayOfWeek.values[index].abbreviation),
+                            ),
+                          ),
+                          onPressed: (index) => setState(() {
+                            DayOfWeek dow = DayOfWeek.values[index];
+                            if (userData.clubDays.contains(dow)) {
+                              userData.clubDays.remove(dow);
+                            } else {
+                              userData.clubDays.add(dow);
+                            }
+                          }),
                         ),
-                      ),
-                      onPressed: (index) => setState(() {
-                        DayOfWeek dow = DayOfWeek.values[index];
-                        if (userData.clubDays.contains(dow)) {
-                          userData.clubDays.remove(dow);
-                        } else {
-                          userData.clubDays.add(dow);
-                        }
-                      }),
+                      ],
                     ),
                   ),
                 ],
                 const SizedBox(height: 32),
-                ElevatedButton.icon(
+                OutlinedButton.icon(
                   onPressed: () {
                     // if (user.email != null &&
                     //     (user.email!.contains("livingston") ||
