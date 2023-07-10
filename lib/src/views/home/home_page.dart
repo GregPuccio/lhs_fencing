@@ -98,13 +98,13 @@ class HomePage extends StatelessWidget {
             ),
             Expanded(
               child: AspectRatio(
-                aspectRatio: 1.5,
+                aspectRatio: 1,
                 child: PieChart(
                   PieChartData(
                     borderData: FlBorderData(
                       show: false,
                     ),
-                    sectionsSpace: 0,
+                    sectionsSpace: 1,
                     centerSpaceRadius: 40,
                     sections: showingSections,
                   ),
