@@ -61,15 +61,11 @@ class ProfilePage extends ConsumerWidget {
         });
         final response = await http.get(
           url,
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            'Content-Type': 'application/json',
-            'Accept': '*/*'
-          },
+          headers: {'Content-Type': 'text/plain'},
         );
         dom.Document html = dom.Document.html(response.body);
         final titles = html
-            .querySelectorAll('h2 > a > span')
+            .querySelectorAll('tr[itemprop]="member"')
             .map((e) => e.innerHtml.trim())
             .toList();
 
