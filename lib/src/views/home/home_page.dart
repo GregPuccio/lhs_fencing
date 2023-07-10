@@ -6,7 +6,6 @@ import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/views/admin/fencer_details_page.dart';
 import 'package:lhs_fencing/src/views/home/widgets/todays_attendance.dart';
-import 'package:lhs_fencing/src/views/home/widgets/todays_schedule.dart';
 import 'package:lhs_fencing/src/widgets/indicator.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
 
@@ -98,7 +97,6 @@ class _HomePageState extends State<HomePage> {
       children: [
         const WelcomeHeader(),
         const Divider(),
-
         Row(
           children: <Widget>[
             const SizedBox(
@@ -178,8 +176,6 @@ class _HomePageState extends State<HomePage> {
           todaysAttendance: widget.todaysAttendance,
           practice: widget.upcomingPractice,
         ),
-        // const Divider(),
-        TodaysSchedule(practice: widget.upcomingPractice),
       ],
     );
   }

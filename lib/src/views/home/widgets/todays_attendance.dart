@@ -48,6 +48,12 @@ class TodaysAttendance extends ConsumerWidget {
               onTap: () => context.router
                   .push(AttendanceRoute(practiceID: todaysAttendance.id)),
             ),
+            const Divider(),
+            Text(
+              "${practice.type.type} Schedule",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 8),
             DataTable(
               border: TableBorder.all(
                   color: Theme.of(context).colorScheme.onBackground),
