@@ -21,86 +21,100 @@ class TodaysAttendance extends ConsumerWidget {
     bool todayBool = DateTime.now().day == practice.startTime.day;
     Map<DateTime, String> activities = Activities(practice).activities;
 
-    return Container(
-      color: Theme.of(context).colorScheme.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Text(
-              todayBool
-                  ? "Today's ${practice.type.type} @ ${DateFormat("h:mm aa").format(practice.startTime)}"
-                  : "Next: ${DateFormat("EEEE").format(practice.startTime)}'s ${practice.type.type}",
-              style: Theme.of(context).textTheme.titleLarge,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Theme.of(context).colorScheme.primaryContainer,
             ),
-            ListTile(
-              title: Text(DateFormat("MM/dd${todayBool ? "" : " @ h:mm aa"}")
-                  .format(practice.startTime)),
-              subtitle: AttendanceInfo(todaysAttendance),
-              trailing: todaysAttendance.checkOut != null
-                  ? null
-                  : todaysAttendance.attended
-                      ? CheckOutButton(
-                          attendance: todaysAttendance,
-                          practice: practice,
-                        )
-                      : CheckInButton(today: todayBool, practice: practice),
-              onTap: () => context.router
-                  .push(AttendanceRoute(practiceID: todaysAttendance.id)),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Text(
+                    todayBool
+                        ? "Today's ${practice.type.type} @ ${DateFormat("h:mm aa").format(practice.startTime)}"
+                        : "Next: ${DateFormat("EEEE").format(practice.startTime)}'s ${practice.type.type}",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  ListTile(
+                    title: Text(
+                        DateFormat("MM/dd${todayBool ? "" : " @ h:mm aa"}")
+                            .format(practice.startTime)),
+                    subtitle: AttendanceInfo(todaysAttendance),
+                    trailing: todaysAttendance.checkOut != null
+                        ? null
+                        : todaysAttendance.attended
+                            ? CheckOutButton(
+                                attendance: todaysAttendance,
+                                practice: practice,
+                              )
+                            : CheckInButton(
+                                today: todayBool, practice: practice),
+                    onTap: () => context.router
+                        .push(AttendanceRoute(practiceID: todaysAttendance.id)),
+                  ),
+                ],
+              ),
             ),
-            const Divider(),
-            Text(
-              "${practice.type.type} Schedule",
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            DataTable(
-              border: TableBorder.all(
-                  color: Theme.of(context).colorScheme.onBackground),
-              headingTextStyle: Theme.of(context)
-                  .textTheme
-                  .titleSmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
-              columns: const [
-                DataColumn(
-                  label: Expanded(
+          ),
+          const Divider(),
+          Text(
+            "${practice.type.type} Schedule",
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          DataTable(
+            decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer),
+            border: TableBorder.all(
+                color: Theme.of(context).colorScheme.onBackground),
+            headingTextStyle: Theme.of(context)
+                .textTheme
+                .titleSmall
+                ?.copyWith(fontWeight: FontWeight.bold),
+            columns: const [
+              DataColumn(
+                label: Expanded(
+                  child: Text(
+                    "Time",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Expanded(
                     child: Text(
-                      "Time",
+                  "Activity",
+                  textAlign: TextAlign.center,
+                )),
+              ),
+            ],
+            rows: List.generate(
+              activities.length,
+              (index) => DataRow(cells: [
+                DataCell(
+                  Text(
+                    DateFormat("hh:mm aa").format(
+                      activities.keys.elementAt(index),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  Center(
+                    child: Text(
+                      activities.values.elementAt(index),
                       textAlign: TextAlign.center,
                     ),
                   ),
                 ),
-                DataColumn(
-                  label: Expanded(
-                      child: Text(
-                    "Activity",
-                    textAlign: TextAlign.center,
-                  )),
-                ),
-              ],
-              rows: List.generate(
-                activities.length,
-                (index) => DataRow(cells: [
-                  DataCell(
-                    Text(
-                      DateFormat("hh:mm aa").format(
-                        activities.keys.elementAt(index),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    Center(
-                      child: Text(
-                        activities.values.elementAt(index),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ]),
-              ),
+              ]),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
