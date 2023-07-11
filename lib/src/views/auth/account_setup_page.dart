@@ -6,6 +6,7 @@ import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/auth/auth_service.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
+import 'package:lhs_fencing/src/services/firestore/functions/get_fencing_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
@@ -21,10 +22,15 @@ class AccountSetupPage extends ConsumerStatefulWidget {
 
 class _AccountSetupState extends ConsumerState<AccountSetupPage> {
   late UserData userData;
+  late TextEditingController clubController;
+  late TextEditingController ratingController;
+  bool loadingData = false;
 
   @override
   void initState() {
     userData = UserData.create(widget.user);
+    clubController = TextEditingController(text: userData.club);
+    ratingController = TextEditingController(text: userData.rating);
     super.initState();
   }
 
@@ -42,7 +48,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
               padding: const EdgeInsets.all(16),
               children: [
                 const Text(
-                  "Welcome to the '23-'24 Season!",
+                  "Welcome to the 2023-24 Season!",
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 25),
                 ),
@@ -91,6 +97,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                 ListTile(
                   title: const Text("School Year"),
                   trailing: DropdownButton(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     value: userData.schoolYear,
                     items: List.generate(
                       SchoolYear.values.length,
@@ -146,16 +153,45 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                 ),
                 const Divider(),
                 const SizedBox(height: 8),
+                ListTile(
+                  title: const Text("USA Fencing Member?"),
+                  subtitle: const Text(
+                      "Tap here to pull your info from USA Fencing\n(Make sure your name and weapon are set above)"),
+                  trailing: loadingData
+                      ? const CircularProgressIndicator.adaptive()
+                      : const Icon(Icons.download),
+                  onTap: !loadingData
+                      ? () async {
+                          setState(() {
+                            loadingData = true;
+                          });
+                          UserData? newData =
+                              await getFencingData(userData, upload: false);
+                          setState(() {
+                            loadingData = false;
+                          });
+                          if (newData != null) {
+                            setState(() {
+                              clubController.text =
+                                  userData.club = newData.club;
+                              ratingController.text =
+                                  userData.rating = newData.rating;
+                            });
+                          }
+                        }
+                      : null,
+                ),
+                const SizedBox(height: 8),
                 Row(
                   children: [
                     Flexible(
                       flex: 2,
                       child: TextFormField(
+                        controller: clubController,
                         textCapitalization: TextCapitalization.words,
                         decoration: const InputDecoration(
                             labelText: "Club Affiliation",
                             hintText: "V Fencing, Lilov, Wanglei etc."),
-                        initialValue: userData.club,
                         onChanged: (value) => setState(() {
                           userData.club = value;
                         }),
@@ -164,21 +200,21 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                     const SizedBox(width: 8),
                     Flexible(
                       child: TextFormField(
+                        controller: ratingController,
                         textCapitalization: TextCapitalization.characters,
                         decoration: const InputDecoration(
                             labelText: "Rating", hintText: "U, C22, A23, etc."),
-                        initialValue: userData.rating,
                         onChanged: (value) => setState(() {
                           userData.rating = value;
                         }),
                       ),
-                    )
+                    ),
                   ],
                 ),
                 if (userData.club.isNotEmpty) ...[
                   const SizedBox(height: 8),
                   ListTile(
-                    title: const Text("Club Days"),
+                    title: const Text("Days At Club"),
                     subtitle: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [

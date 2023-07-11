@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/admin_home_structure.dart';
 import 'package:lhs_fencing/src/home_structure.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
+import 'package:lhs_fencing/src/services/firestore/functions/get_fencing_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/views/auth/account_setup_page.dart';
 import 'package:lhs_fencing/src/views/auth/auth_page.dart';
@@ -17,8 +18,12 @@ class AuthWrapperPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    bool refreshedUser = false;
     Widget whenUserData(UserData? userData, User user) {
       if (userData != null) {
+        if (!refreshedUser) {
+          getFencingData(userData);
+        }
         if (userData.admin) {
           return const AdminHomeStructure();
         }
