@@ -22,7 +22,7 @@ class AuthWrapperPage extends ConsumerWidget {
     Widget whenUserData(UserData? userData, User user) {
       if (userData != null) {
         if (!refreshedUser) {
-          getFencingData(userData);
+          getFencingData(userData, context);
         }
         if (userData.admin) {
           return const AdminHomeStructure();

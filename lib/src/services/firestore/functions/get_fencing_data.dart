@@ -7,7 +7,8 @@ import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
 
 Future<UserData?> getFencingData(
-  UserData userData, {
+  UserData userData,
+  BuildContext context, {
   bool upload = true,
 }) async {
   try {
@@ -71,8 +72,9 @@ Future<UserData?> getFencingData(
       return userData;
     }
   } catch (e) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(e.toString())));
     debugPrint("Uncaught error: $e");
-    return null;
   }
   return null;
 }

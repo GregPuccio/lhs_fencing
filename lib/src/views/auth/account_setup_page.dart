@@ -166,7 +166,8 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                             loadingData = true;
                           });
 
-                          getFencingData(userData, upload: false).then((value) {
+                          getFencingData(userData, context, upload: false)
+                              .then((value) {
                             if (value == null) {
                               showDialog(
                                   context: context,
