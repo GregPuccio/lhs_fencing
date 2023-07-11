@@ -155,29 +155,47 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                 const SizedBox(height: 8),
                 ListTile(
                   title: const Text("USA Fencing Member?"),
-                  subtitle: const Text(
-                      "Tap here to pull your info from USA Fencing\n(Make sure your name and weapon are set above)"),
+                  subtitle:
+                      const Text("Tap here to pull your USA Fencing info"),
                   trailing: loadingData
                       ? const CircularProgressIndicator.adaptive()
                       : const Icon(Icons.download),
                   onTap: !loadingData
-                      ? () async {
+                      ? () {
                           setState(() {
                             loadingData = true;
                           });
-                          UserData? newData =
-                              await getFencingData(userData, upload: false);
-                          setState(() {
-                            loadingData = false;
+
+                          getFencingData(userData, upload: false).then((value) {
+                            if (value == null) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        title: const Text(
+                                            "No Membership Data Found"),
+                                        content: const Text(
+                                            "Make sure that your first and last names are the spelt the same way as your registered name on USA Fencing.\n\nIf you do not have USA Fencing Membership you can leave these fields blank."),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            child: const Text("Close"),
+                                          )
+                                        ],
+                                      ));
+                              setState(() {
+                                loadingData = false;
+                              });
+                            } else {
+                              setState(() {
+                                clubController.text =
+                                    userData.club = value.club;
+                                ratingController.text =
+                                    userData.rating = value.rating;
+                                loadingData = false;
+                              });
+                            }
                           });
-                          if (newData != null) {
-                            setState(() {
-                              clubController.text =
-                                  userData.club = newData.club;
-                              ratingController.text =
-                                  userData.rating = newData.rating;
-                            });
-                          }
                         }
                       : null,
                 ),
