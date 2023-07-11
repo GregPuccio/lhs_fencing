@@ -12,7 +12,7 @@ Future<UserData?> getFencingData(
   bool upload = true,
 }) async {
   try {
-    final url = Uri.http('proxy-7jwpj4qcgq-uc.a.run.app',
+    final url = Uri.https('proxy-7jwpj4qcgq-uc.a.run.app',
         'https://member.usafencing.org/search/members', {
       'first': userData.firstName,
       'last': userData.lastName,
