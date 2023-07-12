@@ -9,6 +9,8 @@ import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/firestore/functions/attendance_functions.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
+import 'package:lhs_fencing/src/views/home/widgets/checkin_button.dart';
+import 'package:lhs_fencing/src/views/home/widgets/checkout_button.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 
@@ -43,6 +45,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
     UserData userData = ref.watch(userDataProvider).asData!.value!;
     late Practice practice;
     Widget whenData(List<AttendanceMonth> months) {
+      bool todayBool = DateTime.now().day == practice.startTime.day;
       List<Attendance> attendances = [];
       for (var month in months) {
         attendances.addAll(month.attendances);
@@ -53,27 +56,62 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
         },
         orElse: () => Attendance.noUserCreate(practice),
       );
-      attendance.comments.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      attendance.comments.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
       return Scaffold(
-        appBar: AppBar(
-          title: Text(attendance.practiceStartString),
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(1),
-            child: Center(
-              child: attendance.attended
-                  ? Text("${practice.type.type} | ${attendance.info}")
-                  : attendance.excusedAbsense
-                      ? Text("${practice.type.type} | Excused Absense")
-                      : Text("${practice.type.type} | Did not check in"),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(100),
+          child: AppBar(
+            title: Text(attendance.practiceStartString),
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(1),
+              child: ListTile(
+                title: Text(practice.type.type),
+                subtitle: Text(
+                    "Status: ${attendance.attended ? attendance.info : attendance.excusedAbsense ? "Excused Absense" : "Did not check in"}"),
+                trailing: attendance.checkOut != null
+                    ? null
+                    : attendance.attended
+                        ? CheckOutButton(
+                            attendance: attendance,
+                            practice: practice,
+                          )
+                        : CheckInButton(today: todayBool, practice: practice),
+              ),
             ),
           ),
         ),
-        body: ListView.separated(
-          itemCount: attendance.comments.length + 1,
-          itemBuilder: (context, index) {
-            if (index == attendance.comments.length) {
-              return Padding(
+        body: Column(
+          children: [
+            Flexible(
+              child: ListView.separated(
+                reverse: true,
+                itemCount: attendance.comments.length,
+                itemBuilder: (context, index) {
+                  Comment comment = attendance.comments[index];
+                  bool fencerComment = comment.user.id == userData.id;
+
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: fencerComment
+                          ? Theme.of(context).colorScheme.primaryContainer
+                          : Theme.of(context).colorScheme.secondaryContainer,
+                      child: Text(attendance.userData.initials),
+                    ),
+                    title: Text(comment.text),
+                    subtitle: Text(comment.createdAtString),
+                  );
+                },
+                separatorBuilder: (context, index) => const Divider(),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15)),
+                  color: Theme.of(context).colorScheme.primary),
+              child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ListTile(
                   leading: CircleAvatar(
@@ -84,7 +122,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
                   title: TextField(
                     controller: controller,
                     decoration: InputDecoration(
-                      label: const Text("Add Comment"),
+                      hintText: "Add a comment",
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.send),
                         onPressed: controller.text.isEmpty
@@ -105,24 +143,9 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
                     ),
                   ),
                 ),
-              );
-            } else {
-              Comment comment = attendance.comments[index];
-              bool fencerComment = comment.user.id == userData.id;
-
-              return ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: fencerComment
-                      ? Theme.of(context).colorScheme.primaryContainer
-                      : Theme.of(context).colorScheme.secondaryContainer,
-                  child: Text(attendance.userData.initials),
-                ),
-                title: Text(comment.text),
-                subtitle: Text(comment.createdAtString),
-              );
-            }
-          },
-          separatorBuilder: (context, index) => const Divider(),
+              ),
+            ),
+          ],
         ),
       );
     }

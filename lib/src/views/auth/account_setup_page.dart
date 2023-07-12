@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/auth/auth_service.dart';
@@ -233,7 +234,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                 if (userData.club.isNotEmpty) ...[
                   const SizedBox(height: 8),
                   ListTile(
-                    title: const Text("Days At Club"),
+                    title: const Text("Typical Days At Club"),
                     subtitle: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -261,6 +262,29 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 8),
+                  ListTile(
+                      title: const Text("When Did You Start Fencing?"),
+                      subtitle: const Text("Tap here to change"),
+                      trailing: Text(
+                        DateFormat('MM/dd/yyyy').format(userData.startDate),
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      onTap: () async {
+                        DateTime now = DateTime.now();
+                        DateTime? retVal = await showDatePicker(
+                          initialEntryMode: DatePickerEntryMode.input,
+                          context: context,
+                          initialDate: now,
+                          firstDate: DateTime(now.year - 18),
+                          lastDate: now,
+                        );
+                        if (retVal != null) {
+                          setState(() {
+                            userData.startDate = retVal;
+                          });
+                        }
+                      }),
                 ],
                 const SizedBox(height: 32),
                 OutlinedButton.icon(

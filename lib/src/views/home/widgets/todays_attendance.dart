@@ -25,39 +25,43 @@ class TodaysAttendance extends ConsumerWidget {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Theme.of(context).colorScheme.primaryContainer,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Text(
-                    todayBool
-                        ? "Today's ${practice.type.type} @ ${DateFormat("h:mm aa").format(practice.startTime)}"
-                        : "Next: ${DateFormat("EEEE").format(practice.startTime)}'s ${practice.type.type}",
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  ListTile(
-                    title: Text(
-                        DateFormat("MM/dd${todayBool ? "" : " @ h:mm aa"}")
-                            .format(practice.startTime)),
-                    subtitle: AttendanceInfo(todaysAttendance),
-                    trailing: todaysAttendance.checkOut != null
-                        ? null
-                        : todaysAttendance.attended
-                            ? CheckOutButton(
-                                attendance: todaysAttendance,
-                                practice: practice,
-                              )
-                            : CheckInButton(
-                                today: todayBool, practice: practice),
-                    onTap: () => context.router
-                        .push(AttendanceRoute(practiceID: todaysAttendance.id)),
-                  ),
-                ],
+          InkWell(
+            onTap: () => context.router
+                .push(AttendanceRoute(practiceID: todaysAttendance.id)),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Theme.of(context).colorScheme.primaryContainer,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Text(
+                      todayBool
+                          ? "Today's ${practice.type.type} @ ${DateFormat("h:mm aa").format(practice.startTime)}"
+                          : "Next: ${DateFormat("EEEE").format(practice.startTime)}'s ${practice.type.type}",
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    ListTile(
+                      title: Text(
+                          DateFormat("MM/dd${todayBool ? "" : " @ h:mm aa"}")
+                              .format(practice.startTime)),
+                      subtitle: AttendanceInfo(todaysAttendance),
+                      trailing: todaysAttendance.checkOut != null
+                          ? null
+                          : todaysAttendance.attended
+                              ? CheckOutButton(
+                                  attendance: todaysAttendance,
+                                  practice: practice,
+                                )
+                              : CheckInButton(
+                                  today: todayBool, practice: practice),
+                      onTap: () => context.router.push(
+                          AttendanceRoute(practiceID: todaysAttendance.id)),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

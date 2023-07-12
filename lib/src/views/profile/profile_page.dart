@@ -67,23 +67,23 @@ class ProfilePage extends ConsumerWidget {
         ),
         ListTile(
           title: Text(
-              "${userData.startDate.difference(DateTime.now()).inDays / 365} Years"),
+              "${(DateTime.now().difference(userData.startDate).inDays / 365).toStringAsFixed(1)} Years"),
           subtitle: const Text("Years of Experience"),
         ),
         ListTile(
-          title: Text(userData.club),
+          title: Text(userData.club.isEmpty ? "None" : userData.club),
           subtitle: const Text("Club Affiliation"),
         ),
         ListTile(
           title: Text(userData.clubDays.isEmpty
               ? "None"
-              : userData.clubDays.join(", ")),
+              : userData.clubDays.map((e) => e.abbreviation).join(", ")),
           subtitle: const Text("Days At Club"),
         ),
         const Divider(),
         ListTile(
           leading: const Icon(Icons.sync),
-          title: const Text("Follow System Theming"),
+          title: const Text("Automatic Theme (From Device Settings)"),
           trailing: Switch.adaptive(
               value: controller.themeMode == ThemeMode.system,
               onChanged: (val) {
