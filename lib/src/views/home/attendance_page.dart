@@ -98,9 +98,14 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
                   return ListTile(
                     leading: CircleAvatar(
                       backgroundColor: fencerComment
-                          ? Theme.of(context).colorScheme.primaryContainer
-                          : Theme.of(context).colorScheme.secondaryContainer,
-                      child: Text(attendance.userData.initials),
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.secondary,
+                      child: Text(
+                        attendance.userData.initials,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                      ),
                     ),
                     title: Text(comment.text),
                     subtitle: Text(comment.createdAtString),
@@ -114,14 +119,18 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(15),
                       topRight: Radius.circular(15)),
-                  color: Theme.of(context).colorScheme.tertiaryContainer),
+                  color: Theme.of(context).colorScheme.primaryContainer),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.primaryContainer,
-                    child: Text(userData.initials),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    child: Text(
+                      userData.initials,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                    ),
                   ),
                   title: TextField(
                     controller: controller,
