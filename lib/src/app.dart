@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,7 +29,15 @@ class MyApp extends StatelessWidget {
         return ProviderScope(
           child: MaterialApp.router(
             debugShowCheckedModeBanner: false,
-            routerConfig: _appRouter.config(),
+            routerConfig: _appRouter.config(
+                deepLinkBuilder: (deepLink) {
+                  if (deepLink.path.startsWith('/attendance')) {
+                    return DeepLink.path(deepLink.path);
+                  } else {
+                    return DeepLink.defaultPath;
+                  }
+                },
+                rebuildStackOnDeepLink: true),
             // routerDelegate: _appRouter.delegate(),
             // routeInformationParser: _appRouter.defaultRouteParser(),
             // Providing a restorationScopeId allows the Navigator built by the

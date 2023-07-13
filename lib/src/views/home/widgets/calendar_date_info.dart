@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:lhs_fencing/src/models/activities.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 
 import 'package:lhs_fencing/src/models/practice.dart';
@@ -17,22 +16,23 @@ class CalendarDateInfo extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Map<DateTime, String> activities = Activities(practice).activities;
+    // Map<DateTime, String> activities = Activities(practice).activities;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
           ListTile(
             title: Text(
-                "${DateFormat("EEEE").format(practice.startTime)}'s ${practice.type.type}"),
+                "${DateFormat("MMM d").format(practice.startTime)} - ${practice.type.type}"),
             subtitle: AttendanceInfo(attendance),
+            trailing: const Icon(Icons.arrow_forward),
             onTap: () =>
                 context.router.push(AttendanceRoute(practiceID: attendance.id)),
           ),
-          Text(
-            "${DateFormat("EEEE").format(practice.startTime)}'s ${practice.type.type} Schedule",
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          // Text(
+          //   "${DateFormat("EEEE").format(practice.startTime)}'s ${practice.type.type} Schedule",
+          //   style: Theme.of(context).textTheme.titleLarge,
+          // ),
         ],
       ),
     );

@@ -83,7 +83,7 @@ class ProfilePage extends ConsumerWidget {
         const Divider(),
         ListTile(
           leading: const Icon(Icons.sync),
-          title: const Text("Automatic Theme (From Device Settings)"),
+          title: const Text("Automatic Theme (Device Settings)"),
           trailing: Switch.adaptive(
               value: controller.themeMode == ThemeMode.system,
               onChanged: (val) {

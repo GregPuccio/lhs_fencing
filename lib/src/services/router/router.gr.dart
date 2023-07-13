@@ -32,7 +32,10 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     AttendanceRoute.name: (routeData) {
-      final args = routeData.argsAs<AttendanceRouteArgs>();
+      final pathParams = routeData.inheritedPathParams;
+      final args = routeData.argsAs<AttendanceRouteArgs>(
+          orElse: () => AttendanceRouteArgs(
+              practiceID: pathParams.getString('practiceID')));
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: AttendancePage(
@@ -153,6 +156,7 @@ class AttendanceRoute extends PageRouteInfo<AttendanceRouteArgs> {
             practiceID: practiceID,
             key: key,
           ),
+          rawPathParams: {'practiceID': practiceID},
           initialChildren: children,
         );
 

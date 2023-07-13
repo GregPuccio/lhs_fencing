@@ -36,34 +36,40 @@ Future<UserData?> getFencingData(
                 return e.innerHtml.trim();
               }
             })));
+    bool updated = false;
     if (titles.isNotEmpty) {
       if (userData.club != titles[3]) {
         userData.club = titles[3];
+        updated = true;
       }
       switch (userData.weapon) {
         case Weapon.foil:
           if (userData.rating != titles[7]) {
             userData.rating = titles[7];
+            updated = true;
           }
           break;
         case Weapon.epee:
           if (userData.rating != titles[8]) {
             userData.rating = titles[8];
+            updated = true;
           }
           break;
         case Weapon.saber:
           if (userData.rating != titles[9]) {
             userData.rating = titles[9];
+            updated = true;
           }
           break;
 
         case Weapon.unsure:
           if (userData.rating != "U") {
             userData.rating = "U";
+            updated = true;
           }
           break;
       }
-      if (upload) {
+      if (upload && updated) {
         FirestoreService.instance.setData(
           path: FirestorePath.user(userData.id),
           data: userData.toMap(),

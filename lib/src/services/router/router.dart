@@ -21,14 +21,21 @@ class AppRouter extends _$AppRouter {
 
   @override
   final List<AutoRoute> routes = <AutoRoute>[
-    AutoRoute(page: AuthWrapperRoute.page, initial: true),
+    AutoRoute(
+      page: AuthWrapperRoute.page,
+      path: '/',
+      initial: true,
+    ),
     AutoRoute(page: AddPracticesRoute.page, path: "/addPractices"),
     AutoRoute(page: EditPracticeRoute.page, path: "/editPractice"),
     AutoRoute(page: PracticeRoute.page, path: "/practice"),
     AutoRoute(page: FencerListRoute.page, path: "/fencerList"),
     AutoRoute(page: FencerDetailsRoute.page, path: "/fencerDetails"),
     AutoRoute(page: EditFencerStatusRoute.page, path: "/editFencerStatus"),
-    AutoRoute(page: AttendanceRoute.page, path: "/attendance"),
+    AutoRoute(
+      page: AttendanceRoute.page,
+      path: "/attendance/:practiceID",
+    ),
     RedirectRoute(path: '*', redirectTo: '/'),
   ];
 }

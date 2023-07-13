@@ -17,7 +17,8 @@ import 'package:lhs_fencing/src/widgets/loading.dart';
 @RoutePage()
 class AttendancePage extends ConsumerStatefulWidget {
   final String practiceID;
-  const AttendancePage({required this.practiceID, super.key});
+  const AttendancePage(
+      {@PathParam('practiceID') required this.practiceID, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AttendancePageState();
@@ -42,7 +43,10 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
 
   @override
   Widget build(BuildContext context) {
-    UserData userData = ref.watch(userDataProvider).asData!.value!;
+    UserData? userData = ref.watch(userDataProvider).asData?.value;
+    if (userData == null) {
+      return const CircularProgressIndicator.adaptive();
+    }
     late Practice practice;
     Widget whenData(List<AttendanceMonth> months) {
       bool todayBool = DateTime.now().day == practice.startTime.day;
@@ -60,7 +64,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
 
       return Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100),
+          preferredSize: const Size.fromHeight(125),
           child: AppBar(
             title: Text(attendance.practiceStartString),
             bottom: PreferredSize(
@@ -165,7 +169,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
     return ref.watch(practicesProvider).when(
           data: whenPracticeData,
           error: (error, stackTrace) => const ErrorPage(),
-          loading: () => const LoadingTile(),
+          loading: () => const LoadingPage(),
         );
   }
 }

@@ -18,11 +18,12 @@ class AttendanceInfo extends StatelessWidget {
                 : attendance.unexcusedAbsense
                     ? const Text("Unexcused Absense")
                     : const Text("Did not check in"),
-        if (attendance.comments.isNotEmpty)
-          Text(
-            "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+        Text(
+          attendance.comments.isEmpty
+              ? "Tap to add a comment"
+              : "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
       ],
     );
   }
