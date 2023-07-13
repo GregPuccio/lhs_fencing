@@ -96,7 +96,7 @@ class CheckOutButton extends ConsumerWidget {
               actions: [
                 TextButton(
                   onPressed: () {
-                    checkOut().then((value) => context.router.pop());
+                    context.router.pop();
                   },
                   child: const Text(
                     "Bye!",
@@ -104,7 +104,7 @@ class CheckOutButton extends ConsumerWidget {
                 ),
               ],
             ),
-          );
+          ).then((value) => checkOut());
         }
       },
       child: Text(

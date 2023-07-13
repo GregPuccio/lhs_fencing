@@ -114,7 +114,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(15),
                       topRight: Radius.circular(15)),
-                  color: Theme.of(context).colorScheme.primary),
+                  color: Theme.of(context).colorScheme.tertiaryContainer),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ListTile(
