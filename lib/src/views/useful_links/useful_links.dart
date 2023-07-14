@@ -87,7 +87,7 @@ class UsefulLinks extends StatelessWidget {
         ),
         const Divider(),
         ListTile(
-          leading: Image.asset("askfredlogo2.png", width: width),
+          leading: Image.asset("assets/askfredlogo.png", width: width),
           title: const Text("AskFRED - Local Tournaments"),
           subtitle:
               const Text("Best resource to find local events to compete in."),
