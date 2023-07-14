@@ -52,22 +52,29 @@ class _HomeStructureState extends ConsumerState<HomeStructure> {
         attendances.addAll(month.attendances);
       }
 
-      Practice upcomingPractice = practices.reduce((a, b) {
-        DateTime now = DateTime.now();
-        if (a.endTime.add(const Duration(minutes: 15)).isAfter(now) &&
-            b.endTime.add(const Duration(minutes: 15)).isAfter(now)) {
-          return a.startTime.compareTo(b.startTime).isNegative ? a : b;
-        } else if (a.endTime.add(const Duration(minutes: 15)).isAfter(now)) {
-          return a;
-        } else {
-          return b;
-        }
-      });
+      Practice? upcomingPractice = practices.isNotEmpty
+          ? practices.reduce((a, b) {
+              DateTime now = DateTime.now();
+              if (a.endTime.add(const Duration(minutes: 15)).isAfter(now) &&
+                  b.endTime.add(const Duration(minutes: 15)).isAfter(now)) {
+                return a.startTime.compareTo(b.startTime).isNegative ? a : b;
+              } else if (a.endTime
+                  .add(const Duration(minutes: 15))
+                  .isAfter(now)) {
+                return a;
+              } else {
+                return b;
+              }
+            })
+          : null;
 
-      final todaysAttendance = attendances.firstWhere(
-        (a) => a.id == upcomingPractice.id,
-        orElse: () => Attendance.noUserCreate(upcomingPractice),
-      );
+      Attendance? todaysAttendance;
+      if (upcomingPractice != null) {
+        todaysAttendance = attendances.firstWhere(
+          (a) => a.id == upcomingPractice.id,
+          orElse: () => Attendance.noUserCreate(upcomingPractice),
+        );
+      }
 
       LinkedHashMap<DateTime, List<Practice>> practicesByDay = LinkedHashMap(
         equals: isSameDay,
@@ -152,17 +159,7 @@ class _HomeStructureState extends ConsumerState<HomeStructure> {
       practices
           .retainWhere((p) => p.team == Team.both || p.team == userData.team);
       practices.sort((a, b) => -a.startTime.compareTo(b.startTime));
-      if (practices.isEmpty) {
-        practices.add(Practice(
-          id: "",
-          location: "Livingston Aux Gym",
-          startTime: DateTime.fromMillisecondsSinceEpoch(0),
-          endTime: DateTime.fromMillisecondsSinceEpoch(0)
-              .add(const Duration(minutes: 1)),
-          type: TypePractice.fundraiser,
-          team: Team.both,
-        ));
-      }
+
       return ref.watch(attendancesProvider).when(
             data: whenAttendanceData,
             error: (error, stackTrace) => const ErrorPage(),

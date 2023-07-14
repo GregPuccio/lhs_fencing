@@ -5,13 +5,14 @@ import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/views/admin/fencer_details_page.dart';
+import 'package:lhs_fencing/src/views/home/widgets/no_events_found.dart';
 import 'package:lhs_fencing/src/views/home/widgets/todays_attendance.dart';
 import 'package:lhs_fencing/src/widgets/indicator.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
 
 class HomePage extends StatefulWidget {
-  final Attendance todaysAttendance;
-  final Practice upcomingPractice;
+  final Attendance? todaysAttendance;
+  final Practice? upcomingPractice;
   final List<Practice> practices;
   final List<Attendance> attendances;
   final UserData userData;
@@ -172,10 +173,13 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        TodaysAttendance(
-          todaysAttendance: widget.todaysAttendance,
-          practice: widget.upcomingPractice,
-        ),
+        if (widget.todaysAttendance != null && widget.upcomingPractice != null)
+          TodaysAttendance(
+            todaysAttendance: widget.todaysAttendance!,
+            practice: widget.upcomingPractice!,
+          )
+        else
+          const NoEventsFound(),
       ],
     );
   }

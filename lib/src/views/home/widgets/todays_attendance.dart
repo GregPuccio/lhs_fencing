@@ -19,35 +19,32 @@ class TodaysAttendance extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     bool todayBool = DateTime.now().day == practice.startTime.day;
+    bool inPast = DateTime.now().isAfter(practice.endTime);
     Map<DateTime, String> activities = Activities(practice).activities;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          InkWell(
-            onTap: () => context.router
-                .push(AttendanceRoute(practiceID: todaysAttendance.id)),
-            child: Container(
+          if (inPast) ...[
+            Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Theme.of(context).colorScheme.primaryContainer,
+                color: Theme.of(context).colorScheme.tertiaryContainer,
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
                     Text(
-                      todayBool
-                          ? "Today's ${practice.type.type} @ ${DateFormat("h:mm aa").format(practice.startTime)}"
-                          : "Next: ${DateFormat("EEEE").format(practice.startTime)}'s ${practice.type.type}",
+                      "More Events TBA",
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     ListTile(
-                      title: Text(
-                          DateFormat("MM/dd${todayBool ? "" : " @ h:mm aa"}")
-                              .format(practice.startTime)),
-                      subtitle: AttendanceInfo(todaysAttendance),
+                      title: const Text(
+                          "Looks like there are no more upcoming events!"),
+                      subtitle: const Text(
+                          "If you think this is an error, please let Coach Greg know"),
                       trailing: todaysAttendance.checkOut != null
                           ? null
                           : todaysAttendance.attended
@@ -64,7 +61,48 @@ class TodaysAttendance extends ConsumerWidget {
                 ),
               ),
             ),
-          ),
+          ] else ...[
+            InkWell(
+              onTap: () => context.router
+                  .push(AttendanceRoute(practiceID: todaysAttendance.id)),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        todayBool
+                            ? "Today's ${practice.type.type} @ ${DateFormat("h:mm aa").format(practice.startTime)}"
+                            : "Next: ${DateFormat("EEEE").format(practice.startTime)}'s ${practice.type.type}",
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      ListTile(
+                        title: Text(
+                            DateFormat("MM/dd${todayBool ? "" : " @ h:mm aa"}")
+                                .format(practice.startTime)),
+                        subtitle: AttendanceInfo(todaysAttendance),
+                        trailing: todaysAttendance.checkOut != null
+                            ? null
+                            : todaysAttendance.attended
+                                ? CheckOutButton(
+                                    attendance: todaysAttendance,
+                                    practice: practice,
+                                  )
+                                : CheckInButton(
+                                    today: todayBool, practice: practice),
+                        onTap: () => context.router.push(
+                            AttendanceRoute(practiceID: todaysAttendance.id)),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
           const Divider(),
           Text(
             "${practice.type.type} Schedule",

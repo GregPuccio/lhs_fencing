@@ -1,4 +1,4 @@
-String userCollection = "users";
+String userCollection = "users23";
 String practiceCollection = "practices";
 String attendanceCollection = "attendances";
 
