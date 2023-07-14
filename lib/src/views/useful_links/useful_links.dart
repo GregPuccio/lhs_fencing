@@ -26,9 +26,9 @@ class UsefulLinks extends StatelessWidget {
         const Divider(),
         ListTile(
           leading: Image.asset("assets/NJHSSportsLogo.png", width: width),
-          title: const Text("NJ Highschool Sports - Girls"),
+          title: const Text("NJ High School Sports - Girls"),
           subtitle: const Text(
-              "Official site for the most up to date results for all NJ highschool girls fencing teams."),
+              "Official site for the most up to date results for all NJ high school girls fencing teams."),
           trailing: const Icon(Icons.open_in_new),
           onTap: () {
             launchUrl(
@@ -42,9 +42,9 @@ class UsefulLinks extends StatelessWidget {
         const Divider(),
         ListTile(
           leading: Image.asset("assets/NJHSSportsLogo.png", width: width),
-          title: const Text("NJ Highschool Sports - Boys"),
+          title: const Text("NJ High School Sports - Boys"),
           subtitle: const Text(
-              "Official site for the most up to date results for all NJ highschool boys fencing teams."),
+              "Official site for the most up to date results for all NJ high school boys fencing teams."),
           trailing: const Icon(Icons.open_in_new),
           onTap: () {
             launchUrl(
