@@ -346,20 +346,21 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                       if (widget.userData != null) {
                         FirestoreService.instance
                             .updateData(
-                              path: FirestorePath.user(user.uid),
-                              data: userData.toMap(),
-                            )
-                            .then(
-                              (value) => context.popRoute().then(
-                                    (value) => ScaffoldMessenger.of(context)
-                                        .showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                            "Profile Updated Successfully!"),
-                                      ),
-                                    ),
+                          path: FirestorePath.user(user.uid),
+                          data: userData.toMap(),
+                        )
+                            .then((value) {
+                          userData = widget.userData!;
+                          return context.popRoute().then(
+                                (value) =>
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text("Profile Updated Successfully!"),
                                   ),
-                            );
+                                ),
+                              );
+                        });
                       } else {
                         FirestoreService.instance.setData(
                           path: FirestorePath.user(user.uid),
