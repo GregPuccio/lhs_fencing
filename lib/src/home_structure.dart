@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
@@ -109,30 +110,36 @@ class _HomeStructureState extends ConsumerState<HomeStructure> {
             ),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: currentIndex,
-          onTap: (value) => setState(() {
-            currentIndex = value;
-          }),
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Home",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_month),
-              label: "Calendar",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.link),
-              label: "Useful Links",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: "Profile",
-            ),
-          ],
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.only(
+              bottom: kIsWeb && defaultTargetPlatform == TargetPlatform.iOS
+                  ? 20
+                  : 0),
+          child: BottomNavigationBar(
+            currentIndex: currentIndex,
+            onTap: (value) => setState(() {
+              currentIndex = value;
+            }),
+            type: BottomNavigationBarType.fixed,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: "Home",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_month),
+                label: "Calendar",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.link),
+                label: "Useful Links",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: "Profile",
+              ),
+            ],
+          ),
         ),
       );
     }
