@@ -26,7 +26,7 @@ class UsefulLinks extends StatelessWidget {
         const Divider(),
         ListTile(
           leading: Image.asset("assets/NJHSSportsLogo.png", width: width),
-          title: const Text("NJ Highschool Sports - Girl's Fencing"),
+          title: const Text("NJ Highschool Sports - Girls"),
           subtitle: const Text(
               "Official site for the most up to date results for all girl's fencing teams in New Jersey highschools."),
           trailing: const Icon(Icons.open_in_new),
@@ -42,7 +42,7 @@ class UsefulLinks extends StatelessWidget {
         const Divider(),
         ListTile(
           leading: Image.asset("assets/NJHSSportsLogo.png", width: width),
-          title: const Text("NJ Highschool Sports - Boy's Fencing"),
+          title: const Text("NJ Highschool Sports - Boys"),
           subtitle: const Text(
               "Official site for the most up to date results for all boy's fencing teams in New Jersey highschools."),
           trailing: const Icon(Icons.open_in_new),
@@ -103,9 +103,9 @@ class UsefulLinks extends StatelessWidget {
         const Divider(),
         ListTile(
           leading: SvgPicture.asset("assets/YouTubeLogo.svg", width: width),
-          title: const Text("YouTube: USA Fencing - National"),
+          title: const Text("YouTube: USA Fencing"),
           subtitle: const Text(
-              "YouTube Channel for the International Fencing Federation. You can find live competitions, fencing videos, and interviews with fencers here."),
+              "YouTube Channel for the USA Fencing Federation. You can find fencing videos, behind the scenes, and interviews with fencers here."),
           trailing: const Icon(Icons.open_in_new),
           onTap: () {
             launchUrl(
@@ -119,7 +119,7 @@ class UsefulLinks extends StatelessWidget {
         const Divider(),
         ListTile(
           leading: SvgPicture.asset("assets/YouTubeLogo.svg", width: width),
-          title: const Text("YouTube: FIE Fencing - International/Olympics"),
+          title: const Text("YouTube: FIE Fencing"),
           subtitle: const Text(
               "YouTube Channel for the International Fencing Federation. You can find live competitions, fencing videos, and interviews with fencers here."),
           trailing: const Icon(Icons.open_in_new),
@@ -135,7 +135,7 @@ class UsefulLinks extends StatelessWidget {
         const Divider(),
         ListTile(
           leading: SvgPicture.asset("assets/YouTubeLogo.svg", width: width),
-          title: const Text("YouTube: CyrusOfChaos - All Levels"),
+          title: const Text("YouTube: CyrusOfChaos"),
           subtitle: const Text(
               "YouTube Channel for fencing at all levels. You can find lots of great competition videos here along with some analysis videos."),
           trailing: const Icon(Icons.open_in_new),
