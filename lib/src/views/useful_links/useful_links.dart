@@ -28,7 +28,7 @@ class UsefulLinks extends StatelessWidget {
           leading: Image.asset("assets/NJHSSportsLogo.png", width: width),
           title: const Text("NJ Highschool Sports - Girls"),
           subtitle: const Text(
-              "Official site for the most up to date results for all girl's fencing teams in New Jersey highschools."),
+              "Official site for the most up to date results for all NJ highschool girls fencing teams."),
           trailing: const Icon(Icons.open_in_new),
           onTap: () {
             launchUrl(
@@ -44,7 +44,7 @@ class UsefulLinks extends StatelessWidget {
           leading: Image.asset("assets/NJHSSportsLogo.png", width: width),
           title: const Text("NJ Highschool Sports - Boys"),
           subtitle: const Text(
-              "Official site for the most up to date results for all boy's fencing teams in New Jersey highschools."),
+              "Official site for the most up to date results for all NJ highschool boys fencing teams."),
           trailing: const Icon(Icons.open_in_new),
           onTap: () {
             launchUrl(
