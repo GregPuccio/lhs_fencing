@@ -40,22 +40,15 @@ class TodaysAttendance extends ConsumerWidget {
                       "More Events TBA",
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    ListTile(
-                      title: const Text(
-                          "Looks like there are no more upcoming events!"),
-                      subtitle: const Text(
-                          "If you think this is an error, please let Coach Greg know"),
-                      trailing: todaysAttendance.checkOut != null
-                          ? null
-                          : todaysAttendance.attended
-                              ? CheckOutButton(
-                                  attendance: todaysAttendance,
-                                  practice: practice,
-                                )
-                              : CheckInButton(
-                                  today: todayBool, practice: practice),
-                      onTap: () => context.router.push(
-                          AttendanceRoute(practiceID: todaysAttendance.id)),
+                    const ListTile(
+                      title: Text(
+                        "Looks like there are no more upcoming events!",
+                        textAlign: TextAlign.center,
+                      ),
+                      subtitle: Text(
+                        "If you think this is an error, please let Coach Greg know",
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ],
                 ),
@@ -102,60 +95,60 @@ class TodaysAttendance extends ConsumerWidget {
                 ),
               ),
             ),
-          ],
-          const Divider(),
-          Text(
-            "${practice.type.type} Schedule",
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 8),
-          DataTable(
-            decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer),
-            border: TableBorder.all(
-                color: Theme.of(context).colorScheme.onBackground),
-            headingTextStyle: Theme.of(context)
-                .textTheme
-                .titleSmall
-                ?.copyWith(fontWeight: FontWeight.bold),
-            columns: const [
-              DataColumn(
-                label: Expanded(
-                  child: Text(
-                    "Time",
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Expanded(
+            const Divider(),
+            Text(
+              "${practice.type.type} Schedule",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 8),
+            DataTable(
+              decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer),
+              border: TableBorder.all(
+                  color: Theme.of(context).colorScheme.onBackground),
+              headingTextStyle: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  ?.copyWith(fontWeight: FontWeight.bold),
+              columns: const [
+                DataColumn(
+                  label: Expanded(
                     child: Text(
-                  "Activity",
-                  textAlign: TextAlign.center,
-                )),
-              ),
-            ],
-            rows: List.generate(
-              activities.length,
-              (index) => DataRow(cells: [
-                DataCell(
-                  Text(
-                    DateFormat("hh:mm aa").format(
-                      activities.keys.elementAt(index),
-                    ),
-                  ),
-                ),
-                DataCell(
-                  Center(
-                    child: Text(
-                      activities.values.elementAt(index),
+                      "Time",
                       textAlign: TextAlign.center,
                     ),
                   ),
                 ),
-              ]),
+                DataColumn(
+                  label: Expanded(
+                      child: Text(
+                    "Activity",
+                    textAlign: TextAlign.center,
+                  )),
+                ),
+              ],
+              rows: List.generate(
+                activities.length,
+                (index) => DataRow(cells: [
+                  DataCell(
+                    Text(
+                      DateFormat("hh:mm aa").format(
+                        activities.keys.elementAt(index),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    Center(
+                      child: Text(
+                        activities.values.elementAt(index),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );
