@@ -25,7 +25,7 @@ class UsefulLinks extends StatelessWidget {
         ),
         const Divider(),
         ListTile(
-          leading: SvgPicture.asset("assets/NJHSSportsLogo.svg", width: width),
+          leading: Image.asset("assets/NJHSSportsLogo.png", width: width),
           title: const Text("NJ Highschool Sports - Girl's Fencing"),
           subtitle: const Text(
               "Official site for the most up to date results for all girl's fencing teams in New Jersey highschools."),
