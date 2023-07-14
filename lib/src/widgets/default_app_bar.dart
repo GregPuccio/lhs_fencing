@@ -5,13 +5,15 @@ import 'package:lhs_fencing/src/widgets/livingston_logo.dart';
 
 class DefaultAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final bool showInstructions;
-  const DefaultAppBar({this.showInstructions = false, super.key});
+  final bool editUser;
+  const DefaultAppBar(
+      {this.showInstructions = false, this.editUser = false, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AppBar(
-      leading: livingstonLogo,
-      title: const Text("LHS Fencing Attendance"),
+      leading: editUser ? null : livingstonLogo,
+      title: Text(editUser ? "Edit Profile Info" : "LHS Fencing Attendance"),
       actions: [
         if (showInstructions)
           IconButton(

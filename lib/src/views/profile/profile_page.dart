@@ -8,6 +8,7 @@ import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/auth/auth_service.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/settings/theme_controller.dart';
+import 'package:lhs_fencing/src/views/auth/account_setup_page.dart';
 
 class ProfilePage extends ConsumerWidget {
   final UserData userData;
@@ -60,7 +61,18 @@ class ProfilePage extends ConsumerWidget {
             textAlign: TextAlign.center,
           ),
         ),
-        const Divider(),
+        TextButton.icon(
+          label: const Text("Update Profile"),
+          icon: const Icon(Icons.edit),
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => AccountSetupPage(
+                user: ref.watch(authStateChangesProvider).asData!.value!,
+                userData: userData,
+              ),
+            ),
+          ),
+        ),
         ListTile(
           title: Text(userData.rating),
           subtitle: const Text("USA Fencing Rating"),

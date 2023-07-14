@@ -87,21 +87,55 @@ class Attendance {
     return excusedAbsense ? false : checkIn != null;
   }
 
-  String get info {
+  bool get tooSoonForCheckIn =>
+      DateTime.now().difference(practiceStart).inMinutes < -15;
+  bool get isTooLate => DateTime.now().difference(practiceStart).inMinutes > 60;
+  bool get canCheckIn =>
+      DateTime.now().difference(practiceStart).inMinutes >= -15;
+  bool get isLate => DateTime.now().difference(practiceStart).inMinutes > 15;
+  bool get practiceOver => DateTime.now().isAfter(practiceEnd);
+
+  String get attendanceStatus {
     String? checkedIn =
         checkIn != null ? DateFormat('h:mm aa').format(checkIn!) : null;
 
     String? checkedOut =
         checkOut != null ? DateFormat('h:mm aa').format(checkOut!) : null;
-    return "Checked In: ${checkedIn ?? ""}${checkedOut != null ? " - Out: $checkedOut" : ""}";
+    String info =
+        "${practiceOver ? "Attended" : "Checked In"} ${checkedIn ?? ""}${checkedOut != null ? " - $checkedOut" : ""}";
+
+    String text = "Status: ";
+    if (practiceOver) {
+      if (attended) {
+        text += info;
+      } else if (excusedAbsense) {
+        text += "Absent - Excused";
+      } else if (unexcusedAbsense) {
+        text += "Absent - Unexcused";
+      } else {
+        text += "Uncategorized Attendance";
+      }
+    } else {
+      if (tooSoonForCheckIn) {
+        text += "Too Soon For Check In";
+      } else if (isTooLate) {
+        text += "Late Arrival - Check In With Coach";
+      } else if (canCheckIn) {
+        if (isLate) {
+          text += "Late Arrival - Can Check In";
+        } else {
+          text += "On Time - Can Check In";
+        }
+      }
+    }
+    return text;
   }
 
-  bool get isLate {
+  bool get wasLate {
     if (checkIn == null) {
       return false;
     } else {
-      return practiceStart.difference(checkIn!).abs() >
-          const Duration(minutes: 15);
+      return practiceStart.difference(checkIn!).inMinutes > 15;
     }
   }
 
@@ -109,8 +143,7 @@ class Attendance {
     if (checkOut == null) {
       return false;
     } else {
-      return practiceEnd.difference(checkOut!).abs() >
-          const Duration(minutes: 15);
+      return practiceEnd.difference(checkOut!).inMinutes > 15;
     }
   }
 

@@ -105,7 +105,7 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
                   return ListTile(
                     title: Text(practice.startString),
                     subtitle: Text(
-                        "${attendance.isLate ? "Arrived Late" : ""}${attendance.isLate && attendance.leftEarly ? " | " : " "}${attendance.leftEarly ? "Left Early" : ""}"),
+                        "${attendance.wasLate ? "Arrived Late" : ""}${attendance.wasLate && attendance.leftEarly ? " | " : " "}${attendance.leftEarly ? "Left Early" : ""}"),
                     trailing: Icon(
                       attendance.attended
                           ? Icons.check

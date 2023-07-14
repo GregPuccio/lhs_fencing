@@ -40,13 +40,31 @@ class CheckInButton extends ConsumerWidget {
     }
 
     return ElevatedButton.icon(
-      onPressed: today
-          ? () {
-              DateTime now = DateTime.now();
+      onPressed: !today
+          ? null
+          : () {
               String practiceType = practice.type.type;
+              // if we are too late to check in (more than an hour after start)
+              if (practice.isTooLate) {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text("Too Late For Check In"),
+                    content: Text(
+                        "You cannot check in through the app this late after the $practiceType has begun. Ask one of the coaches to check you in."),
+                    actions: [
+                      TextButton(
+                        onPressed: () => context.popRoute(),
+                        child: const Text(
+                          "Understood",
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
               // if we are too early to check in (more than 15 minutes before practice)
-              if (now.isBefore(
-                  practice.startTime.subtract(const Duration(minutes: 15)))) {
+              else if (practice.tooSoonForCheckIn) {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
@@ -64,100 +82,79 @@ class CheckInButton extends ConsumerWidget {
                   ),
                 );
               }
-              // if we are within 15 minutes of starting
-              // (since we didnt get caught at the previous if)
-              // and have not ended practice yet
-              else if (now.isBefore(practice.endTime)) {
-                // if the student is later than 15 minutes to practice
-                if (now.isAfter(
-                    practice.startTime.add(const Duration(minutes: 15)))) {
-                  TextEditingController controller = TextEditingController();
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text("Late $practiceType Check In"),
-                      content: SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                                "Please note that you are late to the $practiceType and must provide a reason."),
-                            const SizedBox(height: 8),
-                            TextField(
-                              controller: controller,
-                              minLines: 3,
-                              maxLines: 5,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                                "Please only check in when you are at the $practiceType. Are you currently at the ${practice.location}?"),
-                          ],
-                        ),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => context.popRoute(),
-                          child: const Text("No, cancel"),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            checkIn(
-                              practice,
-                              lateReason: controller.text.isNotEmpty
-                                  ? "Late: ${controller.text}"
-                                  : null,
-                            ).then((value) => context.router.pop());
-                          },
-                          child: const Text("Yes, check in"),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-                // if they are on time for practice check in
-                else {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text("Check In To $practiceType"),
-                      content: Text(
-                          "Please only check in when you are at the $practiceType. Are you currently at the ${practice.location}?"),
-                      actions: [
-                        TextButton(
-                          onPressed: () => context.popRoute(),
-                          child: const Text("No, cancel"),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            checkIn(practice)
-                                .then((value) => context.router.pop());
-                          },
-                          child: const Text("Yes, check in"),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-              } else {
+              // if the student is later than 15 minutes to practice
+              else if (practice.isLate) {
+                TextEditingController controller = TextEditingController();
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: const Text("Too Late For Check In"),
-                    content: Text(
-                        "You cannot check in after the $practiceType has ended. Make sure to let a coach know that you attended and try not to forget again in the future."),
+                    title: Text("Late $practiceType Check In"),
+                    content: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                              "Please note that you are late to the $practiceType and must provide a reason."),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            controller: controller,
+                            minLines: 3,
+                            maxLines: 5,
+                            validator: (value) => value!.isNotEmpty
+                                ? null
+                                : "Please provide a reason.",
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                              "Please only check in when you are at the $practiceType. Are you currently at the ${practice.location}?"),
+                        ],
+                      ),
+                    ),
                     actions: [
                       TextButton(
                         onPressed: () => context.popRoute(),
-                        child: const Text(
-                          "Understood",
-                        ),
+                        child: const Text("No, cancel"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          checkIn(
+                            practice,
+                            lateReason: controller.text.isNotEmpty
+                                ? "Late: ${controller.text}"
+                                : null,
+                          ).then((value) => context.router.pop());
+                        },
+                        child: const Text("Yes, check in"),
                       ),
                     ],
                   ),
                 );
               }
-            }
-          : null,
+              // if they are on time for practice check in
+              else if (practice.canCheckIn) {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text("Check In To $practiceType"),
+                    content: Text(
+                        "Please only check in when you are at the $practiceType. Are you currently at the ${practice.location}?"),
+                    actions: [
+                      TextButton(
+                        onPressed: () => context.popRoute(),
+                        child: const Text("No, cancel"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          checkIn(practice)
+                              .then((value) => context.router.pop());
+                        },
+                        child: const Text("Yes, check in"),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
       icon: const Icon(Icons.check),
       label: const Text("Check In"),
     );

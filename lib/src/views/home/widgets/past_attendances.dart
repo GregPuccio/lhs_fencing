@@ -47,7 +47,7 @@ class PastAttendances extends ConsumerWidget {
                   return Column(
                     children: [
                       if (index == 0 &&
-                          (attendance.isLate || attendance.leftEarly))
+                          (attendance.wasLate || attendance.leftEarly))
                         const SizedBox(height: 8),
                       ListTile(
                         title: Column(

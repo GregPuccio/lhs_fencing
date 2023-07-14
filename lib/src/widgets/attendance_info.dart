@@ -11,13 +11,7 @@ class AttendanceInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        attendance.attended
-            ? Text(attendance.info)
-            : attendance.excusedAbsense
-                ? const Text("Excused Absense")
-                : attendance.unexcusedAbsense
-                    ? const Text("Unexcused Absense")
-                    : const Text("Did not check in"),
+        Text(attendance.attendanceStatus),
         Text(
           attendance.comments.isEmpty
               ? "Tap to add a comment"

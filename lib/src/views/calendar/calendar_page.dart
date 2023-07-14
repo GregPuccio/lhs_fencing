@@ -62,7 +62,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
           child: ListView(
             children: [
               const Text(
-                '2023-24 Season Schedule',
+                '2023-24 Season Calendar',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),

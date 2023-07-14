@@ -44,6 +44,13 @@ Coach ${coach.firstName}
     """;
   }
 
+  bool get tooSoonForCheckIn =>
+      DateTime.now().difference(startTime).inMinutes < -15;
+  bool get isTooLate => DateTime.now().difference(startTime).inMinutes > 60;
+  bool get canCheckIn => DateTime.now().difference(startTime).inMinutes >= -15;
+  bool get isLate => DateTime.now().difference(startTime).inMinutes > 15;
+  bool get practiceOver => DateTime.now().isAfter(endTime);
+
   Practice copyWith({
     String? id,
     String? location,

@@ -11,7 +11,7 @@ class AttendanceStatusBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        if (attendance.isLate) ...[
+        if (attendance.wasLate) ...[
           TextBadge(
             text: "Late Arrival",
             boxColor: Theme.of(context).colorScheme.errorContainer,

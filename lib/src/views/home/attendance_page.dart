@@ -71,8 +71,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
               preferredSize: const Size.fromHeight(1),
               child: ListTile(
                 title: Text(practice.type.type),
-                subtitle: Text(
-                    "Status: ${attendance.attended ? attendance.info : attendance.excusedAbsense ? "Excused Absense" : "Did not check in"}"),
+                subtitle: Text(attendance.attendanceStatus),
                 trailing: attendance.checkOut != null
                     ? null
                     : attendance.attended
