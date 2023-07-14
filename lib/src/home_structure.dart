@@ -12,6 +12,7 @@ import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/views/calendar/calendar_page.dart';
 import 'package:lhs_fencing/src/views/home/home_page.dart';
 import 'package:lhs_fencing/src/views/profile/profile_page.dart';
+import 'package:lhs_fencing/src/views/useful_links/useful_links.dart';
 import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
@@ -100,6 +101,7 @@ class _HomeStructureState extends ConsumerState<HomeStructure> {
               practicesByDay: practicesByDay,
               attendances: attendances,
             ),
+            const UsefulLinks(),
             ProfilePage(
               userData: userData,
               attendances: attendances,
@@ -121,6 +123,10 @@ class _HomeStructureState extends ConsumerState<HomeStructure> {
             BottomNavigationBarItem(
               icon: Icon(Icons.calendar_month),
               label: "Calendar",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.link),
+              label: "Useful Links",
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
