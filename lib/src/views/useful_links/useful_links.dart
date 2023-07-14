@@ -41,7 +41,7 @@ class UsefulLinks extends StatelessWidget {
         ),
         const Divider(),
         ListTile(
-          leading: SvgPicture.asset("assets/NJHSSportsLogo.png", width: width),
+          leading: Image.asset("assets/NJHSSportsLogo.png", width: width),
           title: const Text("NJ Highschool Sports - Boy's Fencing"),
           subtitle: const Text(
               "Official site for the most up to date results for all boy's fencing teams in New Jersey highschools."),
@@ -87,7 +87,7 @@ class UsefulLinks extends StatelessWidget {
         ),
         const Divider(),
         ListTile(
-          leading: Image.asset("askfredlogo.png", width: width),
+          leading: Image.asset("askfredlogo2.png", width: width),
           title: const Text("AskFRED - Local Tournaments"),
           subtitle:
               const Text("Best resource to find local events to compete in."),
