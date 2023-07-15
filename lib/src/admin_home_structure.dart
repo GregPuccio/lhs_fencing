@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
@@ -12,6 +13,7 @@ import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/views/admin/admin_home_page.dart';
 import 'package:lhs_fencing/src/views/calendar/calendar_page.dart';
 import 'package:lhs_fencing/src/views/profile/profile_page.dart';
+import 'package:lhs_fencing/src/views/useful_links/useful_links.dart';
 import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
@@ -68,7 +70,7 @@ class _HomeStructureState extends ConsumerState<AdminHomeStructure> {
       }
 
       return Scaffold(
-        appBar: DefaultAppBar(showInstructions: currentIndex == 0),
+        appBar: DefaultAppBar(currentIndex: currentIndex),
         body: IndexedStack(
           index: currentIndex,
           children: [
@@ -77,6 +79,7 @@ class _HomeStructureState extends ConsumerState<AdminHomeStructure> {
               practicesByDay: practicesByDay,
               attendances: attendances,
             ),
+            const UsefulLinks(),
             ProfilePage(
               userData: userData,
               attendances: attendances,
@@ -84,26 +87,36 @@ class _HomeStructureState extends ConsumerState<AdminHomeStructure> {
             ),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: currentIndex,
-          onTap: (value) => setState(() {
-            currentIndex = value;
-          }),
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Home",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_month),
-              label: "Calendar",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: "Profile",
-            ),
-          ],
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.only(
+              bottom: kIsWeb && defaultTargetPlatform == TargetPlatform.iOS
+                  ? 20
+                  : 0),
+          child: BottomNavigationBar(
+            currentIndex: currentIndex,
+            onTap: (value) => setState(() {
+              currentIndex = value;
+            }),
+            type: BottomNavigationBarType.fixed,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: "Home",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_month),
+                label: "Calendar",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.link),
+                label: "Useful Links",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: "Profile",
+              ),
+            ],
+          ),
         ),
       );
     }

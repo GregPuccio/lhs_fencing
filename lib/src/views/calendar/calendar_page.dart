@@ -61,11 +61,6 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
           padding: const EdgeInsets.all(8.0),
           child: ListView(
             children: [
-              Text(
-                '2023-24 Season Calendar',
-                style: Theme.of(context).textTheme.titleLarge,
-                textAlign: TextAlign.center,
-              ),
               TableCalendar<Practice>(
                 // rowHeight: 60,
                 pageJumpingEnabled: true,

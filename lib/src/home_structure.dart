@@ -94,7 +94,7 @@ class _HomeStructureState extends ConsumerState<HomeStructure> {
       }
 
       return Scaffold(
-        appBar: DefaultAppBar(showInstructions: currentIndex == 0),
+        appBar: DefaultAppBar(currentIndex: currentIndex),
         body: IndexedStack(
           index: currentIndex,
           children: [
