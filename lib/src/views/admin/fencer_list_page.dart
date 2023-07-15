@@ -207,7 +207,7 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
 
                 return ListTile(
                   leading: SizedBox(
-                    width: MediaQuery.of(context).size.width / 3,
+                    width: MediaQuery.of(context).size.width / 2.5,
                     child: PieChart(
                       PieChartData(
                         borderData: FlBorderData(show: false),
@@ -256,7 +256,6 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                   onTap: () => context.router.push(
                     FencerDetailsRoute(fencerID: fencer.id),
                   ),
-                  trailing: const Icon(Icons.arrow_forward),
                 );
               }
             },
