@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
@@ -126,10 +125,8 @@ class _HomeStructureState extends ConsumerState<AdminHomeStructure> {
       for (var month in practiceMonths) {
         practices.addAll(month.practices);
       }
-      practices
-          .retainWhere((p) => p.team == Team.both || p.team == userData.team);
       practices.sort((a, b) => -a.startTime.compareTo(b.startTime));
-      return ref.watch(attendancesProvider).when(
+      return ref.watch(allAttendancesProvider).when(
             data: whenAttendanceData,
             error: (error, stackTrace) => const ErrorPage(),
             loading: () => const LoadingPage(),
