@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
           widget.attendances,
           PracticeShowState.unexcused,
         ).length}",
-        color: Theme.of(context).colorScheme.errorContainer,
+        color: Theme.of(context).colorScheme.error,
       ),
       PieChartSectionData(
         value: getShownPractices(
@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
           widget.attendances,
           PracticeShowState.noReason,
         ).length}",
-        color: Theme.of(context).colorScheme.tertiaryContainer,
+        color: Theme.of(context).disabledColor,
       ),
     ];
 
@@ -104,32 +104,34 @@ class _HomePageState extends State<HomePage> {
               height: 18,
             ),
             Flexible(
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: PieChart(
-                  PieChartData(
-                    borderData: FlBorderData(show: false),
-                    sectionsSpace: 2,
-                    centerSpaceRadius: 40,
-                    sections: showingSections,
-                    pieTouchData: PieTouchData(
-                      touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                        setState(() {
-                          if (!event.isInterestedForInteractions ||
-                              pieTouchResponse == null ||
-                              pieTouchResponse.touchedSection == null) {
-                            touchedIndex = -1;
-                            return;
-                          }
-                          touchedIndex = pieTouchResponse
-                              .touchedSection!.touchedSectionIndex;
-                        });
-                      },
-                    ),
-                    startDegreeOffset: 180,
-                  ),
-                ),
-              ),
+              child: pracs.isNotEmpty
+                  ? AspectRatio(
+                      aspectRatio: 1,
+                      child: PieChart(
+                        PieChartData(
+                          borderData: FlBorderData(show: false),
+                          sectionsSpace: 2,
+                          centerSpaceRadius: 40,
+                          sections: showingSections,
+                          pieTouchData: PieTouchData(
+                            touchCallback:
+                                (FlTouchEvent event, pieTouchResponse) {
+                              setState(() {
+                                if (!event.isInterestedForInteractions ||
+                                    pieTouchResponse == null ||
+                                    pieTouchResponse.touchedSection == null) {
+                                  touchedIndex = -1;
+                                  return;
+                                }
+                                touchedIndex = pieTouchResponse
+                                    .touchedSection!.touchedSectionIndex;
+                              });
+                            },
+                          ),
+                          startDegreeOffset: 180,
+                        ),
+                      ))
+                  : Container(),
             ),
             Flexible(
               child: Column(
