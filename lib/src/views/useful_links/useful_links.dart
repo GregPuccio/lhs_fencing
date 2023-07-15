@@ -9,6 +9,7 @@ class UsefulLinks extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width / 6;
     return ListView(
+      padding: const EdgeInsets.symmetric(vertical: 16),
       children: [
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -191,7 +192,6 @@ class UsefulLinks extends StatelessWidget {
             );
           },
         ),
-        const Divider(),
       ],
     );
   }
