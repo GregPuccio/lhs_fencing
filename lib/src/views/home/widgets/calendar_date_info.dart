@@ -7,6 +7,7 @@ import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/widgets/attendance_info.dart';
+import 'package:lhs_fencing/src/widgets/text_badge.dart';
 
 class CalendarDateInfo extends ConsumerWidget {
   final Practice practice;
@@ -22,8 +23,14 @@ class CalendarDateInfo extends ConsumerWidget {
       child: Column(
         children: [
           ListTile(
-            title: Text(
-                "${DateFormat("MMM d").format(practice.startTime)} - ${practice.type.type}"),
+            title: Row(
+              children: [
+                TextBadge(text: practice.team.type),
+                const SizedBox(width: 8),
+                Text(
+                    "${DateFormat("MMM d").format(practice.startTime)} - ${practice.type.type}"),
+              ],
+            ),
             subtitle: AttendanceInfo(attendance),
             trailing: const Icon(Icons.arrow_forward),
             onTap: () =>

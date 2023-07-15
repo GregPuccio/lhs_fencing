@@ -27,26 +27,6 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
         practices.addAll(month.practices);
       }
 
-      Practice upcomingPractice = practices.reduce((a, b) {
-        DateTime now = DateTime.now();
-        if (a.endTime.add(const Duration(minutes: 15)).isAfter(now) &&
-            b.endTime.add(const Duration(minutes: 15)).isAfter(now)) {
-          return a.startTime.compareTo(b.startTime).isNegative ? a : b;
-        } else if (a.endTime.add(const Duration(minutes: 15)).isAfter(now)) {
-          return a;
-        } else {
-          return b;
-        }
-      });
-
-      List<Practice> pastPractices =
-          practices.where((p) => p.endTime.isBefore(DateTime.now())).toList();
-      List<Practice> futurePractices =
-          practices.where((p) => p.startTime.isAfter(DateTime.now())).toList();
-
-      pastPractices.remove(upcomingPractice);
-      futurePractices.remove(upcomingPractice);
-
       return Scaffold(
         body: Column(
           children: [
@@ -62,14 +42,6 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
             const Divider(),
           ],
         ),
-
-        //   TabBarView(
-        //     children: [
-        //       PastPractices(practices: pastPractices),
-        //       FuturePractices(practices: futurePractices),
-        //     ],
-        //   ),
-        // ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => context.pushRoute(const AddPracticesRoute()),
           child: const Icon(Icons.add),

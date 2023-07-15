@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
           widget.attendances,
           PracticeShowState.unexcused,
         ).length}",
-        color: Theme.of(context).colorScheme.error,
+        color: Theme.of(context).colorScheme.errorContainer,
       ),
       PieChartSectionData(
         value: getShownPractices(

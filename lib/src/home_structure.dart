@@ -102,7 +102,9 @@ class _HomeStructureState extends ConsumerState<HomeStructure> {
               todaysAttendance: todaysAttendance,
               upcomingPractice: upcomingPractice,
               attendances: attendances,
-              practices: practices,
+              practices: practices
+                  .where((p) => p.team == Team.both || p.team == userData.team)
+                  .toList(),
               userData: userData,
             ),
             CalendarPage(
@@ -156,8 +158,7 @@ class _HomeStructureState extends ConsumerState<HomeStructure> {
       for (var month in practiceMonths) {
         practices.addAll(month.practices);
       }
-      practices
-          .retainWhere((p) => p.team == Team.both || p.team == userData.team);
+
       practices.sort((a, b) => -a.startTime.compareTo(b.startTime));
 
       return ref.watch(attendancesProvider).when(

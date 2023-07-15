@@ -61,12 +61,14 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
           padding: const EdgeInsets.all(8.0),
           child: ListView(
             children: [
-              const Text(
+              Text(
                 '2023-24 Season Calendar',
+                style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18),
               ),
               TableCalendar<Practice>(
+                // rowHeight: 60,
+                pageJumpingEnabled: true,
                 firstDay: seasonStart,
                 lastDay: seasonEnd,
                 focusedDay: _focusedDay,
@@ -92,7 +94,6 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                     return icon;
                   },
                 ),
-                // calendarStyle:
                 onDaySelected: _onDaySelected,
                 availableCalendarFormats: const {CalendarFormat.month: "Month"},
                 onPageChanged: (focusedDay) {

@@ -50,23 +50,6 @@ class _HomeStructureState extends ConsumerState<AdminHomeStructure> {
         attendances.addAll(month.attendances);
       }
 
-      Practice upcomingPractice = practices.reduce((a, b) {
-        DateTime now = DateTime.now();
-        if (a.endTime.add(const Duration(minutes: 15)).isAfter(now) &&
-            b.endTime.add(const Duration(minutes: 15)).isAfter(now)) {
-          return a.startTime.compareTo(b.startTime).isNegative ? a : b;
-        } else if (a.endTime.add(const Duration(minutes: 15)).isAfter(now)) {
-          return a;
-        } else {
-          return b;
-        }
-      });
-
-      final todaysAttendance = attendances.firstWhere(
-        (a) => a.id == upcomingPractice.id,
-        orElse: () => Attendance.noUserCreate(upcomingPractice),
-      );
-
       LinkedHashMap<DateTime, List<Practice>> practicesByDay = LinkedHashMap(
         equals: isSameDay,
         hashCode: (key) => key.day * 1000000 + key.month * 10000 + key.year,
