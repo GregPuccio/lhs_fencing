@@ -79,7 +79,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Practices"),
+        title: const Text("Add Events"),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -102,6 +102,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                     });
                   }),
             ),
+            const Divider(),
             ListTile(
               title: const Text("Type"),
               trailing: DropdownButton<TypePractice>(
@@ -134,34 +135,42 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
               title: const Text(
                 "Days of the Week",
               ),
-              trailing: ToggleButtons(
-                isSelected: List.generate(DayOfWeek.values.length,
-                    (index) => daysOfWeek.contains(DayOfWeek.values[index])),
-                children: List.generate(
-                  DayOfWeek.values.length,
-                  (index) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(DayOfWeek.values[index].abbreviation),
+              subtitle: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ToggleButtons(
+                    isSelected: List.generate(
+                        DayOfWeek.values.length,
+                        (index) =>
+                            daysOfWeek.contains(DayOfWeek.values[index])),
+                    children: List.generate(
+                      DayOfWeek.values.length,
+                      (index) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(DayOfWeek.values[index].abbreviation),
+                      ),
+                    ),
+                    onPressed: (index) {
+                      setState(() {
+                        if (daysOfWeek.contains(DayOfWeek.values[index])) {
+                          daysOfWeek.remove(DayOfWeek.values[index]);
+                        } else {
+                          daysOfWeek.add(DayOfWeek.values[index]);
+                        }
+                      });
+                    },
                   ),
-                ),
-                onPressed: (index) {
-                  setState(() {
-                    if (daysOfWeek.contains(DayOfWeek.values[index])) {
-                      daysOfWeek.remove(DayOfWeek.values[index]);
-                    } else {
-                      daysOfWeek.add(DayOfWeek.values[index]);
-                    }
-                  });
-                },
+                ],
               ),
             ),
+            const Divider(),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TextField(
+              child: TextFormField(
                 decoration: const InputDecoration(
                   label: Text("Location"),
-                  hintText: "Defaults to Livingston Aux Gym",
                 ),
+                initialValue: location,
                 onChanged: (value) => location = value,
               ),
             ),
@@ -170,7 +179,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
               children: [
                 Flexible(
                   child: ListTile(
-                    title: const Text("Practice Start Time"),
+                    title: const Text("Start Time"),
                     subtitle: Text(startTime.format(context)),
                     trailing: const Icon(Icons.av_timer),
                     onTap: () => setTime(startTime),
@@ -178,7 +187,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                 ),
                 Flexible(
                   child: ListTile(
-                    title: const Text("Practice End Time"),
+                    title: const Text("End Time"),
                     subtitle: Text(endTime.format(context)),
                     trailing: const Icon(Icons.time_to_leave),
                     onTap: () => setTime(endTime, start: false),
@@ -244,7 +253,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                   context.popRoute();
                 }
               },
-              icon: const Text("Add Practices"),
+              icon: const Text("Add to Calendar"),
               label: const Icon(Icons.add),
             )
           ],

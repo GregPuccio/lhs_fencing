@@ -82,11 +82,30 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Practice"),
+        title: const Text("Edit Event"),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
+            ListTile(
+              title: const Text("Team"),
+              trailing: DropdownButton<Team>(
+                  value: practice.team,
+                  items: List.generate(
+                    Team.values.length,
+                    (index) => DropdownMenuItem(
+                      value: Team.values[index],
+                      child: Text(Team.values[index].type),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    if (value == null) return;
+                    setState(() {
+                      practice.team = value;
+                    });
+                  }),
+            ),
+            const Divider(),
             ListTile(
               title: const Text("Type"),
               trailing: DropdownButton<TypePractice>(
@@ -113,11 +132,22 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
               onTap: setDate,
             ),
             const Divider(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  label: Text("Location"),
+                ),
+                initialValue: practice.location,
+                onChanged: (value) => practice.location = value,
+              ),
+            ),
+            const Divider(),
             Row(
               children: [
                 Flexible(
                   child: ListTile(
-                    title: const Text("Practice Start Time"),
+                    title: const Text("Start Time"),
                     subtitle: Text(TimeOfDay.fromDateTime(practice.startTime)
                         .format(context)),
                     trailing: const Icon(Icons.av_timer),
@@ -126,7 +156,7 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
                 ),
                 Flexible(
                   child: ListTile(
-                    title: const Text("Practice End Time"),
+                    title: const Text("End Time"),
                     subtitle: Text(TimeOfDay.fromDateTime(practice.endTime)
                         .format(context)),
                     trailing: const Icon(Icons.time_to_leave),
