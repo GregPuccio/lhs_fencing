@@ -111,7 +111,7 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                   children: [
                     SearchBarWidget(controller),
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 4.0, left: 40),
+                      padding: const EdgeInsets.only(bottom: 4.0, left: 15),
                       child: SizedBox(
                         height: 30,
                         child: Row(
