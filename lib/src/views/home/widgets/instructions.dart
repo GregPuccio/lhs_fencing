@@ -12,10 +12,10 @@ class Instructions extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("1) Check in when you arrive at practice"),
-          Text("2) Check out when you are leaving practice"),
+          Text("1) Check in when you arrive at any events"),
+          Text("2) Check out when you are leaving"),
           Text(
-              "3) If you are late to practice or leave early, provide a reason"),
+              "3) If you are late to any events or have to leave early, provide a reason"),
           Text("4) Any issues? Contact one of the coaches ASAP")
         ],
       ),

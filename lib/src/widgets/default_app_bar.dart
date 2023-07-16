@@ -5,9 +5,13 @@ import 'package:lhs_fencing/src/widgets/livingston_logo.dart';
 
 class DefaultAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final int currentIndex;
+  final bool showInstructions;
   final bool editUser;
   const DefaultAppBar(
-      {this.currentIndex = -1, this.editUser = false, super.key});
+      {this.currentIndex = -1,
+      this.showInstructions = false,
+      this.editUser = false,
+      super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,7 +29,7 @@ class DefaultAppBar extends ConsumerWidget implements PreferredSizeWidget {
         ],
       ),
       actions: [
-        if (currentIndex == 0)
+        if (currentIndex == 0 && showInstructions)
           IconButton(
             onPressed: () => showDialog(
                 context: context, builder: (context) => const Instructions()),
