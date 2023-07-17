@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:intl/intl.dart';
+import 'package:lhs_fencing/src/constants/date_utils.dart';
 
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
@@ -42,6 +43,28 @@ lhsfencing.web.app
 Thank you,
 Coach ${coach.firstName}
     """;
+  }
+
+  String get timeframe {
+    String retVal = "";
+    if (startTime.isToday) {
+      retVal += "Today";
+    } else if (startTime.isTomorrow) {
+      retVal += "Tomorrow";
+    } else if (startTime.isThisWeek) {
+      retVal += DateFormat("EEEE ").format(startTime);
+    } else {
+      retVal += DateFormat("EEE, M/d").format(startTime);
+    }
+    return retVal;
+  }
+
+  String get runTime {
+    if (DateFormat("a").format(startTime) == DateFormat("a").format(endTime)) {
+      return "Scheduled: ${DateFormat("hh:mm").format(startTime)}-${DateFormat("hh:mm aa").format(endTime)}";
+    } else {
+      return "Scheduled: ${DateFormat("hh:mm aa").format(startTime)} - ${DateFormat("hh:mm aa").format(endTime)}";
+    }
   }
 
   bool get tooSoonForCheckIn =>

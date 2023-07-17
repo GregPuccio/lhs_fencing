@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lhs_fencing/src/constants/date_utils.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/comment.dart';
@@ -42,71 +43,74 @@ class CheckOutButton extends ConsumerWidget {
     DateTime now = DateTime.now();
     final practiceEnd = attendance.practiceEnd;
     return ElevatedButton(
-      onPressed: () {
-        DateTime now = DateTime.now();
-        final practiceEnd = attendance.practiceEnd;
-        // if we are too early to check in (more than 15 minutes before practice)
-        String practiceType = practice.type.type;
-        if (now.isBefore(practiceEnd.subtract(const Duration(minutes: 15)))) {
-          TextEditingController controller = TextEditingController();
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text("Leaving $practiceType Early"),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                        "Please note that you are leaving the $practiceType early and must provide a reason."),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: controller,
-                      minLines: 3,
-                      maxLines: 5,
+      onPressed: practice.endTime.isToday
+          ? () {
+              DateTime now = DateTime.now();
+              final practiceEnd = attendance.practiceEnd;
+              // if we are too early to check in (more than 15 minutes before practice)
+              String practiceType = practice.type.type;
+              if (now.isBefore(
+                  practiceEnd.subtract(const Duration(minutes: 15)))) {
+                TextEditingController controller = TextEditingController();
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text("Leaving $practiceType Early"),
+                    content: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                              "Please note that you are leaving the $practiceType early and must provide a reason."),
+                          const SizedBox(height: 8),
+                          TextField(
+                            controller: controller,
+                            minLines: 3,
+                            maxLines: 5,
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => context.popRoute(),
-                  child: const Text("Cancel"),
-                ),
-                TextButton(
-                  onPressed: () {
-                    checkOut(
-                      earlyLeaveReason: controller.text.isNotEmpty
-                          ? "Left Early: ${controller.text}"
-                          : null,
-                    ).then((value) => context.router.pop());
-                  },
-                  child: const Text("Complete check out"),
-                ),
-              ],
-            ),
-          );
-        } else {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text("$practiceType Check Out"),
-              content: const Text(
-                  "Thank you for letting us know when you leave! It makes it easier to keep track of everybody. See you next time."),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    context.router.pop();
-                  },
-                  child: const Text(
-                    "Bye!",
+                    actions: [
+                      TextButton(
+                        onPressed: () => context.popRoute(),
+                        child: const Text("Cancel"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          checkOut(
+                            earlyLeaveReason: controller.text.isNotEmpty
+                                ? "Left Early: ${controller.text}"
+                                : null,
+                          ).then((value) => context.router.pop());
+                        },
+                        child: const Text("Complete check out"),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-          ).then((value) => checkOut());
-        }
-      },
+                );
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text("$practiceType Check Out"),
+                    content: const Text(
+                        "Thank you for letting us know when you leave! It makes it easier to keep track of everybody. See you next time."),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          context.router.pop();
+                        },
+                        child: const Text(
+                          "Bye!",
+                        ),
+                      ),
+                    ],
+                  ),
+                ).then((value) => checkOut());
+              }
+            }
+          : null,
       child: Text(
           now.isBefore(practiceEnd.subtract(const Duration(minutes: 15)))
               ? "Leaving Early?"

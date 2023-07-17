@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:lhs_fencing/src/constants/date_utils.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
@@ -17,7 +18,6 @@ class TodaysAttendance extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    bool todayBool = DateTime.now().day == practice.startTime.day;
     bool inPast = DateTime.now().isAfter(practice.endTime);
     // Map<DateTime, String> activities = Activities(practice).activities;
 
@@ -25,7 +25,7 @@ class TodaysAttendance extends ConsumerWidget {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          if (inPast) ...[
+          if (!inPast) ...[
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -67,15 +67,13 @@ class TodaysAttendance extends ConsumerWidget {
                   child: Column(
                     children: [
                       Text(
-                        todayBool
+                        practice.startTime.isToday
                             ? "Today's ${practice.type.type} @ ${DateFormat("h:mm aa").format(practice.startTime)}"
-                            : "Next: ${DateFormat("EEEE").format(practice.startTime)}'s ${practice.type.type}",
+                            : "Next: ${practice.timeframe} - ${practice.type.type}",
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       ListTile(
-                        title: Text(
-                            DateFormat("MM/dd${todayBool ? "" : " @ h:mm aa"}")
-                                .format(practice.startTime)),
+                        title: Text(practice.runTime),
                         subtitle: AttendanceInfo(todaysAttendance),
                         trailing: todaysAttendance.checkOut != null
                             ? null
@@ -84,8 +82,7 @@ class TodaysAttendance extends ConsumerWidget {
                                     attendance: todaysAttendance,
                                     practice: practice,
                                   )
-                                : CheckInButton(
-                                    today: todayBool, practice: practice),
+                                : CheckInButton(practice: practice),
                         onTap: () => context.router.push(
                             AttendanceRoute(practiceID: todaysAttendance.id)),
                       ),

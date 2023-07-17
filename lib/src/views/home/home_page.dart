@@ -182,7 +182,10 @@ class _HomePageState extends State<HomePage> {
             todaysAttendance: widget.todaysAttendance!,
             practice: widget.upcomingPractice!,
           ),
-          UpcomingEvents(practices: widget.practices),
+          UpcomingEvents(
+            practices: widget.practices,
+            attendances: widget.attendances,
+          ),
         ] else
           const NoEventsFound(),
       ],

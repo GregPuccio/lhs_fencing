@@ -49,7 +49,6 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
     }
     late Practice practice;
     Widget whenData(List<AttendanceMonth> months) {
-      bool todayBool = DateTime.now().day == practice.startTime.day;
       List<Attendance> attendances = [];
       for (var month in months) {
         attendances.addAll(month.attendances);
@@ -79,7 +78,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
                             attendance: attendance,
                             practice: practice,
                           )
-                        : CheckInButton(today: todayBool, practice: practice),
+                        : CheckInButton(practice: practice),
               ),
             ),
           ),

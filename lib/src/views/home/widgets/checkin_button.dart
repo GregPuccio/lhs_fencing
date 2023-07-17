@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lhs_fencing/src/constants/date_utils.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/comment.dart';
@@ -10,12 +11,10 @@ import 'package:lhs_fencing/src/services/firestore/functions/attendance_function
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 
 class CheckInButton extends ConsumerWidget {
-  final bool today;
   final Practice practice;
 
   const CheckInButton({
     Key? key,
-    required this.today,
     required this.practice,
   }) : super(key: key);
 
@@ -40,7 +39,7 @@ class CheckInButton extends ConsumerWidget {
     }
 
     return ElevatedButton.icon(
-      onPressed: !today
+      onPressed: !practice.startTime.isToday
           ? null
           : () {
               String practiceType = practice.type.type;

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
-import 'package:lhs_fencing/src/views/home/widgets/calendar_date_info.dart';
+import 'package:lhs_fencing/src/views/home/widgets/event_list_tile.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage extends ConsumerStatefulWidget {
@@ -104,7 +104,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                       (attendance) => attendance.id == value.first.id,
                       orElse: () => Attendance.noUserCreate(value.first),
                     );
-                    return CalendarDateInfo(
+                    return EventListTile(
                       practice: value.first,
                       attendance: attendance,
                     );
