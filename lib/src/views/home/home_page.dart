@@ -7,6 +7,7 @@ import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/views/admin/fencer_details_page.dart';
 import 'package:lhs_fencing/src/views/home/widgets/no_events_found.dart';
 import 'package:lhs_fencing/src/views/home/widgets/todays_attendance.dart';
+import 'package:lhs_fencing/src/views/home/widgets/upcoming_events.dart';
 import 'package:lhs_fencing/src/widgets/indicator.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
 
@@ -175,12 +176,14 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        if (widget.todaysAttendance != null && widget.upcomingPractice != null)
+        if (widget.todaysAttendance != null &&
+            widget.upcomingPractice != null) ...[
           TodaysAttendance(
             todaysAttendance: widget.todaysAttendance!,
             practice: widget.upcomingPractice!,
-          )
-        else
+          ),
+          UpcomingEvents(practices: widget.practices),
+        ] else
           const NoEventsFound(),
       ],
     );

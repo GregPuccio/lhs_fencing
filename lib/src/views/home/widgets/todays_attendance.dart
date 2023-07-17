@@ -8,7 +8,6 @@ import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/views/home/widgets/checkin_button.dart';
 import 'package:lhs_fencing/src/views/home/widgets/checkout_button.dart';
 import 'package:lhs_fencing/src/widgets/attendance_info.dart';
-import 'package:lhs_fencing/src/models/activities.dart';
 
 class TodaysAttendance extends ConsumerWidget {
   final Attendance todaysAttendance;
@@ -20,7 +19,7 @@ class TodaysAttendance extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     bool todayBool = DateTime.now().day == practice.startTime.day;
     bool inPast = DateTime.now().isAfter(practice.endTime);
-    Map<DateTime, String> activities = Activities(practice).activities;
+    // Map<DateTime, String> activities = Activities(practice).activities;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -30,7 +29,7 @@ class TodaysAttendance extends ConsumerWidget {
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Theme.of(context).colorScheme.tertiaryContainer,
+                color: Theme.of(context).colorScheme.secondaryContainer,
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -96,58 +95,58 @@ class TodaysAttendance extends ConsumerWidget {
               ),
             ),
             const Divider(),
-            Text(
-              "${practice.type.type} Schedule",
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            DataTable(
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer),
-              border: TableBorder.all(
-                  color: Theme.of(context).colorScheme.onBackground),
-              headingTextStyle: Theme.of(context)
-                  .textTheme
-                  .titleSmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
-              columns: const [
-                DataColumn(
-                  label: Expanded(
-                    child: Text(
-                      "Time",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Expanded(
-                      child: Text(
-                    "Activity",
-                    textAlign: TextAlign.center,
-                  )),
-                ),
-              ],
-              rows: List.generate(
-                activities.length,
-                (index) => DataRow(cells: [
-                  DataCell(
-                    Text(
-                      DateFormat("hh:mm aa").format(
-                        activities.keys.elementAt(index),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    Center(
-                      child: Text(
-                        activities.values.elementAt(index),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ]),
-              ),
-            ),
+            // Text(
+            //   "${practice.type.type} Schedule",
+            //   style: Theme.of(context).textTheme.titleLarge,
+            // ),
+            // const SizedBox(height: 8),
+            // DataTable(
+            //   decoration: BoxDecoration(
+            //       color: Theme.of(context).colorScheme.primaryContainer),
+            //   border: TableBorder.all(
+            //       color: Theme.of(context).colorScheme.onBackground),
+            //   headingTextStyle: Theme.of(context)
+            //       .textTheme
+            //       .titleSmall
+            //       ?.copyWith(fontWeight: FontWeight.bold),
+            //   columns: const [
+            //     DataColumn(
+            //       label: Expanded(
+            //         child: Text(
+            //           "Time",
+            //           textAlign: TextAlign.center,
+            //         ),
+            //       ),
+            //     ),
+            //     DataColumn(
+            //       label: Expanded(
+            //           child: Text(
+            //         "Activity",
+            //         textAlign: TextAlign.center,
+            //       )),
+            //     ),
+            //   ],
+            //   rows: List.generate(
+            //     activities.length,
+            //     (index) => DataRow(cells: [
+            //       DataCell(
+            //         Text(
+            //           DateFormat("hh:mm aa").format(
+            //             activities.keys.elementAt(index),
+            //           ),
+            //         ),
+            //       ),
+            //       DataCell(
+            //         Center(
+            //           child: Text(
+            //             activities.values.elementAt(index),
+            //             textAlign: TextAlign.center,
+            //           ),
+            //         ),
+            //       ),
+            //     ]),
+            //   ),
+            // ),
           ],
         ],
       ),
