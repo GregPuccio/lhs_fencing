@@ -12,16 +12,14 @@ class AttendanceStatusBar extends StatelessWidget {
     return Row(
       children: [
         if (attendance.wasLate) ...[
-          TextBadge(
+          const TextBadge(
             text: "Late Arrival",
-            boxColor: Theme.of(context).colorScheme.errorContainer,
           ),
           const SizedBox(width: 8),
         ],
         if (attendance.leftEarly)
-          TextBadge(
+          const TextBadge(
             text: "Early Leave",
-            boxColor: Theme.of(context).colorScheme.primaryContainer,
           ),
       ],
     );

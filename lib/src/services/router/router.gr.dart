@@ -15,22 +15,6 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
-    AddPracticesRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const AddPracticesPage(),
-      );
-    },
-    EditPracticeRoute.name: (routeData) {
-      final args = routeData.argsAs<EditPracticeRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: EditPracticePage(
-          practice: args.practice,
-          key: args.key,
-        ),
-      );
-    },
     AttendanceRoute.name: (routeData) {
       final pathParams = routeData.inheritedPathParams;
       final args = routeData.argsAs<AttendanceRouteArgs>(
@@ -52,16 +36,6 @@ abstract class _$AppRouter extends RootStackRouter {
           args.fencer,
           args.practice,
           attendance: args.attendance,
-          key: args.key,
-        ),
-      );
-    },
-    PracticeRoute.name: (routeData) {
-      final args = routeData.argsAs<PracticeRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: PracticePage(
-          practiceID: args.practiceID,
           key: args.key,
         ),
       );
@@ -88,59 +62,55 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const AuthWrapperPage(),
       );
     },
+    AddDrillsRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const AddDrillsPage(),
+      );
+    },
+    DrillsListRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const DrillsListPage(),
+      );
+    },
+    EditDrillsRoute.name: (routeData) {
+      final args = routeData.argsAs<EditDrillsRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: EditDrillsPage(
+          drill: args.drill,
+          key: args.key,
+        ),
+      );
+    },
+    AddPracticesRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const AddPracticesPage(),
+      );
+    },
+    PracticeRoute.name: (routeData) {
+      final args = routeData.argsAs<PracticeRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: PracticePage(
+          practiceID: args.practiceID,
+          key: args.key,
+        ),
+      );
+    },
+    EditPracticeRoute.name: (routeData) {
+      final args = routeData.argsAs<EditPracticeRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: EditPracticePage(
+          practice: args.practice,
+          key: args.key,
+        ),
+      );
+    },
   };
-}
-
-/// generated route for
-/// [AddPracticesPage]
-class AddPracticesRoute extends PageRouteInfo<void> {
-  const AddPracticesRoute({List<PageRouteInfo>? children})
-      : super(
-          AddPracticesRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'AddPracticesRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [EditPracticePage]
-class EditPracticeRoute extends PageRouteInfo<EditPracticeRouteArgs> {
-  EditPracticeRoute({
-    required Practice practice,
-    Key? key,
-    List<PageRouteInfo>? children,
-  }) : super(
-          EditPracticeRoute.name,
-          args: EditPracticeRouteArgs(
-            practice: practice,
-            key: key,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'EditPracticeRoute';
-
-  static const PageInfo<EditPracticeRouteArgs> page =
-      PageInfo<EditPracticeRouteArgs>(name);
-}
-
-class EditPracticeRouteArgs {
-  const EditPracticeRouteArgs({
-    required this.practice,
-    this.key,
-  });
-
-  final Practice practice;
-
-  final Key? key;
-
-  @override
-  String toString() {
-    return 'EditPracticeRouteArgs{practice: $practice, key: $key}';
-  }
 }
 
 /// generated route for
@@ -231,44 +201,6 @@ class EditFencerStatusRouteArgs {
 }
 
 /// generated route for
-/// [PracticePage]
-class PracticeRoute extends PageRouteInfo<PracticeRouteArgs> {
-  PracticeRoute({
-    required String practiceID,
-    Key? key,
-    List<PageRouteInfo>? children,
-  }) : super(
-          PracticeRoute.name,
-          args: PracticeRouteArgs(
-            practiceID: practiceID,
-            key: key,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'PracticeRoute';
-
-  static const PageInfo<PracticeRouteArgs> page =
-      PageInfo<PracticeRouteArgs>(name);
-}
-
-class PracticeRouteArgs {
-  const PracticeRouteArgs({
-    required this.practiceID,
-    this.key,
-  });
-
-  final String practiceID;
-
-  final Key? key;
-
-  @override
-  String toString() {
-    return 'PracticeRouteArgs{practiceID: $practiceID, key: $key}';
-  }
-}
-
-/// generated route for
 /// [FencerListPage]
 class FencerListRoute extends PageRouteInfo<void> {
   const FencerListRoute({List<PageRouteInfo>? children})
@@ -332,4 +264,160 @@ class AuthWrapperRoute extends PageRouteInfo<void> {
   static const String name = 'AuthWrapperRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [AddDrillsPage]
+class AddDrillsRoute extends PageRouteInfo<void> {
+  const AddDrillsRoute({List<PageRouteInfo>? children})
+      : super(
+          AddDrillsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'AddDrillsRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [DrillsListPage]
+class DrillsListRoute extends PageRouteInfo<void> {
+  const DrillsListRoute({List<PageRouteInfo>? children})
+      : super(
+          DrillsListRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'DrillsListRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [EditDrillsPage]
+class EditDrillsRoute extends PageRouteInfo<EditDrillsRouteArgs> {
+  EditDrillsRoute({
+    required Drill drill,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          EditDrillsRoute.name,
+          args: EditDrillsRouteArgs(
+            drill: drill,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'EditDrillsRoute';
+
+  static const PageInfo<EditDrillsRouteArgs> page =
+      PageInfo<EditDrillsRouteArgs>(name);
+}
+
+class EditDrillsRouteArgs {
+  const EditDrillsRouteArgs({
+    required this.drill,
+    this.key,
+  });
+
+  final Drill drill;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'EditDrillsRouteArgs{drill: $drill, key: $key}';
+  }
+}
+
+/// generated route for
+/// [AddPracticesPage]
+class AddPracticesRoute extends PageRouteInfo<void> {
+  const AddPracticesRoute({List<PageRouteInfo>? children})
+      : super(
+          AddPracticesRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'AddPracticesRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [PracticePage]
+class PracticeRoute extends PageRouteInfo<PracticeRouteArgs> {
+  PracticeRoute({
+    required String practiceID,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          PracticeRoute.name,
+          args: PracticeRouteArgs(
+            practiceID: practiceID,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'PracticeRoute';
+
+  static const PageInfo<PracticeRouteArgs> page =
+      PageInfo<PracticeRouteArgs>(name);
+}
+
+class PracticeRouteArgs {
+  const PracticeRouteArgs({
+    required this.practiceID,
+    this.key,
+  });
+
+  final String practiceID;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'PracticeRouteArgs{practiceID: $practiceID, key: $key}';
+  }
+}
+
+/// generated route for
+/// [EditPracticePage]
+class EditPracticeRoute extends PageRouteInfo<EditPracticeRouteArgs> {
+  EditPracticeRoute({
+    required Practice practice,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          EditPracticeRoute.name,
+          args: EditPracticeRouteArgs(
+            practice: practice,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'EditPracticeRoute';
+
+  static const PageInfo<EditPracticeRouteArgs> page =
+      PageInfo<EditPracticeRouteArgs>(name);
+}
+
+class EditPracticeRouteArgs {
+  const EditPracticeRouteArgs({
+    required this.practice,
+    this.key,
+  });
+
+  final Practice practice;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'EditPracticeRouteArgs{practice: $practice, key: $key}';
+  }
 }

@@ -40,6 +40,13 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
               onTap: () => context.router.push(const FencerListRoute()),
             ),
             const Divider(),
+            ListTile(
+              title: const Text("Drills List"),
+              subtitle: const Text("View all drills from footwork to bouting"),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () => context.router.push(const DrillsListRoute()),
+            ),
+            const Divider(),
           ],
         ),
         floatingActionButton: FloatingActionButton(

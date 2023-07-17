@@ -189,3 +189,30 @@ enum SchoolYear {
   static SchoolYear fromMap(String map) =>
       values.byName(map.isEmpty ? "freshman" : map);
 }
+
+enum TypeDrill {
+  footwork,
+  bladework,
+  whites,
+  fencing,
+  situationalBouting;
+
+  String get type {
+    switch (this) {
+      case TypeDrill.footwork:
+        return "Footwork";
+      case TypeDrill.bladework:
+        return "Bladework";
+      case TypeDrill.whites:
+        return "Whites";
+      case TypeDrill.fencing:
+        return "Fencing";
+      case TypeDrill.situationalBouting:
+        return "Situational Bouting";
+    }
+  }
+
+  String toMap() => name;
+  static TypeDrill fromMap(String map) =>
+      values.byName(map.isEmpty ? "freshman" : map);
+}
