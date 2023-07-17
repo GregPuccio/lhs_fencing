@@ -11,6 +11,7 @@ import 'package:lhs_fencing/src/services/firestore/functions/attendance_function
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/views/home/widgets/checkin_button.dart';
 import 'package:lhs_fencing/src/views/home/widgets/checkout_button.dart';
+import 'package:lhs_fencing/src/views/home/widgets/event_schedule.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 
@@ -81,6 +82,17 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
                         : CheckInButton(practice: practice),
               ),
             ),
+            actions: [
+              IconButton(
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    content: EventSchedule(practice: practice),
+                  ),
+                ),
+                icon: const Icon(Icons.calendar_view_day),
+              ),
+            ],
           ),
         ),
         body: Column(
