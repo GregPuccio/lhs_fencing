@@ -37,6 +37,7 @@ class _AddDrillsPageState extends ConsumerState<AddDrillsPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
+                textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
                   label: Text("Name"),
                 ),
@@ -48,6 +49,7 @@ class _AddDrillsPageState extends ConsumerState<AddDrillsPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
+                textCapitalization: TextCapitalization.sentences,
                 decoration: const InputDecoration(
                   label: Text("Description"),
                   alignLabelWithHint: true,
@@ -88,24 +90,24 @@ class _AddDrillsPageState extends ConsumerState<AddDrillsPage> {
                     (m) => m.drills.where((d) => d.id == drill.id).isNotEmpty);
                 if (index == -1) {
                   seasons.add(DrillSeason(id: currentSeason, drills: [drill]));
-                  await FirestoreService.instance.addData(
-                    path: FirestorePath.drill(seasons[index].id),
-                    data: seasons[index].toMap(),
-                  );
+                  await FirestoreService.instance
+                      .addData(
+                        path: FirestorePath.drill(seasons[index].id),
+                        data: seasons[index].toMap(),
+                      )
+                      .then((value) => context.popRoute());
                 } else {
                   seasons[index].drills.add(drill);
-                  await FirestoreService.instance.updateData(
-                    path: FirestorePath.drill(seasons[index].id),
-                    data: seasons[index].toMap(),
-                  );
-                }
-
-                if (mounted) {
-                  context.popRoute();
+                  await FirestoreService.instance
+                      .updateData(
+                        path: FirestorePath.drill(seasons[index].id),
+                        data: seasons[index].toMap(),
+                      )
+                      .then((value) => context.popRoute());
                 }
               },
-              icon: const Text("Save Changes"),
-              label: const Icon(Icons.save),
+              icon: const Text("Add Drill"),
+              label: const Icon(Icons.add),
             )
           ],
         ),

@@ -38,6 +38,7 @@ class _EditDrillsPageState extends ConsumerState<EditDrillsPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
+                textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
                   label: Text("Name"),
                 ),
@@ -49,11 +50,13 @@ class _EditDrillsPageState extends ConsumerState<EditDrillsPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
+                textCapitalization: TextCapitalization.sentences,
                 decoration: const InputDecoration(
                   label: Text("Description"),
                 ),
                 initialValue: drill.description,
                 onChanged: (value) => drill.description = value,
+                maxLines: 3,
               ),
             ),
             const Divider(),

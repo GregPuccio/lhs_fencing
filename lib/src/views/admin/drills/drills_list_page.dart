@@ -100,6 +100,7 @@ class _DrillsListPageState extends ConsumerState<DrillsListPage> {
                         ),
                       ),
                       isScrollable: true,
+                      onTap: (value) {},
                     ),
                   ],
                 )),
@@ -108,37 +109,44 @@ class _DrillsListPageState extends ConsumerState<DrillsListPage> {
             children: List.generate(
               TypeDrill.values.length + 1,
               (index) {
+                List<Drill> drills = filteredDrills;
+                if (index != 0) {
+                  filteredDrills
+                      .where((d) => d.type == TypeDrill.values[index - 1])
+                      .toList();
+                }
                 return ListView.separated(
                   padding: const EdgeInsets.only(bottom: 60),
-                  itemCount: filteredDrills.length,
-                  itemBuilder: (context, index) {
-                    Drill drill = filteredDrills[index];
+                  itemCount: drills.length,
+                  itemBuilder: (context, i) {
+                    Drill drill = drills[i];
                     return ListTile(
-                      title: Row(
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (index == 0) ...[
-                            TextBadge(text: drill.type.type),
-                            const SizedBox(width: 8),
-                          ],
-                          Text(drill.name),
+                          if (index == 0)
+                            TextBadge(text: "${drill.type.type} Drill"),
+                          Text(
+                            drill.name,
+                            maxLines: 2,
+                          ),
                         ],
                       ),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(drill.description),
-                          Text(
-                              "Last Used: ${DateFormat("EEE, MM/dd @hh:mm aa}")}"),
-                          Text("Used: ${drill.timesUsed} times"),
+                          if (drill.lastUsed != null) ...[
+                            Text(
+                                "Last Used: ${DateFormat("EEE, MM/dd @hh:mm aa}").format(drill.lastUsed!)}"),
+                            Text("Times Used: ${drill.timesUsed}"),
+                          ],
                         ],
                       ),
-                      // onTap: () => context.router.push(
-                      //   FencerDetailsRoute(fencerID: fencer.id),
-                      // ),
-                      trailing: IconButton(
+                      trailing: TextButton(
                         onPressed: () =>
                             context.router.push(EditDrillsRoute(drill: drill)),
-                        icon: const Icon(Icons.edit),
+                        child: const Icon(Icons.edit),
                       ),
                     );
                   },
