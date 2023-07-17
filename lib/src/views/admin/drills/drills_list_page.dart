@@ -126,10 +126,7 @@ class _DrillsListPageState extends ConsumerState<DrillsListPage> {
                         children: [
                           if (index == 0)
                             TextBadge(text: "${drill.type.type} Drill"),
-                          Text(
-                            drill.name,
-                            maxLines: 2,
-                          ),
+                          Text(drill.name),
                         ],
                       ),
                       subtitle: Column(
@@ -143,11 +140,8 @@ class _DrillsListPageState extends ConsumerState<DrillsListPage> {
                           ],
                         ],
                       ),
-                      trailing: TextButton(
-                        onPressed: () =>
-                            context.router.push(EditDrillsRoute(drill: drill)),
-                        child: const Icon(Icons.edit),
-                      ),
+                      onTap: () =>
+                          context.router.push(EditDrillsRoute(drill: drill)),
                     );
                   },
                   separatorBuilder: (context, index) => const Divider(),
