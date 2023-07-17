@@ -111,7 +111,7 @@ class _DrillsListPageState extends ConsumerState<DrillsListPage> {
               (index) {
                 List<Drill> drills = filteredDrills;
                 if (index != 0) {
-                  filteredDrills
+                  drills = filteredDrills
                       .where((d) => d.type == TypeDrill.values[index - 1])
                       .toList();
                 }
