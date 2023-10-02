@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
+import 'package:lhs_fencing/src/models/user_data.dart';
+import 'package:lhs_fencing/src/services/providers/providers.dart';
+import 'package:lhs_fencing/src/views/admin/widgets/admin_event_list_tile.dart';
 import 'package:lhs_fencing/src/views/home/widgets/event_list_tile.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -55,70 +58,78 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
+    UserData userData = ref.watch(userDataProvider).asData!.value!;
     return Scaffold(
-      body: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListView(
-            children: [
-              TableCalendar<Practice>(
-                // rowHeight: 60,
-                pageJumpingEnabled: true,
-                firstDay: seasonStart,
-                lastDay: seasonEnd,
-                focusedDay: _focusedDay,
-                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                eventLoader: _getEventsForDay,
-                calendarBuilders: CalendarBuilders(
-                  singleMarkerBuilder: (context, day, practice) {
-                    Attendance attendance = widget.attendances.firstWhere(
-                      (attendance) => attendance.id == practice.id,
-                      orElse: () => Attendance.noUserCreate(practice),
-                    );
-                    Icon? icon;
-                    if (attendance.attended) {
-                      icon = const Icon(Icons.check,
-                          size: 12, color: Colors.green);
-                    } else if (attendance.excusedAbsense) {
-                      icon = const Icon(Icons.shield,
-                          size: 12, color: Colors.amber);
-                    } else if (attendance.unexcusedAbsense) {
-                      icon =
-                          const Icon(Icons.close, size: 12, color: Colors.red);
-                    }
-                    return icon;
-                  },
-                ),
-                onDaySelected: _onDaySelected,
-                availableCalendarFormats: const {CalendarFormat.month: "Month"},
-                onPageChanged: (focusedDay) {
-                  _focusedDay = focusedDay;
-                },
+      body: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TableCalendar<Practice>(
+              // rowHeight: 60,
+              pageJumpingEnabled: true,
+              firstDay: seasonStart,
+              lastDay: seasonEnd,
+              focusedDay: _focusedDay,
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              eventLoader: _getEventsForDay,
+              calendarBuilders: CalendarBuilders(
+                singleMarkerBuilder: userData.admin
+                    ? null
+                    : (context, day, practice) {
+                        Attendance attendance = widget.attendances.firstWhere(
+                          (attendance) => attendance.id == practice.id,
+                          orElse: () => Attendance.noUserCreate(practice),
+                        );
+                        Icon? icon;
+                        if (attendance.attended) {
+                          icon = const Icon(Icons.check,
+                              size: 12, color: Colors.green);
+                        } else if (attendance.excusedAbsense) {
+                          icon = const Icon(Icons.shield,
+                              size: 12, color: Colors.amber);
+                        } else if (attendance.unexcusedAbsense) {
+                          icon = const Icon(Icons.close,
+                              size: 12, color: Colors.red);
+                        }
+                        return icon;
+                      },
               ),
-              const SizedBox(height: 8.0),
-              ValueListenableBuilder(
-                valueListenable: _selectedEvents,
-                builder: (context, value, child) {
-                  if (value.isNotEmpty) {
-                    Attendance attendance = widget.attendances.firstWhere(
-                      (attendance) => attendance.id == value.first.id,
-                      orElse: () => Attendance.noUserCreate(value.first),
-                    );
-                    return EventListTile(
-                      practice: value.first,
-                      attendance: attendance,
-                    );
-                  } else {
-                    return const ListTile(
-                      title: Text(
-                          "Select a day on the calendar above, with an event on it"),
-                    );
-                  }
-                },
-              )
-            ],
+              onDaySelected: _onDaySelected,
+              availableCalendarFormats: const {CalendarFormat.month: "Month"},
+              onPageChanged: (focusedDay) {
+                _focusedDay = focusedDay;
+              },
+            ),
           ),
-        ),
+          const SizedBox(height: 8.0),
+          ValueListenableBuilder(
+            valueListenable: _selectedEvents,
+            builder: (context, value, child) {
+              if (value.isNotEmpty) {
+                if (userData.admin) {
+                  return AdminEventListTile(
+                    practice: value.first,
+                    attendances: widget.attendances,
+                  );
+                } else {
+                  Attendance attendance = widget.attendances.firstWhere(
+                    (attendance) => attendance.id == value.first.id,
+                    orElse: () => Attendance.noUserCreate(value.first),
+                  );
+                  return EventListTile(
+                    practice: value.first,
+                    attendance: attendance,
+                  );
+                }
+              } else {
+                return const ListTile(
+                  title: Text(
+                      "Select a day on the calendar above, with an event on it"),
+                );
+              }
+            },
+          )
+        ],
       ),
     );
   }

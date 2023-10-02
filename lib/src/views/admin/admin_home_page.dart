@@ -5,12 +5,16 @@ import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
+import 'package:lhs_fencing/src/views/admin/widgets/admin_upcoming_events.dart';
+import 'package:lhs_fencing/src/views/admin/widgets/no_practice_today.dart';
+import 'package:lhs_fencing/src/views/admin/widgets/todays_practice.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 
 class AdminHomePage extends ConsumerStatefulWidget {
-  const AdminHomePage({super.key});
+  final void Function(int) updateIndexFn;
+  const AdminHomePage({super.key, required this.updateIndexFn});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AdminHomePageState();
@@ -26,9 +30,29 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
       for (var month in practiceMonths) {
         practices.addAll(month.practices);
       }
+      Practice? currentPractice;
+      if (practices.any(
+        (p) => p.endTime.isAfter(
+          DateTime.now().subtract(
+            const Duration(hours: 2),
+          ),
+        ),
+      )) {
+        List<Practice> futurePractices = practices
+            .where((p) => p.endTime.isAfter(DateTime.now().subtract(
+                  const Duration(hours: 2),
+                )))
+            .toList();
+        currentPractice = futurePractices
+            .reduce((a, b) => a.startTime.isBefore(b.startTime) ? a : b);
+      } else if (practices.isNotEmpty) {
+        currentPractice = practices
+            .reduce((a, b) => a.startTime.isBefore(b.startTime) ? a : b);
+      }
 
       return Scaffold(
-        body: Column(
+        body: ListView(
+          padding: const EdgeInsets.only(bottom: 75),
           children: [
             const WelcomeHeader(),
             const Divider(),
@@ -47,6 +71,16 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
               onTap: () => context.router.push(const DrillsListRoute()),
             ),
             const Divider(),
+            if (currentPractice != null) ...[
+              TodaysPractice(
+                currentPractice: currentPractice,
+              ),
+              AdminUpcomingEvents(
+                practices: practices,
+                updateIndexFn: widget.updateIndexFn,
+              ),
+            ] else
+              const NoPracticeToday(),
           ],
         ),
         floatingActionButton: FloatingActionButton(

@@ -1,5 +1,5 @@
-String userCollection = "users";
-String practiceCollection = "practices";
+String userCollection = "users23";
+String practiceCollection = "practices23";
 String attendanceCollection = "attendances";
 String drillCollection = "drills";
 String drillSeason23 = "drills23";

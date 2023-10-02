@@ -43,6 +43,12 @@ class _HomeStructureState extends ConsumerState<AdminHomeStructure> {
     super.dispose();
   }
 
+  void updatedIndex(int newIndex) {
+    setState(() {
+      currentIndex = newIndex;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget whenAttendanceData(List<AttendanceMonth> attendanceMonths) {
@@ -73,7 +79,9 @@ class _HomeStructureState extends ConsumerState<AdminHomeStructure> {
         body: IndexedStack(
           index: currentIndex,
           children: [
-            const AdminHomePage(),
+            AdminHomePage(
+              updateIndexFn: updatedIndex,
+            ),
             CalendarPage(
               practicesByDay: practicesByDay,
               attendances: attendances,
