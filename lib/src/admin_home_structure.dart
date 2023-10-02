@@ -43,7 +43,7 @@ class _HomeStructureState extends ConsumerState<AdminHomeStructure> {
     super.dispose();
   }
 
-  void updatedIndex(int newIndex) {
+  void updateIndex(int newIndex) {
     setState(() {
       currentIndex = newIndex;
     });
@@ -80,7 +80,7 @@ class _HomeStructureState extends ConsumerState<AdminHomeStructure> {
           index: currentIndex,
           children: [
             AdminHomePage(
-              updateIndexFn: updatedIndex,
+              updateIndexFn: updateIndex,
             ),
             CalendarPage(
               practicesByDay: practicesByDay,

@@ -22,10 +22,8 @@ class TodaysAttendance extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          if (inPast) ...[
-            Container(
+      child: inPast
+          ? Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Theme.of(context).colorScheme.secondaryContainer,
@@ -51,9 +49,8 @@ class TodaysAttendance extends ConsumerWidget {
                   ],
                 ),
               ),
-            ),
-          ] else ...[
-            InkWell(
+            )
+          : InkWell(
               onTap: () => context.router
                   .push(AttendanceRoute(practiceID: todaysAttendance.id)),
               child: Container(
@@ -90,10 +87,6 @@ class TodaysAttendance extends ConsumerWidget {
                 ),
               ),
             ),
-            const Divider(),
-          ],
-        ],
-      ),
     );
   }
 }

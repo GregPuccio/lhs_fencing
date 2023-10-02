@@ -44,6 +44,12 @@ class _HomeStructureState extends ConsumerState<HomeStructure> {
     super.dispose();
   }
 
+  void updateIndex(int newIndex) {
+    setState(() {
+      currentIndex = newIndex;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget whenAttendanceData(List<AttendanceMonth> attendanceMonths) {
@@ -109,6 +115,7 @@ class _HomeStructureState extends ConsumerState<HomeStructure> {
                   .where((p) => p.team == Team.both || p.team == userData.team)
                   .toList(),
               userData: userData,
+              updateIndexFn: updateIndex,
             ),
             CalendarPage(
               practicesByDay: practicesByDay,

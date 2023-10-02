@@ -23,6 +23,12 @@ class AdminHomePage extends ConsumerStatefulWidget {
 class _AdminHomePageState extends ConsumerState<AdminHomePage> {
   int currentIndex = 0;
 
+  void updateIndex(int newIndex) {
+    setState(() {
+      currentIndex = newIndex;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget whenData(List<PracticeMonth> practiceMonths) {
@@ -47,6 +53,11 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
             .reduce((a, b) => a.startTime.isBefore(b.startTime) ? a : b);
       }
 
+      List<Practice> upcomingPractices = practices
+          .where((prac) => prac.startTime.isAfter(DateTime.now()))
+          .toList();
+      upcomingPractices.removeWhere((prac) => prac.id == currentPractice?.id);
+
       return Scaffold(
         body: ListView(
           padding: const EdgeInsets.only(bottom: 75),
@@ -54,14 +65,15 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
             const WelcomeHeader(),
             const Divider(),
             ListTile(
+              leading: const Icon(Icons.people),
               title: const Text("Fencer List"),
-              subtitle:
-                  const Text("View fencers and their number of practices"),
+              subtitle: const Text("View fencers and their participation info"),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () => context.router.push(const FencerListRoute()),
             ),
             const Divider(),
             ListTile(
+              leading: const Icon(Icons.list),
               title: const Text("Drills List"),
               subtitle: const Text("View all drills from footwork to bouting"),
               trailing: const Icon(Icons.arrow_forward),
@@ -74,8 +86,9 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
               )
             else
               const NoPracticeToday(),
+            const Divider(),
             AdminUpcomingEvents(
-              practices: practices,
+              practices: upcomingPractices,
               updateIndexFn: widget.updateIndexFn,
             ),
           ],

@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
   final List<Practice> practices;
   final List<Attendance> attendances;
   final UserData userData;
+  final void Function(int) updateIndexFn;
   const HomePage({
     super.key,
     required this.todaysAttendance,
@@ -24,6 +25,7 @@ class HomePage extends StatefulWidget {
     required this.practices,
     required this.attendances,
     required this.userData,
+    required this.updateIndexFn,
   });
 
   @override
@@ -95,99 +97,112 @@ class _HomePageState extends State<HomePage> {
       ),
     ];
 
+    List<Practice> upcomingPractices = widget.practices
+        .where((prac) => prac.startTime.isAfter(DateTime.now()))
+        .toList();
+    upcomingPractices
+        .removeWhere((prac) => prac.id == widget.upcomingPractice?.id);
+
     return ListView(
       children: [
         const WelcomeHeader(),
         const Divider(),
-        Row(
-          children: <Widget>[
-            const SizedBox(
-              height: 18,
-            ),
-            Flexible(
-              child: pracs.isNotEmpty
-                  ? AspectRatio(
-                      aspectRatio: 1,
-                      child: PieChart(
-                        PieChartData(
-                          borderData: FlBorderData(show: false),
-                          sectionsSpace: 2,
-                          centerSpaceRadius: 40,
-                          sections: showingSections,
-                          pieTouchData: PieTouchData(
-                            touchCallback:
-                                (FlTouchEvent event, pieTouchResponse) {
-                              setState(() {
-                                if (!event.isInterestedForInteractions ||
-                                    pieTouchResponse == null ||
-                                    pieTouchResponse.touchedSection == null) {
-                                  touchedIndex = -1;
-                                  return;
-                                }
-                                touchedIndex = pieTouchResponse
-                                    .touchedSection!.touchedSectionIndex;
-                              });
-                            },
-                          ),
-                          startDegreeOffset: 180,
-                        ),
-                      ))
-                  : Container(),
-            ),
-            Flexible(
-              child: Column(
-                children: [
-                  Text(
-                    "${pracs.length} Total Attendances",
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
+        if (pracs.isNotEmpty)
+          Row(
+            children: <Widget>[
+              const SizedBox(
+                height: 18,
+              ),
+              Flexible(
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: PieChart(
+                    PieChartData(
+                      borderData: FlBorderData(show: false),
+                      sectionsSpace: 2,
+                      centerSpaceRadius: 40,
+                      sections: showingSections,
+                      pieTouchData: PieTouchData(
+                        touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                          setState(() {
+                            if (!event.isInterestedForInteractions ||
+                                pieTouchResponse == null ||
+                                pieTouchResponse.touchedSection == null) {
+                              touchedIndex = -1;
+                              return;
+                            }
+                            touchedIndex = pieTouchResponse
+                                .touchedSection!.touchedSectionIndex;
+                          });
+                        },
+                      ),
+                      startDegreeOffset: 180,
                     ),
                   ),
-                  const Divider(),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: List.generate(showingSections.length, (index) {
-                      String percentage = (showingSections[index].value * 100)
-                          .toStringAsFixed(2);
-                      return Column(
-                        children: [
-                          Indicator(
-                            isTouched: touchedIndex == index,
-                            size: 12,
-                            color: showingSections[index].color,
-                            text:
-                                "${PracticeShowState.values[index + 1].type}|$percentage%",
-                            isSquare: true,
-                          ),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                        ],
-                      );
-                    }),
-                  ),
-                ],
+                ),
               ),
-            ),
-            const SizedBox(
-              width: 28,
-            ),
-          ],
-        ),
+              Flexible(
+                child: Column(
+                  children: [
+                    Text(
+                      "${pracs.length} Total Attendances",
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Divider(),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: List.generate(showingSections.length, (index) {
+                        String percentage = (showingSections[index].value * 100)
+                            .toStringAsFixed(2);
+                        return Column(
+                          children: [
+                            Indicator(
+                              isTouched: touchedIndex == index,
+                              size: 12,
+                              color: showingSections[index].color,
+                              text:
+                                  "${PracticeShowState.values[index + 1].type}|$percentage%",
+                              isSquare: true,
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                          ],
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                width: 28,
+              ),
+            ],
+          )
+        else
+          const ListTile(
+            title: Text(
+                "Attendance data will populate here after your first attendance."),
+          ),
+        const Divider(),
         if (widget.todaysAttendance != null &&
             widget.upcomingPractice != null) ...[
           TodaysAttendance(
             todaysAttendance: widget.todaysAttendance!,
             practice: widget.upcomingPractice!,
           ),
-          UpcomingEvents(
-            practices: widget.practices,
-            attendances: widget.attendances,
-          ),
         ] else
           const NoEventsFound(),
+        const Divider(),
+        UpcomingEvents(
+          practices: upcomingPractices,
+          attendances: widget.attendances,
+          updateIndexFn: widget.updateIndexFn,
+        ),
       ],
     );
   }
