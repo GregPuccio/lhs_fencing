@@ -93,7 +93,7 @@ class PracticePage extends ConsumerWidget {
                               builder: (context) => AlertDialog(
                                 title: const Text("Send An Email"),
                                 content: const Text(
-                                    "Do you want to send an email to all of the students not present for this practice?"),
+                                    "Do you want to send an email to all of the students not present for this practice?\n(This will open a prepopulated message in the email app and you will be able to edit it before sending)"),
                                 actions: [
                                   TextButton(
                                     onPressed: () => context.router.pop(),

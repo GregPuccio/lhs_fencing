@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 extension DateUtils on DateTime {
   bool get isToday {
     final now = DateTime.now();
@@ -23,5 +25,19 @@ extension DateUtils on DateTime {
     final startOfWeek = DateTime(now.year, now.month, now.day + 1);
     final endOfWeek = startOfWeek.add(const Duration(days: 7));
     return isAfter(startOfWeek) && isBefore(endOfWeek);
+  }
+}
+
+extension DateRangeUtils on DateTimeRange {
+  List<DateTime> get days {
+    DateTime first = DateTime(start.year, start.month, start.day);
+    DateTime last = DateTime(end.year, end.month, end.day, 1);
+    List<DateTime> days = [];
+    for (DateTime d = first;
+        d.isBefore(last);
+        d = d.add(const Duration(days: 1))) {
+      days.add(d);
+    }
+    return days;
   }
 }

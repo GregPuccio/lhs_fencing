@@ -28,7 +28,9 @@ class NoPracticeToday extends StatelessWidget {
                     ),
               ),
               trailing: const Icon(Icons.add),
-              onTap: () => context.router.push(const AddPracticesRoute()),
+              onTap: () => context.router.push(
+                AddPracticesRoute(missingPractice: true),
+              ),
             ),
           ],
         ),

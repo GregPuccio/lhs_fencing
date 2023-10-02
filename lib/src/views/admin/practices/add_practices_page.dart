@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:lhs_fencing/src/constants/date_utils.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/activities.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
@@ -13,7 +14,8 @@ import 'package:uuid/uuid.dart';
 
 @RoutePage()
 class AddPracticesPage extends ConsumerStatefulWidget {
-  const AddPracticesPage({super.key});
+  final bool missingPractice;
+  const AddPracticesPage({this.missingPractice = false, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -34,8 +36,10 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
   void initState() {
     DateTime now = DateTime.now();
     DateTime today = DateTime(now.year, now.month, now.day);
-    daysOfWeek.add(DayOfWeek.values
-        .firstWhere((element) => now.weekday == element.weekday));
+    if (widget.missingPractice) {
+      daysOfWeek.add(DayOfWeek.values
+          .firstWhere((element) => now.weekday == element.weekday));
+    }
     dateRange = DateTimeRange(start: today, end: today);
     startTime = const TimeOfDay(hour: 18, minute: 0);
     endTime = const TimeOfDay(hour: 20, minute: 0);
@@ -56,6 +60,17 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
     if (value != null) {
       setState(() {
         dateRange = DateTimeRange(start: value.start, end: value.end);
+        if (!dateRange.days.any(
+          (day) => daysOfWeek.any((dow) => day.weekday == dow.weekday),
+        )) {
+          daysOfWeek.clear();
+          for (var day in dateRange.days) {
+            int dowIndex = day.weekday == 7 ? 0 : day.weekday;
+            if (!daysOfWeek.contains(DayOfWeek.values[dowIndex])) {
+              daysOfWeek.add(DayOfWeek.values[dowIndex]);
+            }
+          }
+        }
       });
     }
   }

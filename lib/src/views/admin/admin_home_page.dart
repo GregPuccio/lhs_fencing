@@ -81,7 +81,7 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => context.pushRoute(const AddPracticesRoute()),
+          onPressed: () => context.pushRoute(AddPracticesRoute()),
           child: const Icon(Icons.add),
         ),
       );

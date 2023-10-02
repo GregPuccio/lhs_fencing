@@ -18,6 +18,8 @@ import 'package:lhs_fencing/src/views/home/attendance_page.dart';
 
 part 'router.gr.dart';
 
+//dart run build_runner build
+
 @AutoRouterConfig(replaceInRouteName: 'Page,Route')
 class AppRouter extends _$AppRouter {
   @override
