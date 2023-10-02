@@ -1,8 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
-import 'package:lhs_fencing/src/constants/date_utils.dart';
 
+import 'package:lhs_fencing/src/constants/date_utils.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 
@@ -13,6 +14,7 @@ class Practice {
   DateTime endTime;
   TypePractice type;
   Team team;
+  Map activities;
   Practice({
     required this.id,
     required this.location,
@@ -20,6 +22,7 @@ class Practice {
     required this.endTime,
     required this.type,
     required this.team,
+    required this.activities,
   });
 
   String get startString {
@@ -32,7 +35,7 @@ class Practice {
 
   String emailMessage(
       List<List<UserData>> fencerLists, String tod, UserData coach) {
-    return """bcc=${List.generate(fencerLists.last.length, (index) => fencerLists.last[index].email).join(",")}&subject=$emailString LHS Fencing Practice
+    return """bcc=${List.generate(fencerLists.last.length, (index) => fencerLists.last[index].email).join(",")}&subject=$emailString LHS Fencing Attendance
 &body=Good $tod students,
 
 Our records are showing that you did not attend the ${type.type} on $emailString.
@@ -74,22 +77,6 @@ Coach ${coach.firstName}
   bool get isLate => DateTime.now().difference(startTime).inMinutes > 15;
   bool get practiceOver => DateTime.now().isAfter(endTime);
 
-  String get status {
-    String text = "Status: ";
-    if (tooSoonForCheckIn) {
-      text += "Too Soon For Check In";
-    } else if (isTooLate) {
-      text += "Late Arrival - Check In With Coach";
-    } else if (canCheckIn) {
-      if (isLate) {
-        text += "Late Arrival - Can Check In";
-      } else {
-        text += "On Time - Can Check In";
-      }
-    }
-    return text;
-  }
-
   Practice copyWith({
     String? id,
     String? location,
@@ -97,6 +84,7 @@ Coach ${coach.firstName}
     DateTime? endTime,
     TypePractice? type,
     Team? team,
+    Map? activities,
   }) {
     return Practice(
       id: id ?? this.id,
@@ -105,6 +93,7 @@ Coach ${coach.firstName}
       endTime: endTime ?? this.endTime,
       type: type ?? this.type,
       team: team ?? this.team,
+      activities: activities ?? this.activities,
     );
   }
 
@@ -116,6 +105,7 @@ Coach ${coach.firstName}
       'endTime': endTime.millisecondsSinceEpoch,
       'type': type.toMap(),
       'team': team.toMap(),
+      'activities': activities,
     };
   }
 
@@ -127,6 +117,7 @@ Coach ${coach.firstName}
       endTime: DateTime.fromMillisecondsSinceEpoch(map['endTime']),
       type: TypePractice.fromMap(map['type'] ?? ""),
       team: Team.fromMap(map['team'] ?? ""),
+      activities: Map.from(map['activities'] ?? {}),
     );
   }
 
@@ -137,7 +128,7 @@ Coach ${coach.firstName}
 
   @override
   String toString() {
-    return 'Practice(id: $id, location: $location, startTime: $startTime, endTime: $endTime, type: $type, team: $team)';
+    return 'Practice(id: $id, location: $location, startTime: $startTime, endTime: $endTime, type: $type, team: $team, activities: $activities)';
   }
 
   @override
@@ -150,7 +141,8 @@ Coach ${coach.firstName}
         other.startTime == startTime &&
         other.endTime == endTime &&
         other.type == type &&
-        other.team == team;
+        other.team == team &&
+        mapEquals(other.activities, activities);
   }
 
   @override
@@ -160,6 +152,7 @@ Coach ${coach.firstName}
         startTime.hashCode ^
         endTime.hashCode ^
         type.hashCode ^
-        team.hashCode;
+        team.hashCode ^
+        activities.hashCode;
   }
 }

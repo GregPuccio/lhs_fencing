@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
+import 'package:lhs_fencing/src/models/activities.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
@@ -200,28 +201,29 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
               onPressed: () async {
                 final daysToGenerate =
                     dateRange.end.difference(dateRange.start).inDays;
-                List<Practice> days = List.generate(
-                  daysToGenerate + 1,
-                  (i) => Practice(
-                    id: const Uuid().v4(),
-                    location:
-                        location.isEmpty ? "Livingston Aux Gym" : location,
-                    startTime: DateTime(
-                        dateRange.start.year,
-                        dateRange.start.month,
-                        dateRange.start.day + (i),
-                        startTime.hour,
-                        startTime.minute),
-                    endTime: DateTime(
-                        dateRange.start.year,
-                        dateRange.start.month,
-                        dateRange.start.day + (i),
-                        endTime.hour,
-                        endTime.minute),
-                    type: typePractice,
-                    team: team,
-                  ),
-                );
+                List<Practice> days = List.generate(daysToGenerate + 1, (i) {
+                  Practice practice = Practice(
+                      id: const Uuid().v4(),
+                      location:
+                          location.isEmpty ? "Livingston Aux Gym" : location,
+                      startTime: DateTime(
+                          dateRange.start.year,
+                          dateRange.start.month,
+                          dateRange.start.day + (i),
+                          startTime.hour,
+                          startTime.minute),
+                      endTime: DateTime(
+                          dateRange.start.year,
+                          dateRange.start.month,
+                          dateRange.start.day + (i),
+                          endTime.hour,
+                          endTime.minute),
+                      type: typePractice,
+                      team: team,
+                      activities: {});
+                  practice.activities = Activities(practice).activities;
+                  return practice;
+                });
                 List<PracticeMonth> months =
                     ref.read(practicesProvider).asData!.value;
                 for (var day in days) {
