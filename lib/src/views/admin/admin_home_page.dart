@@ -45,9 +45,6 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
             .toList();
         currentPractice = futurePractices
             .reduce((a, b) => a.startTime.isBefore(b.startTime) ? a : b);
-      } else if (practices.isNotEmpty) {
-        currentPractice = practices
-            .reduce((a, b) => a.startTime.isBefore(b.startTime) ? a : b);
       }
 
       return Scaffold(
@@ -71,16 +68,16 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
               onTap: () => context.router.push(const DrillsListRoute()),
             ),
             const Divider(),
-            if (currentPractice != null) ...[
+            if (currentPractice != null)
               TodaysPractice(
                 currentPractice: currentPractice,
-              ),
-              AdminUpcomingEvents(
-                practices: practices,
-                updateIndexFn: widget.updateIndexFn,
-              ),
-            ] else
+              )
+            else
               const NoPracticeToday(),
+            AdminUpcomingEvents(
+              practices: practices,
+              updateIndexFn: widget.updateIndexFn,
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(

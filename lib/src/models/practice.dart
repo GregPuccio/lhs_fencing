@@ -74,6 +74,22 @@ Coach ${coach.firstName}
   bool get isLate => DateTime.now().difference(startTime).inMinutes > 15;
   bool get practiceOver => DateTime.now().isAfter(endTime);
 
+  String get status {
+    String text = "Status: ";
+    if (tooSoonForCheckIn) {
+      text += "Too Soon For Check In";
+    } else if (isTooLate) {
+      text += "Late Arrival - Check In With Coach";
+    } else if (canCheckIn) {
+      if (isLate) {
+        text += "Late Arrival - Can Check In";
+      } else {
+        text += "On Time - Can Check In";
+      }
+    }
+    return text;
+  }
+
   Practice copyWith({
     String? id,
     String? location,

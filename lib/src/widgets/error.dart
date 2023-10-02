@@ -28,3 +28,27 @@ class ErrorPage extends StatelessWidget {
     );
   }
 }
+
+class ErrorTile extends StatelessWidget {
+  const ErrorTile({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: ListTile(
+          title: Text(
+            "We seem to have found an error!",
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          leading: const CircularProgressIndicator.adaptive(),
+          subtitle: const Text(
+            "Please report what you did to get here to your system admin so we can get this fixed asap",
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+}

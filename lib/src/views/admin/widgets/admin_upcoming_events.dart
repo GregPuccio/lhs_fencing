@@ -15,9 +15,9 @@ class AdminUpcomingEvents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Practice> upcomingPractices = practices;
-    // .where((prac) => prac.startTime.isAfter(DateTime.now()))
-    // .toList();
+    List<Practice> upcomingPractices = practices
+        .where((prac) => prac.startTime.isAfter(DateTime.now()))
+        .toList();
     upcomingPractices.sort((a, b) => a.startTime.compareTo(b.startTime));
     int tileNumber =
         upcomingPractices.length > 7 ? 7 : upcomingPractices.length;
