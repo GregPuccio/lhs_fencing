@@ -85,11 +85,10 @@ class _AddDrillsPageState extends ConsumerState<AddDrillsPage> {
                     ref.read(drillsProvider).asData!.value;
                 String currentSeason =
                     "drills${DateTime.now().year.toString().substring(2)}";
-
-                int index = seasons.indexWhere(
-                    (m) => m.drills.where((d) => d.id == drill.id).isNotEmpty);
+                int index = seasons.indexWhere((m) => m.id == currentSeason);
                 if (index == -1) {
                   seasons.add(DrillSeason(id: currentSeason, drills: [drill]));
+                  index = seasons.indexWhere((m) => m.id == currentSeason);
                   await FirestoreService.instance
                       .addData(
                         path: FirestorePath.drill(seasons[index].id),
