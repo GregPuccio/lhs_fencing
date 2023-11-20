@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/admin_home_structure.dart';
 import 'package:lhs_fencing/src/home_structure.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
+import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
+import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
 import 'package:lhs_fencing/src/services/firestore/functions/get_fencing_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/views/auth/account_setup_page.dart';
@@ -22,7 +24,81 @@ class AuthWrapperPage extends ConsumerWidget {
     Widget whenUserData(UserData? userData, User user) {
       if (userData != null) {
         if (!refreshedUser) {
-          getFencingData(userData, context);
+          Future.delayed(Duration.zero, () async {
+            UserData? newUserData = await getFencingData(userData, context);
+            if (newUserData != null) {
+              if (context.mounted) {
+                return showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text("Fencing Information Update"),
+                        content: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text(
+                                "The following USA Fencing information has been updated:"),
+                            if (newUserData.club != userData.club) ...[
+                              Text(
+                                "New Club: ${newUserData.club}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleSmall
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              Text("Old Club: ${userData.club}"),
+                            ],
+                            if (newUserData.club != userData.club &&
+                                newUserData.rating != userData.rating)
+                              const SizedBox(height: 8),
+                            if (newUserData.rating != userData.rating) ...[
+                              Text(
+                                "New ${newUserData.weapon.type} Rating: ${newUserData.rating}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleSmall
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              Text("Old Rating: ${userData.rating}"),
+                              const Text("\nCongrats on the new rating!")
+                            ],
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              FirestoreService.instance
+                                  .setData(
+                                    path: FirestorePath.user(newUserData.id),
+                                    data: newUserData.toMap(),
+                                  )
+                                  .then(
+                                    (value) => context.popRoute().then(
+                                          (value) =>
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                            const SnackBar(
+                                              content: Text("Profile updated!"),
+                                            ),
+                                          ),
+                                        ),
+                                  );
+                            },
+                            child: const Text("Update my profile!"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              context.popRoute();
+                            },
+                            child: const Text("Don't update"),
+                          ),
+                        ],
+                      );
+                    });
+              }
+            }
+          });
         }
         if (userData.admin) {
           return const AdminHomeStructure();

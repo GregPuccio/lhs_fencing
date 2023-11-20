@@ -7,17 +7,15 @@ import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
 
 Future<UserData?> getFencingData(
-  UserData userData,
-  BuildContext context, {
-  bool upload = true,
-}) async {
+    UserData userData, BuildContext context) async {
+  UserData newUserData = UserData.fromJson(userData.toJson());
   try {
     final url = Uri.https('proxy-7jwpj4qcgq-uc.a.run.app',
         'https://member.usafencing.org/search/members', {
-      'first': userData.firstName,
-      'last': userData.lastName,
+      'first': newUserData.firstName,
+      'last': newUserData.lastName,
       'division': '',
-      'inactive': 'true',
+      'inactive': '',
       'country': '',
       'id': '',
     });
@@ -38,44 +36,42 @@ Future<UserData?> getFencingData(
             })));
     bool updated = false;
     if (titles.isNotEmpty) {
-      if (userData.club != titles[3]) {
-        userData.club = titles[3];
+      if (newUserData.club != titles[3]) {
+        newUserData.club = titles[3];
         updated = true;
       }
-      switch (userData.weapon) {
+      switch (newUserData.weapon) {
         case Weapon.foil:
-          if (userData.rating != titles[7]) {
-            userData.rating = titles[7];
+          if (newUserData.rating != titles[7]) {
+            newUserData.rating = titles[7];
             updated = true;
           }
           break;
         case Weapon.epee:
-          if (userData.rating != titles[8]) {
-            userData.rating = titles[8];
+          if (newUserData.rating != titles[8]) {
+            newUserData.rating = titles[8];
             updated = true;
           }
           break;
         case Weapon.saber:
-          if (userData.rating != titles[9]) {
-            userData.rating = titles[9];
+          if (newUserData.rating != titles[9]) {
+            newUserData.rating = titles[9];
             updated = true;
           }
           break;
 
         case Weapon.unsure:
-          if (userData.rating != "U") {
-            userData.rating = "U";
+          if (newUserData.rating != "U") {
+            newUserData.rating = "U";
             updated = true;
           }
           break;
       }
-      if (upload && updated) {
-        FirestoreService.instance.setData(
-          path: FirestorePath.user(userData.id),
-          data: userData.toMap(),
-        );
+      if (updated) {
+        return newUserData;
+      } else {
+        return null;
       }
-      return userData;
     }
   } catch (e) {
     // ignore: use_build_context_synchronously
