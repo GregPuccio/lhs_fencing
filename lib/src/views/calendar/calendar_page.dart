@@ -1,11 +1,13 @@
 import 'dart:collection';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
+import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/views/admin/widgets/admin_event_list_tile.dart';
 import 'package:lhs_fencing/src/views/home/widgets/event_list_tile.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -130,6 +132,12 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
             },
           )
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: "CalendarFAB",
+        onPressed: () =>
+            context.pushRoute(AddPracticesRoute(practiceDate: _focusedDay)),
+        child: const Icon(Icons.add),
       ),
     );
   }

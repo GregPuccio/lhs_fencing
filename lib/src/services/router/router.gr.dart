@@ -27,7 +27,7 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: AddPracticesPage(
-          missingPractice: args.missingPractice,
+          practiceDate: args.practiceDate,
           key: args.key,
         ),
       );
@@ -89,6 +89,18 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    EquipmentListRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const EquipmentListPage(),
+      );
+    },
+    EventsListRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const EventsListPage(),
+      );
+    },
     FencerDetailsRoute.name: (routeData) {
       final args = routeData.argsAs<FencerDetailsRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -136,13 +148,13 @@ class AddDrillsRoute extends PageRouteInfo<void> {
 /// [AddPracticesPage]
 class AddPracticesRoute extends PageRouteInfo<AddPracticesRouteArgs> {
   AddPracticesRoute({
-    bool missingPractice = false,
+    DateTime? practiceDate,
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
           AddPracticesRoute.name,
           args: AddPracticesRouteArgs(
-            missingPractice: missingPractice,
+            practiceDate: practiceDate,
             key: key,
           ),
           initialChildren: children,
@@ -156,17 +168,17 @@ class AddPracticesRoute extends PageRouteInfo<AddPracticesRouteArgs> {
 
 class AddPracticesRouteArgs {
   const AddPracticesRouteArgs({
-    this.missingPractice = false,
+    this.practiceDate,
     this.key,
   });
 
-  final bool missingPractice;
+  final DateTime? practiceDate;
 
   final Key? key;
 
   @override
   String toString() {
-    return 'AddPracticesRouteArgs{missingPractice: $missingPractice, key: $key}';
+    return 'AddPracticesRouteArgs{practiceDate: $practiceDate, key: $key}';
   }
 }
 
@@ -359,6 +371,34 @@ class EditPracticeRouteArgs {
   String toString() {
     return 'EditPracticeRouteArgs{practice: $practice, key: $key}';
   }
+}
+
+/// generated route for
+/// [EquipmentListPage]
+class EquipmentListRoute extends PageRouteInfo<void> {
+  const EquipmentListRoute({List<PageRouteInfo>? children})
+      : super(
+          EquipmentListRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'EquipmentListRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [EventsListPage]
+class EventsListRoute extends PageRouteInfo<void> {
+  const EventsListRoute({List<PageRouteInfo>? children})
+      : super(
+          EventsListRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'EventsListRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for

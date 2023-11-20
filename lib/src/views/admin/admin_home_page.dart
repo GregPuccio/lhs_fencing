@@ -5,6 +5,7 @@ import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
+import 'package:lhs_fencing/src/views/admin/events/event_list.dart';
 import 'package:lhs_fencing/src/views/admin/widgets/admin_upcoming_events.dart';
 import 'package:lhs_fencing/src/views/admin/widgets/no_practice_today.dart';
 import 'package:lhs_fencing/src/views/admin/widgets/todays_practice.dart';
@@ -72,6 +73,14 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
               onTap: () => context.router.push(const FencerListRoute()),
             ),
             const Divider(),
+            // ListTile(
+            //   leading: const Icon(Icons.accessibility_new),
+            //   title: const Text("Borrowed Equipment List"),
+            //   subtitle: const Text("View fencers and their participation info"),
+            //   trailing: const Icon(Icons.arrow_forward),
+            //   onTap: () => context.router.push(const EquipmentListRoute()),
+            // ),
+            // const Divider(),
             ListTile(
               leading: const Icon(Icons.list),
               title: const Text("Drills List"),
@@ -79,6 +88,14 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
               trailing: const Icon(Icons.arrow_forward),
               onTap: () => context.router.push(const DrillsListRoute()),
             ),
+            // const Divider(),
+            // ListTile(
+            //   leading: const Icon(Icons.event),
+            //   title: const Text("Meets and Tournaments List"),
+            //   subtitle: const Text("View all upcoming meets and tournaments"),
+            //   trailing: const Icon(Icons.arrow_forward),
+            //   onTap: () => context.router.push(EventsListRoute()),
+            // ),
             const Divider(),
             if (currentPractice != null)
               TodaysPractice(
@@ -94,6 +111,7 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
+          heroTag: "HomeFAB",
           onPressed: () => context.pushRoute(AddPracticesRoute()),
           child: const Icon(Icons.add),
         ),

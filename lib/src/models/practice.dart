@@ -105,7 +105,7 @@ Coach ${coach.firstName}
       'endTime': endTime.millisecondsSinceEpoch,
       'type': type.toMap(),
       'team': team.toMap(),
-      'activities': activities,
+      // 'activities': activities,
     };
   }
 

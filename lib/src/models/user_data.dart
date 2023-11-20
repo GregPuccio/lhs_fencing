@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:lhs_fencing/src/constants/enums.dart';
+import 'package:lhs_fencing/src/models/equipment.dart';
 
 class UserData extends Comparable<UserData> {
   String id;
@@ -17,6 +18,7 @@ class UserData extends Comparable<UserData> {
   List<DayOfWeek> clubDays;
   String rating;
   String club;
+  Equipment equipment;
 
   bool admin;
 
@@ -32,6 +34,7 @@ class UserData extends Comparable<UserData> {
     required this.clubDays,
     required this.rating,
     required this.club,
+    required this.equipment,
     required this.admin,
   });
 
@@ -49,6 +52,7 @@ class UserData extends Comparable<UserData> {
       clubDays: [],
       rating: "",
       club: "",
+      equipment: Equipment.create(),
     );
   }
 
@@ -72,6 +76,7 @@ class UserData extends Comparable<UserData> {
       clubDays: [],
       rating: "",
       club: "",
+      equipment: Equipment.create(),
     );
   }
 
@@ -95,6 +100,7 @@ class UserData extends Comparable<UserData> {
     List<DayOfWeek>? clubDays,
     String? rating,
     String? club,
+    Equipment? equipment,
     bool? admin,
   }) {
     return UserData(
@@ -109,6 +115,7 @@ class UserData extends Comparable<UserData> {
       clubDays: clubDays ?? this.clubDays,
       rating: rating ?? this.rating,
       club: club ?? this.club,
+      equipment: equipment ?? this.equipment,
       admin: admin ?? this.admin,
     );
   }
@@ -126,6 +133,7 @@ class UserData extends Comparable<UserData> {
       'clubDays': clubDays.map((x) => x.index).toList(),
       'rating': rating,
       'club': club,
+      'equipment': equipment.toMap(),
       'admin': admin,
     };
   }
@@ -145,6 +153,7 @@ class UserData extends Comparable<UserData> {
           map['clubDays']?.map((x) => DayOfWeek.values[x]) ?? []),
       rating: map['rating'] ?? '',
       club: map['club'] ?? '',
+      equipment: Equipment.fromMap(map['equipment'] ?? {}),
       admin: map['admin'] ?? false,
     );
   }
@@ -156,7 +165,7 @@ class UserData extends Comparable<UserData> {
 
   @override
   String toString() {
-    return 'UserData(id: $id, email: $email, firstName: $firstName, lastName: $lastName, team: $team, weapon: $weapon, schoolYear: $schoolYear, startDate: $startDate, clubDays: $clubDays, rating: $rating, club: $club, admin: $admin)';
+    return 'UserData(id: $id, email: $email, firstName: $firstName, lastName: $lastName, team: $team, weapon: $weapon, schoolYear: $schoolYear, startDate: $startDate, clubDays: $clubDays, rating: $rating, club: $club, equipment: $equipment, admin: $admin)';
   }
 
   @override
@@ -175,6 +184,7 @@ class UserData extends Comparable<UserData> {
         listEquals(other.clubDays, clubDays) &&
         other.rating == rating &&
         other.club == club &&
+        other.equipment == equipment &&
         other.admin == admin;
   }
 
@@ -191,6 +201,7 @@ class UserData extends Comparable<UserData> {
         clubDays.hashCode ^
         rating.hashCode ^
         club.hashCode ^
+        equipment.hashCode ^
         admin.hashCode;
   }
 

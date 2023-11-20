@@ -14,8 +14,8 @@ import 'package:uuid/uuid.dart';
 
 @RoutePage()
 class AddPracticesPage extends ConsumerStatefulWidget {
-  final bool missingPractice;
-  const AddPracticesPage({this.missingPractice = false, super.key});
+  final DateTime? practiceDate;
+  const AddPracticesPage({this.practiceDate, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -35,10 +35,11 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
   @override
   void initState() {
     DateTime now = DateTime.now();
-    DateTime today = DateTime(now.year, now.month, now.day);
-    if (widget.missingPractice) {
-      daysOfWeek.add(DayOfWeek.values
-          .firstWhere((element) => now.weekday == element.weekday));
+    DateTime today =
+        widget.practiceDate ?? DateTime(now.year, now.month, now.day);
+    if (widget.practiceDate != null) {
+      daysOfWeek.add(DayOfWeek.values.firstWhere(
+          (element) => widget.practiceDate!.weekday == element.weekday));
     }
     dateRange = DateTimeRange(start: today, end: today);
     startTime = const TimeOfDay(hour: 18, minute: 0);
