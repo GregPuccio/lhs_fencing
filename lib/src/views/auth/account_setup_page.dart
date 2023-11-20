@@ -217,8 +217,8 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   const SizedBox(height: 8),
                   ListTile(
                     title: const Text("USA Fencing Member?"),
-                    subtitle: const Text(
-                        "Tap here to pull your USA Fencing info. We will search using your first and last name if no USA Fencing ID is input above."),
+                    subtitle: Text(
+                        "Tap here to pull your USA Fencing info. We will search using your ${widget.userData == null ? "first and last name if no USA Fencing ID is input above, and your selected weapon." : "USA Fencing ID and your selected weapon."}"),
                     trailing: loadingData
                         ? const CircularProgressIndicator.adaptive()
                         : const Icon(Icons.download),
@@ -228,15 +228,17 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                               loadingData = true;
                             });
 
-                            getFencingData(userData, context).then((value) {
+                            getFencingData(userData, context,
+                                    settingUp: widget.userData == null)
+                                .then((value) {
                               if (value == null) {
                                 showDialog(
                                     context: context,
                                     builder: (context) => AlertDialog(
                                           title: const Text(
                                               "No Membership Data Found"),
-                                          content: const Text(
-                                              "Make sure that your first and last names are the spelt the same way as your registered name on USA Fencing or try using your USA Fencing ID.\n\nIf you do not have USA Fencing Membership you can leave these fields blank."),
+                                          content: Text(
+                                              "${widget.userData == null ? "Make sure that your first and last names are the spelt the same way as your registered name on USA Fencing or try using your USA Fencing ID." : "Make sure you are using a valid USA Fencing ID"}\n\nIf you do not have USA Fencing Membership you can leave these fields blank."),
                                           actions: [
                                             TextButton(
                                               onPressed: () =>

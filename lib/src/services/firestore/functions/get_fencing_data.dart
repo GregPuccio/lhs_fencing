@@ -4,8 +4,8 @@ import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:http/http.dart' as http;
 
-Future<UserData?> getFencingData(
-    UserData userData, BuildContext context) async {
+Future<UserData?> getFencingData(UserData userData, BuildContext context,
+    {bool settingUp = false}) async {
   UserData newUserData = UserData.fromJson(userData.toJson());
   try {
     Uri url;
