@@ -5,7 +5,6 @@ import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
-import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/views/admin/equipment/equipment_widget.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';

@@ -52,8 +52,9 @@ class PracticePage extends ConsumerWidget {
             title: Text(practice.startString),
             actions: [
               IconButton(
-                onPressed: () =>
-                    context.router.push(EditPracticeRoute(practice: practice)),
+                onPressed: () async {
+                  context.router.push(EditPracticeRoute(practice: practice));
+                },
                 icon: const Icon(Icons.edit),
               ),
             ],
@@ -177,8 +178,13 @@ class PracticePage extends ConsumerWidget {
     }
 
     Widget whenPracticeData(List<PracticeMonth> data) {
-      PracticeMonth month = data.firstWhere((element) =>
-          element.practices.any((element) => element.id == practiceID));
+      PracticeMonth month = data.firstWhere(
+          (element) =>
+              element.practices.any((element) => element.id == practiceID),
+          orElse: () {
+        context.popRoute();
+        return PracticeMonth(id: "id", practices: [], month: DateTime.now());
+      });
       practice =
           month.practices.firstWhere((element) => element.id == practiceID);
       return ref.watch(allAttendancesProvider).when(

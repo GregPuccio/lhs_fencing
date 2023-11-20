@@ -5,7 +5,6 @@ import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
-import 'package:lhs_fencing/src/views/admin/events/event_list.dart';
 import 'package:lhs_fencing/src/views/admin/widgets/admin_upcoming_events.dart';
 import 'package:lhs_fencing/src/views/admin/widgets/no_practice_today.dart';
 import 'package:lhs_fencing/src/views/admin/widgets/todays_practice.dart';

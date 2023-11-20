@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -82,7 +83,53 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Event"),
+        title: Text("Edit ${practice.type.type}"),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: Text("Delete ${practice.type.type}"),
+                        content: Text(
+                            "Are you sure you want to delete this ${practice.type.type.toLowerCase()} from the app?"),
+                        actions: [
+                          TextButton(
+                            onPressed: () async {
+                              List<PracticeMonth> practiceMonths =
+                                  ref.read(practicesProvider).asData!.value;
+
+                              int index = practiceMonths.indexWhere((m) =>
+                                  m.practices.any((p) => p.id == practice.id));
+                              await FirestoreService.instance.updateData(
+                                path: FirestorePath.practice(
+                                    practiceMonths[index].id),
+                                data: {
+                                  "practices": FieldValue.arrayRemove(
+                                      [widget.practice.toMap()])
+                                },
+                              );
+                              if (mounted) {
+                                context.popRoute(true);
+                              }
+                            },
+                            child: const Text("Delete"),
+                          ),
+                          TextButton(
+                            onPressed: () => context.popRoute(),
+                            child: const Text("Cancel"),
+                          ),
+                        ],
+                      )).then((value) {
+                if (value == true) {
+                  context.popRoute(true);
+                }
+                return null;
+              });
+            },
+            icon: const Icon(Icons.delete),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(

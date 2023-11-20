@@ -3,22 +3,33 @@ import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:http/http.dart' as http;
-import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
-import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
 
 Future<UserData?> getFencingData(
     UserData userData, BuildContext context) async {
   UserData newUserData = UserData.fromJson(userData.toJson());
   try {
-    final url = Uri.https('proxy-7jwpj4qcgq-uc.a.run.app',
-        'https://member.usafencing.org/search/members', {
-      'first': newUserData.firstName,
-      'last': newUserData.lastName,
-      'division': '',
-      'inactive': '',
-      'country': '',
-      'id': '',
-    });
+    Uri url;
+    if (newUserData.usaFencingID.isEmpty) {
+      url = Uri.https('proxy-7jwpj4qcgq-uc.a.run.app',
+          'https://member.usafencing.org/search/members', {
+        'first': newUserData.firstName,
+        'last': newUserData.lastName,
+        'division': '',
+        'inactive': '',
+        'country': '',
+        'id': '',
+      });
+    } else {
+      url = Uri.https('proxy-7jwpj4qcgq-uc.a.run.app',
+          'https://member.usafencing.org/search/members', {
+        'first': '',
+        'last': '',
+        'division': '',
+        'inactive': 'true',
+        'country': '',
+        'id': newUserData.usaFencingID,
+      });
+    }
     // final url = Uri.https("highschoolsports.nj.com",
     //     "/school/livingston-livingston/boysfencing/season/2022-2023/");
     final response = await http.get(url);
@@ -38,6 +49,10 @@ Future<UserData?> getFencingData(
     if (titles.isNotEmpty) {
       if (newUserData.club != titles[3]) {
         newUserData.club = titles[3];
+        updated = true;
+      }
+      if (newUserData.usaFencingID != titles[1]) {
+        newUserData.usaFencingID = titles[1];
         updated = true;
       }
       switch (newUserData.weapon) {

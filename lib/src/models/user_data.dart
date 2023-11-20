@@ -11,6 +11,7 @@ class UserData extends Comparable<UserData> {
   String email;
   String firstName;
   String lastName;
+  String usaFencingID;
   Team team;
   Weapon weapon;
   SchoolYear schoolYear;
@@ -27,6 +28,7 @@ class UserData extends Comparable<UserData> {
     required this.email,
     required this.firstName,
     required this.lastName,
+    required this.usaFencingID,
     required this.team,
     required this.weapon,
     required this.schoolYear,
@@ -44,6 +46,7 @@ class UserData extends Comparable<UserData> {
       email: "",
       firstName: "",
       lastName: "",
+      usaFencingID: "",
       admin: false,
       team: Team.boys,
       weapon: Weapon.unsure,
@@ -68,6 +71,7 @@ class UserData extends Comparable<UserData> {
       email: user.email ?? "",
       firstName: firstName,
       lastName: lastName,
+      usaFencingID: "",
       admin: false,
       team: Team.boys,
       weapon: Weapon.unsure,
@@ -93,6 +97,7 @@ class UserData extends Comparable<UserData> {
     String? email,
     String? firstName,
     String? lastName,
+    String? usaFencingID,
     Team? team,
     Weapon? weapon,
     SchoolYear? schoolYear,
@@ -108,6 +113,7 @@ class UserData extends Comparable<UserData> {
       email: email ?? this.email,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
+      usaFencingID: usaFencingID ?? this.usaFencingID,
       team: team ?? this.team,
       weapon: weapon ?? this.weapon,
       schoolYear: schoolYear ?? this.schoolYear,
@@ -126,6 +132,7 @@ class UserData extends Comparable<UserData> {
       'email': email,
       'firstName': firstName,
       'lastName': lastName,
+      'usaFencingID': usaFencingID,
       'team': team.toMap(),
       'weapon': weapon.toMap(),
       'schoolYear': schoolYear.toMap(),
@@ -144,6 +151,7 @@ class UserData extends Comparable<UserData> {
       email: map['email'] ?? '',
       firstName: map['firstName'] ?? '',
       lastName: map['lastName'] ?? '',
+      usaFencingID: map['usaFencingID'] ?? '',
       team: Team.fromMap(map['team'] ?? ""),
       weapon: Weapon.fromMap(map['weapon'] ?? ""),
       schoolYear: SchoolYear.fromMap(map['schoolYear'] ?? ""),

@@ -53,7 +53,8 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
     Widget whenData(List<PracticeMonth> practiceMonths) {
       List<Practice> practices = [];
       for (var month in practiceMonths) {
-        practices.addAll(month.practices);
+        practices.addAll(month.practices.where((practice) => practice.startTime
+            .isBefore(DateTime.now().add(const Duration(hours: 5)))));
       }
       List<UserData> filteredFencers = fencers.toList();
       if (controller.text.isNotEmpty) {

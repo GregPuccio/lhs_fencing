@@ -26,6 +26,7 @@ class AccountSetupPage extends ConsumerStatefulWidget {
 
 class _AccountSetupState extends ConsumerState<AccountSetupPage> {
   late UserData userData;
+  late TextEditingController usaFencingIDController;
   late TextEditingController clubController;
   late TextEditingController ratingController;
   bool loadingData = false;
@@ -35,6 +36,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
     userData = widget.userData != null
         ? UserData.fromJson(widget.userData!.toJson())
         : UserData.create(widget.user);
+    usaFencingIDController = TextEditingController(text: userData.usaFencingID);
     clubController = TextEditingController(text: userData.club);
     ratingController = TextEditingController(text: userData.rating);
     super.initState();
@@ -202,10 +204,21 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   ),
                   const Divider(),
                   const SizedBox(height: 8),
+                  TextFormField(
+                    controller: usaFencingIDController,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: const InputDecoration(
+                        labelText: "USA Fencing ID",
+                        hintText: "(not required)"),
+                    onChanged: (value) => setState(() {
+                      userData.usaFencingID = value;
+                    }),
+                  ),
+                  const SizedBox(height: 8),
                   ListTile(
                     title: const Text("USA Fencing Member?"),
-                    subtitle:
-                        const Text("Tap here to pull your USA Fencing info"),
+                    subtitle: const Text(
+                        "Tap here to pull your USA Fencing info. We will search using your first and last name if no USA Fencing ID is input above."),
                     trailing: loadingData
                         ? const CircularProgressIndicator.adaptive()
                         : const Icon(Icons.download),
@@ -223,7 +236,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                                           title: const Text(
                                               "No Membership Data Found"),
                                           content: const Text(
-                                              "Make sure that your first and last names are the spelt the same way as your registered name on USA Fencing.\n\nIf you do not have USA Fencing Membership you can leave these fields blank."),
+                                              "Make sure that your first and last names are the spelt the same way as your registered name on USA Fencing or try using your USA Fencing ID.\n\nIf you do not have USA Fencing Membership you can leave these fields blank."),
                                           actions: [
                                             TextButton(
                                               onPressed: () =>
@@ -236,7 +249,26 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                                   loadingData = false;
                                 });
                               } else {
+                                if (userData.usaFencingID.isEmpty) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                            title: const Text(
+                                                "Membership Data Found!"),
+                                            content: Text(
+                                                "Club: ${value.club}\n ${userData.weapon.type} Rating: ${value.rating}\n\nIf this is not you, please enter and use your USA Fencing ID to update your data."),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                                child: const Text("Close"),
+                                              )
+                                            ],
+                                          ));
+                                }
                                 setState(() {
+                                  usaFencingIDController.text = userData
+                                      .usaFencingID = value.usaFencingID;
                                   clubController.text =
                                       userData.club = value.club;
                                   ratingController.text =
