@@ -231,6 +231,7 @@ class _EquipmentListPageState extends ConsumerState<EquipmentListPage> {
             itemCount: filteredFencers.length,
             itemBuilder: (context, index) {
               UserData fencer = filteredFencers[index];
+              bool hasEquipment = fencer.equipment.hasEquipment(fencer);
 
               return Column(
                 children: [
@@ -242,16 +243,23 @@ class _EquipmentListPageState extends ConsumerState<EquipmentListPage> {
                         "${fencer.team.type} | ${fencer.schoolYear.type} | ${fencer.weapon.type} Fencer"),
                     trailing: TextButton.icon(
                         onPressed: () async {
-                          setState(() {
-                            fencer.equipment.giveEquipment(fencer.weapon);
-                          });
+                          if (hasEquipment) {
+                            setState(() {
+                              fencer.equipment.removeEquipment();
+                            });
+                          } else {
+                            setState(() {
+                              fencer.equipment.giveEquipment(fencer);
+                            });
+                          }
                           await FirestoreService.instance.updateData(
                             path: FirestorePath.user(fencer.id),
                             data: fencer.toMap(),
                           );
                         },
-                        icon: const Icon(Icons.add),
-                        label: const Text("Add Kit")),
+                        icon: Icon(hasEquipment ? Icons.remove : Icons.add),
+                        label:
+                            Text(hasEquipment ? "Remove All" : "Add Full Set")),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),

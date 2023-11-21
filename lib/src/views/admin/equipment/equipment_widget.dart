@@ -74,6 +74,7 @@ class _EquipmentWidgetState extends State<EquipmentWidget> {
                 children: [
                   Flexible(
                     child: CheckboxListTile.adaptive(
+                      enabled: widget.fencer.weapon != Weapon.epee,
                       value: equipment.lame,
                       title: const Text("Lamé"),
                       onChanged: (value) {
@@ -135,6 +136,7 @@ class _EquipmentWidgetState extends State<EquipmentWidget> {
             ),
             Flexible(
               child: CheckboxListTile.adaptive(
+                enabled: widget.fencer.team != Team.boys,
                 value: equipment.chestProtector,
                 title: const Text("Chest Protector"),
                 onChanged: (value) {
@@ -154,6 +156,7 @@ class _EquipmentWidgetState extends State<EquipmentWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   const Flexible(
+                    flex: 2,
                     child: ListTile(
                       title: Text("Body Cords"),
                     ),
@@ -175,13 +178,16 @@ class _EquipmentWidgetState extends State<EquipmentWidget> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Flexible(
+                  Flexible(
+                    flex: 2,
                     child: ListTile(
-                      title: Text("Mask Cords"),
+                      title: const Text("Mask Cords"),
+                      enabled: widget.fencer.weapon != Weapon.epee,
                     ),
                   ),
                   Flexible(
                     child: TextField(
+                        enabled: widget.fencer.weapon != Weapon.epee,
                         keyboardType: const TextInputType.numberWithOptions(),
                         controller: maskCordCountController,
                         onChanged: (value) {
@@ -197,10 +203,23 @@ class _EquipmentWidgetState extends State<EquipmentWidget> {
         Row(
           children: [
             Flexible(
+              child: CheckboxListTile.adaptive(
+                value: equipment.glove,
+                title: const Text("Glove"),
+                onChanged: (value) {
+                  setState(() {
+                    equipment.glove = value ?? false;
+                  });
+                  updateUserData();
+                },
+              ),
+            ),
+            Flexible(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Flexible(
+                    flex: 2,
                     child: ListTile(
                       title: Text(
                           "${widget.fencer.weapon == Weapon.unsure ? "Foil" : widget.fencer.weapon.type}s"),
@@ -218,7 +237,6 @@ class _EquipmentWidgetState extends State<EquipmentWidget> {
                 ],
               ),
             ),
-            Flexible(child: Container())
           ],
         ),
       ],

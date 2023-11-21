@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:lhs_fencing/src/constants/enums.dart';
+import 'package:lhs_fencing/src/models/user_data.dart';
 
 class Equipment {
   bool mask;
@@ -9,6 +10,7 @@ class Equipment {
   bool plastron;
   bool chestProtector;
   bool lame;
+  bool glove;
   int bodyCordCount;
   int maskCordCount;
   int weaponCount;
@@ -19,6 +21,7 @@ class Equipment {
     this.plastron = false,
     this.chestProtector = false,
     this.lame = false,
+    this.glove = false,
     this.bodyCordCount = 0,
     this.maskCordCount = 0,
     this.weaponCount = 0,
@@ -28,9 +31,53 @@ class Equipment {
     return Equipment();
   }
 
-  void giveEquipment(Weapon equipmentWeapon) {
-    mask = jacket = knickers = plastron = chestProtector = lame = true;
-    bodyCordCount = maskCordCount = weaponCount = 1;
+  bool hasEquipment(UserData fencer) {
+    bool hasBase = mask &&
+        jacket &&
+        knickers &&
+        plastron &&
+        glove &&
+        bodyCordCount > 0 &&
+        weaponCount > 0;
+    int counter = 0;
+    if (hasBase) {
+      counter++;
+      if (fencer.team == Team.girls) {
+        if (chestProtector) {
+          counter++;
+        }
+      } else {
+        counter++;
+      }
+      if (fencer.weapon != Weapon.epee) {
+        if (lame && maskCordCount > 0) {
+          counter++;
+        }
+      } else {
+        counter++;
+      }
+      if (counter == 3) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void giveEquipment(UserData fencer) {
+    mask = jacket = knickers = plastron = glove = true;
+    bodyCordCount = weaponCount = 1;
+    if (fencer.team == Team.girls) {
+      chestProtector = true;
+    }
+    if (fencer.weapon != Weapon.epee) {
+      lame = true;
+      maskCordCount = 1;
+    }
+  }
+
+  void removeEquipment() {
+    mask = jacket = knickers = plastron = chestProtector = lame = glove = false;
+    bodyCordCount = maskCordCount = weaponCount = 0;
   }
 
   Equipment copyWith({
@@ -40,6 +87,7 @@ class Equipment {
     bool? plastron,
     bool? chestProtector,
     bool? lame,
+    bool? glove,
     int? bodyCordCount,
     int? maskCordCount,
     int? weaponCount,
@@ -51,6 +99,7 @@ class Equipment {
       plastron: plastron ?? this.plastron,
       chestProtector: chestProtector ?? this.chestProtector,
       lame: lame ?? this.lame,
+      glove: glove ?? this.glove,
       bodyCordCount: bodyCordCount ?? this.bodyCordCount,
       maskCordCount: maskCordCount ?? this.maskCordCount,
       weaponCount: weaponCount ?? this.weaponCount,
@@ -65,6 +114,7 @@ class Equipment {
       'plastron': plastron,
       'chestProtector': chestProtector,
       'lame': lame,
+      'glove': glove,
       'bodyCordCount': bodyCordCount,
       'maskCordCount': maskCordCount,
       'weaponCount': weaponCount,
@@ -79,6 +129,7 @@ class Equipment {
       plastron: map['plastron'] ?? false,
       chestProtector: map['chestProtector'] ?? false,
       lame: map['lame'] ?? false,
+      glove: map['glove'] ?? false,
       bodyCordCount: map['bodyCordCount']?.toInt() ?? 0,
       maskCordCount: map['maskCordCount']?.toInt() ?? 0,
       weaponCount: map['weaponCount']?.toInt() ?? 0,
@@ -92,7 +143,7 @@ class Equipment {
 
   @override
   String toString() {
-    return 'Equipment(mask: $mask, jacket: $jacket, knickers: $knickers, plastron: $plastron, chestProtector: $chestProtector, lame: $lame, bodyCordCount: $bodyCordCount, maskCordCount: $maskCordCount, weaponCount: $weaponCount)';
+    return 'Equipment(mask: $mask, jacket: $jacket, knickers: $knickers, plastron: $plastron, chestProtector: $chestProtector, lame: $lame, glove: $glove, bodyCordCount: $bodyCordCount, maskCordCount: $maskCordCount, weaponCount: $weaponCount)';
   }
 
   @override
@@ -106,6 +157,7 @@ class Equipment {
         other.plastron == plastron &&
         other.chestProtector == chestProtector &&
         other.lame == lame &&
+        other.glove == glove &&
         other.bodyCordCount == bodyCordCount &&
         other.maskCordCount == maskCordCount &&
         other.weaponCount == weaponCount;
@@ -119,6 +171,7 @@ class Equipment {
         plastron.hashCode ^
         chestProtector.hashCode ^
         lame.hashCode ^
+        glove.hashCode ^
         bodyCordCount.hashCode ^
         maskCordCount.hashCode ^
         weaponCount.hashCode;

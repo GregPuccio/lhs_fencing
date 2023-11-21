@@ -372,52 +372,51 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   const SizedBox(height: 32),
                   OutlinedButton.icon(
                     onPressed: () {
-                      // if (user.email != null &&
-                      //     (user.email!.contains("livingston") ||
-                      //         user.email!.contains("lps"))) {
-
-                      if (widget.userData != null) {
-                        FirestoreService.instance
-                            .updateData(
-                          path: FirestorePath.user(user.uid),
-                          data: userData.toMap(),
-                        )
-                            .then((value) {
-                          userData = widget.userData!;
-                          return context.popRoute().then(
-                                (value) =>
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content:
-                                        Text("Profile Updated Successfully!"),
+                      if (user.email != null &&
+                          (user.email!.contains("livingston") ||
+                              user.email!.contains("lps"))) {
+                        if (widget.userData != null) {
+                          FirestoreService.instance
+                              .updateData(
+                            path: FirestorePath.user(user.uid),
+                            data: userData.toMap(),
+                          )
+                              .then((value) {
+                            userData = widget.userData!;
+                            return context.popRoute().then(
+                                  (value) => ScaffoldMessenger.of(context)
+                                      .showSnackBar(
+                                    const SnackBar(
+                                      content:
+                                          Text("Profile Updated Successfully!"),
+                                    ),
                                   ),
-                                ),
-                              );
-                        });
+                                );
+                          });
+                        } else {
+                          FirestoreService.instance.setData(
+                            path: FirestorePath.user(user.uid),
+                            data: userData.toMap(),
+                          );
+                        }
                       } else {
-                        FirestoreService.instance.setData(
-                          path: FirestorePath.user(user.uid),
-                          data: userData.toMap(),
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text("Unrecognized Email"),
+                            content: const Text(
+                                "Only use your Livingston email address to log in. No other addresses can be recognized at this time."),
+                            actions: [
+                              TextButton(
+                                onPressed: () => context.popRoute(),
+                                child: const Text(
+                                  "Understood",
+                                ),
+                              ),
+                            ],
+                          ),
                         );
                       }
-                      // } else {
-                      //   showDialog(
-                      //     context: context,
-                      //     builder: (context) => AlertDialog(
-                      //       title: const Text("Unrecognized Email"),
-                      //       content: const Text(
-                      //           "Only use your Livingston email address to log in. No other addresses can be recognized at this time."),
-                      //       actions: [
-                      //         TextButton(
-                      //           onPressed: () => context.popRoute(),
-                      //           child: const Text(
-                      //             "Understood",
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   );
-                      // }
                     },
                     icon: const Icon(Icons.check),
                     label: Text(
