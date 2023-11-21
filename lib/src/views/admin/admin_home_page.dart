@@ -72,14 +72,14 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
               onTap: () => context.router.push(const FencerListRoute()),
             ),
             const Divider(),
-            // ListTile(
-            //   leading: const Icon(Icons.accessibility_new),
-            //   title: const Text("Borrowed Equipment List"),
-            //   subtitle: const Text("View fencers and their participation info"),
-            //   trailing: const Icon(Icons.arrow_forward),
-            //   onTap: () => context.router.push(const EquipmentListRoute()),
-            // ),
-            // const Divider(),
+            ListTile(
+              leading: const Icon(Icons.accessibility_new),
+              title: const Text("Borrowed Equipment List"),
+              subtitle: const Text("View fencers and their participation info"),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () => context.router.push(const EquipmentListRoute()),
+            ),
+            const Divider(),
             ListTile(
               leading: const Icon(Icons.list),
               title: const Text("Drills List"),

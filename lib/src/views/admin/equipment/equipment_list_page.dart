@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
+import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
+import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/views/admin/equipment/equipment_widget.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
@@ -230,18 +232,32 @@ class _EquipmentListPageState extends ConsumerState<EquipmentListPage> {
             itemBuilder: (context, index) {
               UserData fencer = filteredFencers[index];
 
-              return ListTile(
-                title: Text(
-                  fencer.fullName,
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
+              return Column(
+                children: [
+                  ListTile(
+                    title: Text(
+                      fencer.fullName,
+                    ),
+                    subtitle: Text(
                         "${fencer.team.type} | ${fencer.schoolYear.type} | ${fencer.weapon.type} Fencer"),
-                    EquipmentWidget(fencer),
-                  ],
-                ),
+                    trailing: TextButton.icon(
+                        onPressed: () async {
+                          setState(() {
+                            fencer.equipment.giveEquipment(fencer.weapon);
+                          });
+                          await FirestoreService.instance.updateData(
+                            path: FirestorePath.user(fencer.id),
+                            data: fencer.toMap(),
+                          );
+                        },
+                        icon: const Icon(Icons.add),
+                        label: const Text("Add Kit")),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: EquipmentWidget(fencer, key: ObjectKey(fencer)),
+                  ),
+                ],
               );
             },
             separatorBuilder: (context, index) => const Divider(),

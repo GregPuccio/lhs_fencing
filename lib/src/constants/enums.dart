@@ -216,26 +216,3 @@ enum TypeDrill {
   static TypeDrill fromMap(String map) =>
       values.byName(map.isEmpty ? "freshman" : map);
 }
-
-enum EquipmentWeapon {
-  saber,
-  foil,
-  epee;
-
-  const EquipmentWeapon();
-
-  String get type {
-    switch (this) {
-      case saber:
-        return "Saber";
-      case foil:
-        return "Foil";
-      case epee:
-        return "Epee";
-    }
-  }
-
-  String toMap() => name;
-  static EquipmentWeapon fromMap(String map) =>
-      values.byName(map.isEmpty ? "foil" : map);
-}
