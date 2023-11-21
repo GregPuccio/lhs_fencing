@@ -1,6 +1,6 @@
 String userCollection = "users23";
 String practiceCollection = "practices23";
-String attendanceCollection = "attendances";
+String attendanceCollection = "attendances23";
 String drillCollection = "drills";
 String drillSeason23 = "drills23";
 
