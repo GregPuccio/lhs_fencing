@@ -135,7 +135,7 @@ class Attendance {
     if (checkIn == null) {
       return false;
     } else {
-      return practiceStart.difference(checkIn!).inMinutes > 15;
+      return practiceStart.difference(checkIn!).inMinutes < -15;
     }
   }
 

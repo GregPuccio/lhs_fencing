@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
@@ -319,14 +320,34 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                     ),
                   ),
                 ),
-                title: Text(
-                  fencer.fullName,
+                title: Row(
+                  children: [
+                    Text(fencer.fullName),
+                    if (fencer.rating.isNotEmpty) ...[
+                      const SizedBox(width: 8),
+                      Text(fencer.rating),
+                    ],
+                  ],
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (fencer.club.isNotEmpty) ...[
+                      Wrap(
+                        children: [
+                          Text(fencer.club),
+                          if (fencer.clubDays.isNotEmpty) ...[
+                            const SizedBox(width: 8),
+                            Text(
+                              "(${fencer.clubDays.map((e) => e.abbreviation).join(",")})",
+                            ),
+                          ],
+                        ],
+                      ),
+                    ],
+                    const Divider(),
                     Text(
-                        "${fencer.team.type} | ${fencer.schoolYear.type}\n${fencer.weapon.type} Fencer"),
+                        "${fencer.team.name.capitalize} | ${fencer.schoolYear.type} | ${fencer.weapon.type}"),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,

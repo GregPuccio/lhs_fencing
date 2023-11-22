@@ -26,7 +26,8 @@ class AdminEventListTile extends ConsumerWidget {
             .watch(fencersProvider)
             .asData
             ?.value
-            .where((f) => f.team == practice.team)
+            .where((f) =>
+                practice.team == Team.both ? true : f.team == practice.team)
             .length ??
         1;
     if (fencers == 0) {

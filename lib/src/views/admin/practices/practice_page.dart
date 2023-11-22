@@ -37,6 +37,8 @@ class PracticePage extends ConsumerWidget {
         }
       }
       fencers.sort();
+      fencers.retainWhere((fencer) =>
+          practice.team == Team.both ? true : fencer.team == practice.team);
       List<List<UserData>> fencerLists = [
         fencers,
         getShownFencers(fencers, attendances, PracticeShowState.attended),
@@ -154,7 +156,16 @@ class PracticePage extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (attendance != null) AttendanceStatusBar(attendance),
-                        Text(fencer.fullName),
+                        Row(
+                          children: [
+                            Text(fencer.fullName),
+                            if (fencer.clubDays.isNotEmpty) ...[
+                              const SizedBox(width: 8),
+                              Text(
+                                  "(${fencer.clubDays.map((e) => e.abbreviation).join(",")})"),
+                            ],
+                          ],
+                        ),
                       ],
                     ),
                     onTap: () => context.router.push(
