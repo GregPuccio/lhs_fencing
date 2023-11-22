@@ -55,14 +55,13 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
       minute:
           widget.attendance?.checkOut?.minute ?? widget.practice.endTime.minute,
     );
-    selectCheckInTime = widget.attendance?.checkIn != null;
-    selectCheckOutTime = widget.attendance?.checkOut != null;
-    comments = widget.attendance?.comments ?? [];
     attendanceStatus = [
-      selectCheckInTime == true,
+      widget.attendance?.checkIn != null,
       widget.attendance?.excusedAbsense ?? false,
       widget.attendance?.unexcusedAbsense ?? false
     ];
+    selectCheckOutTime = widget.attendance?.checkOut != null;
+    comments = widget.attendance?.comments ?? [];
     super.initState();
   }
 
@@ -93,7 +92,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
         comments: comments,
         excusedAbsense: attendanceStatus[1],
         unexcusedAbsense: attendanceStatus[2]);
-    newAttendance.checkIn = selectCheckInTime ? checkIn : null;
+    newAttendance.checkIn = attendanceStatus[0] ? checkIn : null;
     newAttendance.checkOut = selectCheckOutTime ? checkOut : null;
 
     return await addAttendance(
@@ -232,12 +231,12 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                 const Divider(),
                 CheckboxListTile(
                   title: const Text("Include Check In Time"),
-                  value: selectCheckInTime,
+                  value: attendanceStatus[0],
                   onChanged: (value) =>
-                      setState(() => selectCheckInTime = value ?? true),
+                      setState(() => attendanceStatus[0] = value ?? true),
                 ),
                 const SizedBox(height: 8),
-                if (selectCheckInTime) ...[
+                if (attendanceStatus[0]) ...[
                   ListTile(
                     title: const Text("Check In Time"),
                     subtitle: Text(startTime.format(context)),

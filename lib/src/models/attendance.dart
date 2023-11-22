@@ -84,7 +84,7 @@ class Attendance {
   }
 
   bool get attended {
-    return excusedAbsense ? false : checkIn != null;
+    return checkIn != null;
   }
 
   bool get tooSoonForCheckIn =>
@@ -105,10 +105,10 @@ class Attendance {
         "${practiceOver ? "Attended |" : "Checked In"} ${checkedIn ?? ""}${checkedOut != null ? " - $checkedOut" : ""}";
 
     String text = "Status: ";
-    if (practiceOver) {
-      if (attended) {
-        text += info;
-      } else if (excusedAbsense) {
+    if (attended) {
+      text += info;
+    } else if (practiceOver) {
+      if (excusedAbsense) {
         text += "Absent - Excused";
       } else if (unexcusedAbsense) {
         text += "Absent - Unexcused";
