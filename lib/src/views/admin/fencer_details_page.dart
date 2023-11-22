@@ -9,6 +9,7 @@ import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
+import 'package:lhs_fencing/src/views/auth/account_setup_page.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 import 'package:lhs_fencing/src/widgets/text_badge.dart';
@@ -67,7 +68,37 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
         length: PracticeShowState.values.length,
         child: Scaffold(
           appBar: AppBar(
-            title: Text("${fencer.fullName}'s Practices"),
+            title: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(fencer.fullName),
+                    if (fencer.rating.isNotEmpty) ...[
+                      const SizedBox(width: 8),
+                      Text(fencer.rating),
+                    ],
+                  ],
+                ),
+                if (fencer.club.isNotEmpty) ...[
+                  Wrap(
+                    children: [
+                      Text(
+                        fencer.club,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      if (fencer.clubDays.isNotEmpty) ...[
+                        const SizedBox(width: 8),
+                        Text(
+                          "(${fencer.clubDays.map((e) => e.abbreviation).join(",")})",
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ],
+            ),
             bottom: TabBar(
               isScrollable: true,
               onTap: (int index) => setState(
@@ -87,6 +118,22 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
                 ),
               ),
             ),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => AccountSetupPage(
+                        user:
+                            ref.watch(authStateChangesProvider).asData!.value!,
+                        userData: fencer,
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.edit),
+              ),
+            ],
           ),
           body: TabBarView(
             children: List.generate(

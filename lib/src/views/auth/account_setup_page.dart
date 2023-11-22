@@ -67,7 +67,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                           TextButton(
                             onPressed: () => FirestoreService.instance
                                 .updateData(
-                                  path: FirestorePath.user(user.uid),
+                                  path: FirestorePath.user(userData.id),
                                   data: userData.toMap(),
                                 )
                                 .then(
@@ -378,7 +378,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                         if (widget.userData != null) {
                           FirestoreService.instance
                               .updateData(
-                            path: FirestorePath.user(user.uid),
+                            path: FirestorePath.user(widget.userData!.id),
                             data: userData.toMap(),
                           )
                               .then((value) {
