@@ -137,10 +137,10 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
-                    readOnly: true,
+                    enabled: false,
                     decoration:
                         const InputDecoration(labelText: "Email Address"),
-                    initialValue: user.email,
+                    initialValue: userData.email,
                   ),
                   const SizedBox(height: 8),
                   const Divider(),
