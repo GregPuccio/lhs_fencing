@@ -13,25 +13,48 @@ import 'package:lhs_fencing/src/widgets/attendance_info.dart';
 import 'package:lhs_fencing/src/widgets/attendance_status_bar.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
+import 'package:lhs_fencing/src/widgets/search_bar_widget.dart';
 import 'package:lhs_fencing/src/widgets/text_badge.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 PracticeShowState practiceShowState = PracticeShowState.all;
 
 @RoutePage()
-class PracticePage extends ConsumerWidget {
+class PracticePage extends ConsumerStatefulWidget {
   final String practiceID;
   const PracticePage({required this.practiceID, super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _PracticePageState();
+}
+
+class _PracticePageState extends ConsumerState<PracticePage> {
+  late TextEditingController controller;
+
+  @override
+  void initState() {
+    controller = TextEditingController();
+    controller.addListener(() {
+      setState(() {});
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     List<UserData> fencers = [];
     late Practice practice;
     Widget whenData(List<AttendanceMonth> attendanceMonths) {
       List<Attendance> attendances = [];
       for (var month in attendanceMonths) {
         for (var attendance in month.attendances) {
-          if (attendance.id == practiceID) {
+          if (attendance.id == widget.practiceID) {
             attendances.add(attendance);
           }
         }
@@ -39,12 +62,26 @@ class PracticePage extends ConsumerWidget {
       fencers.sort();
       fencers.retainWhere((fencer) =>
           practice.team == Team.both ? true : fencer.team == practice.team);
+      List<UserData> filteredFencers = fencers.toList();
+      if (controller.text.isNotEmpty) {
+        filteredFencers = fencers
+            .where(
+              (f) => f.fullName.toLowerCase().contains(
+                    controller.text.toLowerCase(),
+                  ),
+            )
+            .toList();
+      }
       List<List<UserData>> fencerLists = [
-        fencers,
-        getShownFencers(fencers, attendances, PracticeShowState.attended),
-        getShownFencers(fencers, attendances, PracticeShowState.excused),
-        getShownFencers(fencers, attendances, PracticeShowState.unexcused),
-        getShownFencers(fencers, attendances, PracticeShowState.noReason),
+        filteredFencers,
+        getShownFencers(
+            filteredFencers, attendances, PracticeShowState.attended),
+        getShownFencers(
+            filteredFencers, attendances, PracticeShowState.excused),
+        getShownFencers(
+            filteredFencers, attendances, PracticeShowState.unexcused),
+        getShownFencers(
+            filteredFencers, attendances, PracticeShowState.noReason),
       ];
 
       return DefaultTabController(
@@ -60,20 +97,29 @@ class PracticePage extends ConsumerWidget {
                 icon: const Icon(Icons.edit),
               ),
             ],
-            bottom: TabBar(
-              isScrollable: true,
-              tabs: List.generate(
-                PracticeShowState.values.length,
-                (index) => Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(PracticeShowState.values[index].fencerType),
-                      const SizedBox(width: 8),
-                      TextBadge(text: "${fencerLists[index].length}"),
-                    ],
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(90),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SearchBarWidget(controller),
+                  TabBar(
+                    isScrollable: true,
+                    tabs: List.generate(
+                      PracticeShowState.values.length,
+                      (index) => Tab(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(PracticeShowState.values[index].fencerType),
+                            const SizedBox(width: 8),
+                            TextBadge(text: "${fencerLists[index].length}"),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
@@ -190,14 +236,13 @@ class PracticePage extends ConsumerWidget {
 
     Widget whenPracticeData(List<PracticeMonth> data) {
       PracticeMonth month = data.firstWhere(
-          (element) =>
-              element.practices.any((element) => element.id == practiceID),
-          orElse: () {
+          (element) => element.practices
+              .any((element) => element.id == widget.practiceID), orElse: () {
         context.popRoute();
         return PracticeMonth(id: "id", practices: [], month: DateTime.now());
       });
-      practice =
-          month.practices.firstWhere((element) => element.id == practiceID);
+      practice = month.practices
+          .firstWhere((element) => element.id == widget.practiceID);
       return ref.watch(allAttendancesProvider).when(
           data: whenData,
           error: (error, stackTrace) => const ErrorPage(),
