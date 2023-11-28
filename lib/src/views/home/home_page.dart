@@ -111,6 +111,17 @@ class _HomePageState extends ConsumerState<HomePage> {
       children: [
         const WelcomeHeader(),
         const Divider(),
+        if (ref.watch(userDataProvider).value!.manager == true) ...[
+          ListTile(
+            leading: const Icon(Icons.accessibility_new),
+            title: const Text("Borrowed Equipment List"),
+            subtitle:
+                const Text("View and edit the equipment fencers have borrowed"),
+            trailing: const Icon(Icons.arrow_forward),
+            onTap: () => context.router.push(const EquipmentListRoute()),
+          ),
+          const Divider(),
+        ],
         if (pracs.isNotEmpty)
           Row(
             children: <Widget>[
@@ -192,17 +203,6 @@ class _HomePageState extends ConsumerState<HomePage> {
             title: Text(
                 "Attendance data will populate here after your first attendance."),
           ),
-        const Divider(),
-        if (ref.watch(userDataProvider).value!.manager == true) ...[
-          ListTile(
-            leading: const Icon(Icons.accessibility_new),
-            title: const Text("Borrowed Equipment List"),
-            subtitle:
-                const Text("View and edit the equipment fencers have borrowed"),
-            trailing: const Icon(Icons.arrow_forward),
-            onTap: () => context.router.push(const EquipmentListRoute()),
-          ),
-        ],
         const Divider(),
         if (widget.todaysAttendance != null &&
             widget.upcomingPractice != null) ...[
