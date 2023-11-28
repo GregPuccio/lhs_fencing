@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/equipment.dart';
+import 'package:uuid/uuid.dart';
 
 class UserData extends Comparable<UserData> {
   String id;
@@ -42,7 +43,7 @@ class UserData extends Comparable<UserData> {
 
   static UserData noUserCreate() {
     return UserData(
-      id: "",
+      id: const Uuid().v4(),
       email: "",
       firstName: "",
       lastName: "",

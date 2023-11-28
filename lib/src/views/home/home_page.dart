@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     List<Practice> pracs = widget.practices.toList();
     pracs.sort((a, b) => -a.startTime.compareTo(b.startTime));
-    pracs.retainWhere((p) => p.endTime.isBefore(DateTime.now()));
+    pracs.retainWhere((p) => p.startTime.isBefore(DateTime.now()));
 
     List<PieChartSectionData> showingSections = [
       PieChartSectionData(

@@ -12,6 +12,7 @@ import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/views/admin/fencer_details_page.dart';
+import 'package:lhs_fencing/src/views/auth/account_setup_page.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/indicator.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
@@ -55,7 +56,7 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
       List<Practice> practices = [];
       for (var month in practiceMonths) {
         practices.addAll(month.practices.where((practice) => practice.startTime
-            .isBefore(DateTime.now().add(const Duration(hours: 5)))));
+            .isBefore(DateTime.now().add(const Duration(hours: 1)))));
       }
       List<UserData> filteredFencers = fencers.toList();
       if (controller.text.isNotEmpty) {
@@ -78,6 +79,14 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
         filteredFencers.retainWhere((fencer) => fencer.weapon == weaponFilter);
       }
       return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const AccountSetupPage(user: null),
+              ),
+            ),
+          ),
           appBar: AppBar(
             title: Row(
               children: [

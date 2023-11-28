@@ -15,7 +15,7 @@ import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 
 class AccountSetupPage extends ConsumerStatefulWidget {
-  final User user;
+  final User? user;
   final UserData? userData;
   const AccountSetupPage({required this.user, this.userData, Key? key})
       : super(key: key);
@@ -35,7 +35,9 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
   void initState() {
     userData = widget.userData != null
         ? UserData.fromJson(widget.userData!.toJson())
-        : UserData.create(widget.user);
+        : widget.user != null
+            ? UserData.create(widget.user!)
+            : UserData.noUserCreate();
     usaFencingIDController = TextEditingController(text: userData.usaFencingID);
     clubController = TextEditingController(text: userData.club);
     ratingController = TextEditingController(text: userData.rating);
@@ -50,7 +52,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
       } else {
         return WillPopScope(
           onWillPop: () async {
-            if (widget.userData == userData) {
+            if (widget.userData == userData || widget.user == null) {
               return true;
             } else {
               return await showDialog(
@@ -88,13 +90,14 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
             }
           },
           child: Scaffold(
-            appBar: DefaultAppBar(editUser: widget.userData != null),
+            appBar: DefaultAppBar(
+                editUser: widget.userData != null || widget.user == null),
             body: SizedBox(
               width: 600,
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
-                  if (widget.userData == null) ...[
+                  if (widget.userData == null && widget.user != null) ...[
                     const Text(
                       "Welcome to the 2023-24 Season!",
                       textAlign: TextAlign.center,
@@ -137,10 +140,13 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
-                    enabled: false,
+                    enabled: widget.user == null,
                     decoration:
                         const InputDecoration(labelText: "Email Address"),
                     initialValue: userData.email,
+                    onChanged: (value) => setState(() {
+                      userData.email = value;
+                    }),
                   ),
                   const SizedBox(height: 8),
                   const Divider(),
@@ -393,11 +399,28 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                                   ),
                                 );
                           });
-                        } else {
+                        } else if (widget.user != null) {
                           FirestoreService.instance.setData(
                             path: FirestorePath.user(user.uid),
                             data: userData.toMap(),
                           );
+                        } else {
+                          FirestoreService.instance
+                              .setData(
+                            path: FirestorePath.user(userData.id),
+                            data: userData.toMap(),
+                          )
+                              .then((value) {
+                            return context.popRoute().then(
+                                  (value) => ScaffoldMessenger.of(context)
+                                      .showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          "Fencer Profile Created Successfully!"),
+                                    ),
+                                  ),
+                                );
+                          });
                         }
                       } else {
                         showDialog(
@@ -423,7 +446,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                         "${widget.userData == null ? "Save" : "Update"} My Information"),
                   ),
                   const SizedBox(height: 32),
-                  if (widget.userData == null) ...[
+                  if (widget.userData == null && widget.user != null) ...[
                     const Divider(),
                     ListTile(
                       title: const Text("Need to come back later?"),

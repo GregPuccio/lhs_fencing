@@ -133,12 +133,15 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: "CalendarFAB",
-        onPressed: () =>
-            context.pushRoute(AddPracticesRoute(practiceDate: _focusedDay)),
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton:
+          ref.watch(userDataProvider).asData?.value?.admin == true
+              ? FloatingActionButton(
+                  heroTag: "CalendarFAB",
+                  onPressed: () => context
+                      .pushRoute(AddPracticesRoute(practiceDate: _focusedDay)),
+                  child: const Icon(Icons.add),
+                )
+              : null,
     );
   }
 }
