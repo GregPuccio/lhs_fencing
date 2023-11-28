@@ -150,6 +150,15 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   ),
                   const SizedBox(height: 8),
                   const Divider(),
+                  if (ref.watch(userDataProvider).value!.admin)
+                    CheckboxListTile.adaptive(
+                        title: const Text("Manager"),
+                        value: userData.manager,
+                        onChanged: (value) {
+                          setState(() {
+                            userData.manager = value ?? false;
+                          });
+                        }),
                   ListTile(
                     title: const Text("School Year"),
                     trailing: DropdownButton(

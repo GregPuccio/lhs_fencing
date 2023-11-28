@@ -81,8 +81,7 @@ class _AddDrillsPageState extends ConsumerState<AddDrillsPage> {
             const Divider(),
             OutlinedButton.icon(
               onPressed: () async {
-                List<DrillSeason> seasons =
-                    ref.read(drillsProvider).asData!.value;
+                List<DrillSeason> seasons = ref.read(drillsProvider).value!;
                 String currentSeason =
                     "drills${DateTime.now().year.toString().substring(2)}";
                 int index = seasons.indexWhere((m) => m.id == currentSeason);

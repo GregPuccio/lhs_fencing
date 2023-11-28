@@ -30,7 +30,7 @@ final authStateChangesProvider = StreamProvider<User?>(
 
 final databaseProvider = Provider<FirestoreService>((ref) {
   final auth = ref.watch(authStateChangesProvider);
-  if (auth.asData?.value?.uid != null) {
+  if (auth.value?.uid != null) {
     return FirestoreService.instance;
   }
   ref.watch(firebaseAuthProvider).currentUser?.reload();
@@ -41,7 +41,7 @@ final userDataProvider = StreamProvider<UserData?>((ref) {
   final auth = ref.watch(authStateChangesProvider);
   final database = ref.watch(databaseProvider);
   return database.documentStream(
-    path: FirestorePath.user(auth.asData!.value!.uid),
+    path: FirestorePath.user(auth.value!.uid),
     builder: (map, docID) {
       if (map != null) {
         return UserData.fromMap(map).copyWith(id: docID);
@@ -76,7 +76,7 @@ final attendancesProvider = StreamProvider((ref) {
   final auth = ref.watch(authStateChangesProvider);
   final database = ref.watch(databaseProvider);
   return database.collectionStream(
-    path: FirestorePath.attendances(auth.asData!.value!.uid),
+    path: FirestorePath.attendances(auth.value!.uid),
     builder: (map, docID) => AttendanceMonth.fromMap(map!).copyWith(id: docID),
   );
 });

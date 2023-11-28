@@ -66,8 +66,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
   }
 
   Future<void> saveStatus() async {
-    List<AttendanceMonth> months =
-        ref.read(allAttendancesProvider).asData!.value;
+    List<AttendanceMonth> months = ref.read(allAttendancesProvider).value!;
     List<AttendanceMonth> fencerMonths = months
         .where(
             (month) => month.attendances.first.userData.id == widget.fencer.id)

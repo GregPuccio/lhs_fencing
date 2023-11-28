@@ -240,8 +240,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                   practice.activities = Activities(practice).activities;
                   return practice;
                 });
-                List<PracticeMonth> months =
-                    ref.read(practicesProvider).asData!.value;
+                List<PracticeMonth> months = ref.read(practicesProvider).value!;
                 for (var day in days) {
                   if (daysOfWeek
                       .any((dow) => dow.weekday == day.startTime.weekday)) {

@@ -75,7 +75,8 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
             ListTile(
               leading: const Icon(Icons.accessibility_new),
               title: const Text("Borrowed Equipment List"),
-              subtitle: const Text("View fencers and their participation info"),
+              subtitle: const Text(
+                  "View and edit the equipment fencers have borrowed"),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () => context.router.push(const EquipmentListRoute()),
             ),

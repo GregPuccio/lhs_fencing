@@ -30,7 +30,7 @@ class _EditDrillsPageState extends ConsumerState<EditDrillsPage> {
   @override
   Widget build(BuildContext context) {
     Future saveChanges() async {
-      List<DrillSeason> seasons = ref.read(drillsProvider).asData!.value;
+      List<DrillSeason> seasons = ref.read(drillsProvider).value!;
 
       int index =
           seasons.indexWhere((m) => m.drills.any((d) => d.id == drill.id));
@@ -94,7 +94,7 @@ class _EditDrillsPageState extends ConsumerState<EditDrillsPage> {
                             TextButton(
                               onPressed: () async {
                                 List<DrillSeason> seasons =
-                                    ref.read(drillsProvider).asData!.value;
+                                    ref.read(drillsProvider).value!;
 
                                 int index = seasons.indexWhere((m) =>
                                     m.drills.any((d) => d.id == drill.id));

@@ -60,7 +60,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    UserData userData = ref.watch(userDataProvider).asData!.value!;
+    UserData userData = ref.watch(userDataProvider).value!;
     return Scaffold(
       body: ListView(
         children: [

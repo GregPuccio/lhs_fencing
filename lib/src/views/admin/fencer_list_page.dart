@@ -356,7 +356,7 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                     ],
                     const Divider(),
                     Text(
-                        "${fencer.team.name.capitalize} | ${fencer.schoolYear.type} | ${fencer.weapon.type}"),
+                        "${fencer.team.name.capitalize} | ${fencer.schoolYear.type} | ${fencer.manager ? "Manager" : fencer.weapon.type}"),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,

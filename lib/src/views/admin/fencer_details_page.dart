@@ -124,8 +124,7 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => AccountSetupPage(
-                        user:
-                            ref.watch(authStateChangesProvider).asData!.value!,
+                        user: ref.watch(authStateChangesProvider).value!,
                         userData: fencer,
                       ),
                     ),

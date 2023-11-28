@@ -23,9 +23,8 @@ class CheckOutButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Future<void> checkOut({String? earlyLeaveReason}) async {
-      UserData userData = ref.read(userDataProvider).asData!.value!;
-      List<AttendanceMonth> months =
-          ref.read(attendancesProvider).asData!.value;
+      UserData userData = ref.read(userDataProvider).value!;
+      List<AttendanceMonth> months = ref.read(attendancesProvider).value!;
 
       return await updateAttendance(
         userData.id,

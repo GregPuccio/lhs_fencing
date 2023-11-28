@@ -1,9 +1,13 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
+import 'package:lhs_fencing/src/services/providers/providers.dart';
+import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/views/admin/fencer_details_page.dart';
 import 'package:lhs_fencing/src/views/home/widgets/no_events_found.dart';
 import 'package:lhs_fencing/src/views/home/widgets/todays_attendance.dart';
@@ -11,7 +15,7 @@ import 'package:lhs_fencing/src/views/home/widgets/upcoming_events.dart';
 import 'package:lhs_fencing/src/widgets/indicator.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   final Attendance? todaysAttendance;
   final Practice? upcomingPractice;
   final List<Practice> practices;
@@ -29,10 +33,10 @@ class HomePage extends StatefulWidget {
   });
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   int touchedIndex = -1;
   @override
   Widget build(BuildContext context) {
@@ -188,6 +192,17 @@ class _HomePageState extends State<HomePage> {
             title: Text(
                 "Attendance data will populate here after your first attendance."),
           ),
+        const Divider(),
+        if (ref.watch(userDataProvider).value!.manager == true) ...[
+          ListTile(
+            leading: const Icon(Icons.accessibility_new),
+            title: const Text("Borrowed Equipment List"),
+            subtitle:
+                const Text("View and edit the equipment fencers have borrowed"),
+            trailing: const Icon(Icons.arrow_forward),
+            onTap: () => context.router.push(const EquipmentListRoute()),
+          ),
+        ],
         const Divider(),
         if (widget.todaysAttendance != null &&
             widget.upcomingPractice != null) ...[

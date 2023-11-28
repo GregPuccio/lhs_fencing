@@ -57,7 +57,7 @@ class ProfilePage extends ConsumerWidget {
             textAlign: TextAlign.center,
           ),
           subtitle: Text(
-            "${userData.admin ? "Coach" : userData.schoolYear.type} | ${userData.weapon.type} Fencer | ${userData.admin ? Team.both.type : userData.team == Team.both ? userData.team.type : "${userData.team.type} Team"}",
+            "${userData.admin ? "Coach" : userData.schoolYear.type} | ${userData.manager ? "Manager" : "${userData.weapon.type} Fencer"} | ${userData.admin ? Team.both.type : userData.team == Team.both ? userData.team.type : "${userData.team.type} Team"}",
             textAlign: TextAlign.center,
           ),
         ),
@@ -67,7 +67,7 @@ class ProfilePage extends ConsumerWidget {
           onPressed: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => AccountSetupPage(
-                user: ref.watch(authStateChangesProvider).asData!.value!,
+                user: ref.watch(authStateChangesProvider).value!,
                 userData: userData,
               ),
             ),

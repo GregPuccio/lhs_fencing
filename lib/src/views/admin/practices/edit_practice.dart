@@ -97,7 +97,7 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
                           TextButton(
                             onPressed: () async {
                               List<PracticeMonth> practiceMonths =
-                                  ref.read(practicesProvider).asData!.value;
+                                  ref.read(practicesProvider).value!;
 
                               int index = practiceMonths.indexWhere((m) =>
                                   m.practices.any((p) => p.id == practice.id));
@@ -215,8 +215,7 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
             const Divider(),
             OutlinedButton.icon(
               onPressed: () async {
-                List<PracticeMonth> months =
-                    ref.read(practicesProvider).asData!.value;
+                List<PracticeMonth> months = ref.read(practicesProvider).value!;
 
                 DateTime date =
                     DateTime(practice.startTime.year, practice.startTime.month);
