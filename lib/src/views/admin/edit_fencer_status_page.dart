@@ -214,7 +214,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
           ],
         ),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Column(
             children: [
               Text(
