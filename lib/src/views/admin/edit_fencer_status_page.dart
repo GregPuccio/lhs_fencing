@@ -10,6 +10,7 @@ import 'package:lhs_fencing/src/services/firestore/functions/attendance_function
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
+import 'package:lhs_fencing/src/widgets/text_badge.dart';
 
 @RoutePage()
 class EditFencerStatusPage extends ConsumerStatefulWidget {
@@ -149,9 +150,41 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
       );
       attendance.comments.sort((a, b) => a.createdAt.compareTo(b.createdAt));
       comments = attendance.comments.toList();
+      bool clubDay = widget.fencer.clubDays
+          .any((d) => d.weekday == widget.practice.startTime.weekday);
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Edit Fencer Status"),
+          title: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(widget.fencer.fullName),
+                  if (widget.fencer.rating.isNotEmpty) ...[
+                    const SizedBox(width: 8),
+                    Text(widget.fencer.rating),
+                  ],
+                ],
+              ),
+              if (widget.fencer.club.isNotEmpty) ...[
+                Wrap(
+                  children: [
+                    Text(
+                      widget.fencer.club,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    if (widget.fencer.clubDays.isNotEmpty) ...[
+                      const SizedBox(width: 8),
+                      Text(
+                        "(${widget.fencer.clubDays.map((e) => e.abbreviation).join(",")})",
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ],
+                ),
+              ],
+            ],
+          ),
           actions: [
             if (widget.attendance != null)
               IconButton(
@@ -185,13 +218,11 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
           child: Column(
             children: [
               Text(
-                "Fencer: ${widget.fencer.fullName}",
+                widget.practice.startString,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              Text(
-                "Practice: ${widget.practice.startString}",
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              if (widget.fencer.clubDays.isNotEmpty && clubDay)
+                const TextBadge(text: "Normally At Club Today"),
               const Divider(),
               Text(
                 "Attendance Status",
