@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lhs_fencing/src/constants/date_utils.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
@@ -147,9 +148,19 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
                     (element) => element.id == practice.id,
                     orElse: () => Attendance.create(practice, fencer),
                   );
+                  bool isToday = practice.startTime.isToday;
 
                   return ListTile(
-                    title: Text(practice.startString),
+                    tileColor: isToday
+                        ? Theme.of(context).colorScheme.primaryContainer
+                        : null,
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (isToday) const TextBadge(text: "Today's Practice"),
+                        Text(practice.startString),
+                      ],
+                    ),
                     subtitle: Text(
                         "${attendance.wasLate ? "Arrived Late" : ""}${attendance.wasLate && attendance.leftEarly ? " | " : " "}${attendance.leftEarly ? "Left Early" : ""}"),
                     trailing: Icon(
