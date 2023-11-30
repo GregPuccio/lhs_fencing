@@ -150,7 +150,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   ),
                   const SizedBox(height: 8),
                   const Divider(),
-                  if (ref.watch(userDataProvider).value!.admin)
+                  if (ref.watch(userDataProvider).value?.admin == true)
                     CheckboxListTile.adaptive(
                         title: const Text("Manager"),
                         value: userData.manager,
