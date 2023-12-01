@@ -78,6 +78,15 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
       if (weaponFilter != null) {
         filteredFencers.retainWhere((fencer) => fencer.weapon == weaponFilter);
       }
+      List<Practice> currentPractices = practices
+          .where((p) =>
+              p.startTime.isBefore(DateTime.now()) &&
+              p.endTime.isAfter(DateTime.now()))
+          .toList();
+      String? currentPracticeID;
+      if (currentPractices.isNotEmpty) {
+        currentPracticeID = currentPractices.first.id;
+      }
       return Scaffold(
           floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.add),
@@ -272,6 +281,9 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
               List<Attendance> fencerAttendances = attendances
                   .where((att) => att.userData.id == fencer.id)
                   .toList();
+              bool atPractice = fencerAttendances
+                  .where((att) => att.id == currentPracticeID)
+                  .any((att) => att.attended);
               int attendedPractices = getShownPractices(
                 practices,
                 fencerAttendances,
@@ -316,75 +328,82 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                 ),
               ];
 
-              return ListTile(
-                leading: SizedBox(
-                  width: MediaQuery.of(context).size.width / 2.5,
-                  child: PieChart(
-                    PieChartData(
-                      borderData: FlBorderData(show: false),
-                      sectionsSpace: 2,
-                      centerSpaceRadius: 40,
-                      sections: showingSections,
-                      startDegreeOffset: 180,
+              return Column(
+                children: [
+                  if (atPractice) const TextBadge(text: "At Current Practice"),
+                  ListTile(
+                    leading: SizedBox(
+                      width: MediaQuery.of(context).size.width / 2.5,
+                      child: PieChart(
+                        PieChartData(
+                          borderData: FlBorderData(show: false),
+                          sectionsSpace: 2,
+                          centerSpaceRadius: 40,
+                          sections: showingSections,
+                          startDegreeOffset: 180,
+                        ),
+                      ),
+                    ),
+                    title: Row(
+                      children: [
+                        Text(fencer.fullName),
+                        if (fencer.rating.isNotEmpty) ...[
+                          const SizedBox(width: 8),
+                          Text(fencer.rating),
+                        ],
+                      ],
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (fencer.club.isNotEmpty) ...[
+                          Wrap(
+                            children: [
+                              Text(fencer.club),
+                              if (fencer.clubDays.isNotEmpty) ...[
+                                const SizedBox(width: 8),
+                                Text(
+                                  "(${fencer.clubDays.map((e) => e.abbreviation).join(",")})",
+                                ),
+                              ],
+                            ],
+                          ),
+                        ],
+                        const Divider(),
+                        Text(
+                            "${fencer.team.name.capitalize} | ${fencer.schoolYear.type} | ${fencer.manager ? "Manager" : fencer.weapon.type}"),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children:
+                              List.generate(showingSections.length, (index) {
+                            String percentage =
+                                (showingSections[index].value * 100)
+                                    .toStringAsFixed(2);
+                            return Column(
+                              children: [
+                                Indicator(
+                                  isTouched: false,
+                                  size: 12,
+                                  color: showingSections[index].color,
+                                  text:
+                                      "${PracticeShowState.values[index + 1].type}|$percentage%",
+                                  isSquare: true,
+                                ),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                              ],
+                            );
+                          }),
+                        ),
+                      ],
+                    ),
+                    onTap: () => context.router.push(
+                      FencerDetailsRoute(fencerID: fencer.id),
                     ),
                   ),
-                ),
-                title: Row(
-                  children: [
-                    Text(fencer.fullName),
-                    if (fencer.rating.isNotEmpty) ...[
-                      const SizedBox(width: 8),
-                      Text(fencer.rating),
-                    ],
-                  ],
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (fencer.club.isNotEmpty) ...[
-                      Wrap(
-                        children: [
-                          Text(fencer.club),
-                          if (fencer.clubDays.isNotEmpty) ...[
-                            const SizedBox(width: 8),
-                            Text(
-                              "(${fencer.clubDays.map((e) => e.abbreviation).join(",")})",
-                            ),
-                          ],
-                        ],
-                      ),
-                    ],
-                    const Divider(),
-                    Text(
-                        "${fencer.team.name.capitalize} | ${fencer.schoolYear.type} | ${fencer.manager ? "Manager" : fencer.weapon.type}"),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(showingSections.length, (index) {
-                        String percentage = (showingSections[index].value * 100)
-                            .toStringAsFixed(2);
-                        return Column(
-                          children: [
-                            Indicator(
-                              isTouched: false,
-                              size: 12,
-                              color: showingSections[index].color,
-                              text:
-                                  "${PracticeShowState.values[index + 1].type}|$percentage%",
-                              isSquare: true,
-                            ),
-                            const SizedBox(
-                              height: 4,
-                            ),
-                          ],
-                        );
-                      }),
-                    ),
-                  ],
-                ),
-                onTap: () => context.router.push(
-                  FencerDetailsRoute(fencerID: fencer.id),
-                ),
+                ],
               );
             },
             separatorBuilder: (context, index) => const Divider(),
