@@ -15,6 +15,7 @@ class Practice {
   TypePractice type;
   Team team;
   Map activities;
+  List<UserData> busCoaches;
   Practice({
     required this.id,
     required this.location,
@@ -23,6 +24,7 @@ class Practice {
     required this.type,
     required this.team,
     required this.activities,
+    required this.busCoaches,
   });
 
   String get startString {
@@ -85,6 +87,7 @@ Coach ${coach.firstName}
     TypePractice? type,
     Team? team,
     Map? activities,
+    List<UserData>? busCoaches,
   }) {
     return Practice(
       id: id ?? this.id,
@@ -94,6 +97,7 @@ Coach ${coach.firstName}
       type: type ?? this.type,
       team: team ?? this.team,
       activities: activities ?? this.activities,
+      busCoaches: busCoaches ?? this.busCoaches,
     );
   }
 
@@ -106,6 +110,7 @@ Coach ${coach.firstName}
       'type': type.toMap(),
       'team': team.toMap(),
       // 'activities': activities,
+      'busCoaches': busCoaches.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -118,6 +123,8 @@ Coach ${coach.firstName}
       type: TypePractice.fromMap(map['type'] ?? ""),
       team: Team.fromMap(map['team'] ?? ""),
       activities: Map.from(map['activities'] ?? {}),
+      busCoaches: List<UserData>.from(
+          map['busCoaches']?.map((x) => UserData.fromMap(x)) ?? []),
     );
   }
 
@@ -128,7 +135,7 @@ Coach ${coach.firstName}
 
   @override
   String toString() {
-    return 'Practice(id: $id, location: $location, startTime: $startTime, endTime: $endTime, type: $type, team: $team, activities: $activities)';
+    return 'Practice(id: $id, location: $location, startTime: $startTime, endTime: $endTime, type: $type, team: $team, activities: $activities, busCoaches: $busCoaches)';
   }
 
   @override
@@ -142,7 +149,8 @@ Coach ${coach.firstName}
         other.endTime == endTime &&
         other.type == type &&
         other.team == team &&
-        mapEquals(other.activities, activities);
+        mapEquals(other.activities, activities) &&
+        listEquals(other.busCoaches, busCoaches);
   }
 
   @override
@@ -153,6 +161,7 @@ Coach ${coach.firstName}
         endTime.hashCode ^
         type.hashCode ^
         team.hashCode ^
-        activities.hashCode;
+        activities.hashCode ^
+        busCoaches.hashCode;
   }
 }

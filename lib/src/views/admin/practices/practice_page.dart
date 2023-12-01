@@ -7,6 +7,7 @@ import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
+import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/widgets/attendance_info.dart';
@@ -16,6 +17,8 @@ import 'package:lhs_fencing/src/widgets/loading.dart';
 import 'package:lhs_fencing/src/widgets/search_bar_widget.dart';
 import 'package:lhs_fencing/src/widgets/text_badge.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../services/firestore/firestore_service.dart';
 
 PracticeShowState practiceShowState = PracticeShowState.all;
 
@@ -44,6 +47,32 @@ class _PracticePageState extends ConsumerState<PracticePage> {
   void dispose() {
     controller.dispose();
     super.dispose();
+  }
+
+  Future updatePractice(Practice practice) async {
+    List<PracticeMonth> months = ref.read(practicesProvider).value!;
+
+    DateTime date = DateTime(practice.startTime.year, practice.startTime.month);
+    int index = months.indexWhere((m) => m.month.isAtSameMomentAs(date));
+    if (index == -1) {
+      months.add(PracticeMonth(id: "", practices: [practice], month: date));
+    } else {
+      int pIndex =
+          months[index].practices.indexWhere((p) => p.id == practice.id);
+      if (pIndex == -1) {
+        months[index].practices.add(practice);
+      } else {
+        months[index].practices.replaceRange(
+          pIndex,
+          pIndex + 1,
+          [practice],
+        );
+      }
+    }
+    await FirestoreService.instance.updateData(
+      path: FirestorePath.practice(months[index].id),
+      data: months[index].toMap(),
+    );
   }
 
   @override
@@ -83,7 +112,8 @@ class _PracticePageState extends ConsumerState<PracticePage> {
         getShownFencers(
             filteredFencers, attendances, PracticeShowState.noReason),
       ];
-
+      UserData me = ref.watch(userDataProvider).value!;
+      bool isTakingBus = practice.busCoaches.any((coach) => coach.id == me.id);
       return DefaultTabController(
         length: PracticeShowState.values.length,
         child: Scaffold(
@@ -98,10 +128,40 @@ class _PracticePageState extends ConsumerState<PracticePage> {
               ),
             ],
             bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(90),
+              preferredSize:
+                  Size.fromHeight(90 + (practice.type.usesBus ? 70 : 0)),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  if (practice.type.usesBus)
+                    CheckboxListTile.adaptive(
+                      title: const Text("Coaches Taking The Bus:"),
+                      subtitle: Text(practice.busCoaches.isEmpty
+                          ? "None yet"
+                          : practice.busCoaches
+                              .map((c) => c.firstName)
+                              .join(", ")),
+                      value: isTakingBus,
+                      onChanged: (val) {
+                        if (isTakingBus) {
+                          setState(() {
+                            practice.busCoaches
+                                .removeWhere((coach) => coach.id == me.id);
+                          });
+                        } else {
+                          setState(() {
+                            practice.busCoaches.add(me);
+                          });
+                        }
+                        updatePractice(practice);
+                      },
+                    ),
+                  // if (practice.type.hasScoring)
+                  //   const ListTile(
+                  //     title: Text("Scoring"),
+                  //     subtitle: Text("14-13 | Won @ 6 | 7-6-2"),
+                  //   ),
+                  // const Divider(),
                   SearchBarWidget(controller),
                   TabBar(
                     isScrollable: true,

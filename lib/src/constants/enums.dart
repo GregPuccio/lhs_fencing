@@ -71,6 +71,32 @@ enum TypePractice {
     }
   }
 
+  bool get usesBus {
+    switch (this) {
+      case TypePractice.practice:
+      case TypePractice.meet:
+      case TypePractice.fundraiser:
+      case TypePractice.quad:
+        return false;
+      case TypePractice.tournament:
+      case TypePractice.awayMeet:
+        return true;
+    }
+  }
+
+  bool get hasScoring {
+    switch (this) {
+      case TypePractice.practice:
+      case TypePractice.tournament:
+      case TypePractice.fundraiser:
+      case TypePractice.quad:
+        return false;
+      case TypePractice.meet:
+      case TypePractice.awayMeet:
+        return true;
+    }
+  }
+
   String toMap() => name;
   static TypePractice fromMap(String map) =>
       values.byName(map.isEmpty ? "practice" : map);

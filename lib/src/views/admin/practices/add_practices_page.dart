@@ -236,7 +236,8 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                           endTime.minute),
                       type: typePractice,
                       team: team,
-                      activities: {});
+                      activities: {},
+                      busCoaches: []);
                   practice.activities = Activities(practice).activities;
                   return practice;
                 });
