@@ -96,13 +96,13 @@ class Attendance {
   bool get practiceOver => DateTime.now().isAfter(practiceEnd);
 
   String get attendanceStatus {
-    String? checkedIn =
-        checkIn != null ? DateFormat('h:mm aa').format(checkIn!) : null;
+    String checkedIn =
+        checkIn != null ? DateFormat('h:mm aa').format(checkIn!) : "";
 
-    String? checkedOut =
-        checkOut != null ? DateFormat('h:mm aa').format(checkOut!) : null;
+    String checkedOut =
+        checkOut != null ? " - ${DateFormat('h:mm aa').format(checkOut!)}" : "";
     String info =
-        "${practiceOver ? "Attended |" : "Checked In"} ${checkedIn ?? ""}${checkedOut != null ? " - $checkedOut" : ""}";
+        "${practiceOver ? "Attended |" : "Checked In"} $checkedIn$checkedOut}";
 
     String text = "Status: ";
     if (attended) {
@@ -121,7 +121,11 @@ class Attendance {
       } else if (isTooLate) {
         text += "Late Arrival - Check In With Coach";
       } else if (canCheckIn) {
-        if (isLate) {
+        if (excusedAbsense) {
+          text += "Absent - Excused";
+        } else if (unexcusedAbsense) {
+          text += "Absent - Unexcused";
+        } else if (isLate) {
           text += "Late Arrival - Can Check In";
         } else {
           text += "On Time - Can Check In";

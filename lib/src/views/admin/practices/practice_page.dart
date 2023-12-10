@@ -118,7 +118,7 @@ class _PracticePageState extends ConsumerState<PracticePage> {
         length: PracticeShowState.values.length,
         child: Scaffold(
           appBar: AppBar(
-            title: Text(practice.startString),
+            title: Text(practice.location),
             actions: [
               IconButton(
                 onPressed: () async {
@@ -129,10 +129,24 @@ class _PracticePageState extends ConsumerState<PracticePage> {
             ],
             bottom: PreferredSize(
               preferredSize:
-                  Size.fromHeight(90 + (practice.type.usesBus ? 70 : 0)),
+                  Size.fromHeight(130 + (practice.type.usesBus ? 70 : 0)),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  ListTile(
+                    title: Wrap(
+                      alignment: WrapAlignment.center,
+                      children: [
+                        TextBadge(text: practice.team.type),
+                        const SizedBox(width: 8),
+                        Text(practice.type.type),
+                        const SizedBox(width: 4),
+                        const Text("|"),
+                        const SizedBox(width: 4),
+                        Text(practice.startString),
+                      ],
+                    ),
+                  ),
                   if (practice.type.usesBus)
                     CheckboxListTile.adaptive(
                       title: const Text("Coaches Taking The Bus:"),
