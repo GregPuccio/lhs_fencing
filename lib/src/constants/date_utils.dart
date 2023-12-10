@@ -26,6 +26,17 @@ extension DateUtils on DateTime {
     final endOfWeek = startOfWeek.add(const Duration(days: 7));
     return isAfter(startOfWeek) && isBefore(endOfWeek);
   }
+
+  bool isSameDayAs(DateTime? other) {
+    if (other == null) {
+      return false;
+    }
+    return other.day == day && other.month == month && other.year == year;
+  }
+
+  DateTime get monthOnly {
+    return DateTime(year, month);
+  }
 }
 
 extension DateRangeUtils on DateTimeRange {

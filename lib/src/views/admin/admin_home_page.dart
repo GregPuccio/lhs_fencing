@@ -83,6 +83,15 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
             const Divider(),
             ListTile(
               leading: const Icon(Icons.list),
+              title: const Text("Bout List"),
+              subtitle:
+                  const Text("View, add or edit bout records for fencers"),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () => context.router.push(const BoutHistoryRoute()),
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.list),
               title: const Text("Drills List"),
               subtitle: const Text("View all drills from footwork to bouting"),
               trailing: const Icon(Icons.arrow_forward),

@@ -1,9 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
+import 'package:lhs_fencing/src/models/bout.dart';
 import 'package:lhs_fencing/src/models/drill.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
+import 'package:lhs_fencing/src/views/admin/bouts/add_bout_page.dart';
+import 'package:lhs_fencing/src/views/admin/bouts/bout_history_page.dart';
+import 'package:lhs_fencing/src/views/admin/bouts/edit_bout_page.dart';
 import 'package:lhs_fencing/src/views/admin/drills/add_drills_page.dart';
 import 'package:lhs_fencing/src/views/admin/drills/edit_drills_page.dart';
 import 'package:lhs_fencing/src/views/admin/equipment/equipment_list_page.dart';
@@ -39,6 +43,9 @@ class AppRouter extends _$AppRouter {
     AutoRoute(page: PracticeRoute.page, path: "/practice"),
     AutoRoute(page: FencerListRoute.page, path: "/fencerList"),
     AutoRoute(page: DrillsListRoute.page, path: "/drillsList"),
+    AutoRoute(page: BoutHistoryRoute.page, path: "/boutHistory"),
+    AutoRoute(page: AddBoutRoute.page, path: "/addBout"),
+    AutoRoute(page: EditBoutRoute.page, path: "/editBout"),
     AutoRoute(page: AddDrillsRoute.page, path: "/addDrills"),
     AutoRoute(page: EditDrillsRoute.page, path: "/editDrills"),
     AutoRoute(page: FencerDetailsRoute.page, path: "/fencerDetails"),

@@ -15,6 +15,19 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    AddBoutRoute.name: (routeData) {
+      final args = routeData.argsAs<AddBoutRouteArgs>(
+          orElse: () => const AddBoutRouteArgs());
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: AddBoutPage(
+          fencer: args.fencer,
+          opponent: args.opponent,
+          selectedDate: args.selectedDate,
+          key: args.key,
+        ),
+      );
+    },
     AddDrillsRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -51,10 +64,26 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const AuthWrapperPage(),
       );
     },
+    BoutHistoryRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const BoutHistoryPage(),
+      );
+    },
     DrillsListRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const DrillsListPage(),
+      );
+    },
+    EditBoutRoute.name: (routeData) {
+      final args = routeData.argsAs<EditBoutRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: EditBoutPage(
+          bout: args.bout,
+          key: args.key,
+        ),
       );
     },
     EditDrillsRoute.name: (routeData) {
@@ -128,6 +157,54 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
   };
+}
+
+/// generated route for
+/// [AddBoutPage]
+class AddBoutRoute extends PageRouteInfo<AddBoutRouteArgs> {
+  AddBoutRoute({
+    UserData? fencer,
+    UserData? opponent,
+    DateTime? selectedDate,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          AddBoutRoute.name,
+          args: AddBoutRouteArgs(
+            fencer: fencer,
+            opponent: opponent,
+            selectedDate: selectedDate,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'AddBoutRoute';
+
+  static const PageInfo<AddBoutRouteArgs> page =
+      PageInfo<AddBoutRouteArgs>(name);
+}
+
+class AddBoutRouteArgs {
+  const AddBoutRouteArgs({
+    this.fencer,
+    this.opponent,
+    this.selectedDate,
+    this.key,
+  });
+
+  final UserData? fencer;
+
+  final UserData? opponent;
+
+  final DateTime? selectedDate;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'AddBoutRouteArgs{fencer: $fencer, opponent: $opponent, selectedDate: $selectedDate, key: $key}';
+  }
 }
 
 /// generated route for
@@ -236,6 +313,20 @@ class AuthWrapperRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [BoutHistoryPage]
+class BoutHistoryRoute extends PageRouteInfo<void> {
+  const BoutHistoryRoute({List<PageRouteInfo>? children})
+      : super(
+          BoutHistoryRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'BoutHistoryRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
 /// [DrillsListPage]
 class DrillsListRoute extends PageRouteInfo<void> {
   const DrillsListRoute({List<PageRouteInfo>? children})
@@ -247,6 +338,44 @@ class DrillsListRoute extends PageRouteInfo<void> {
   static const String name = 'DrillsListRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [EditBoutPage]
+class EditBoutRoute extends PageRouteInfo<EditBoutRouteArgs> {
+  EditBoutRoute({
+    required Bout bout,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          EditBoutRoute.name,
+          args: EditBoutRouteArgs(
+            bout: bout,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'EditBoutRoute';
+
+  static const PageInfo<EditBoutRouteArgs> page =
+      PageInfo<EditBoutRouteArgs>(name);
+}
+
+class EditBoutRouteArgs {
+  const EditBoutRouteArgs({
+    required this.bout,
+    this.key,
+  });
+
+  final Bout bout;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'EditBoutRouteArgs{bout: $bout, key: $key}';
+  }
 }
 
 /// generated route for
