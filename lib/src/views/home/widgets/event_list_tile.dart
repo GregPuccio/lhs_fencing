@@ -29,7 +29,7 @@ class EventListTile extends ConsumerWidget {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(practice.runTime),
+              Text("${practice.runTime}\n${practice.location}"),
               AttendanceInfo(attendance),
             ],
           ),

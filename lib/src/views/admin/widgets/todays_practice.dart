@@ -56,8 +56,14 @@ class TodaysPractice extends ConsumerWidget {
               const Divider(),
               ListTile(
                 title: Text(currentPractice.runTime),
-                subtitle: PracticeInfo(
-                    currentPractice, presentFencers, absentFencers, comments),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(currentPractice.location),
+                    PracticeInfo(currentPractice, presentFencers, absentFencers,
+                        comments),
+                  ],
+                ),
                 trailing: const Icon(Icons.arrow_forward),
                 onTap: () => context.router.push(
                   PracticeRoute(practiceID: currentPractice.id),

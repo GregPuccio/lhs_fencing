@@ -68,9 +68,9 @@ Coach ${coach.firstName}
 
   String get runTime {
     if (DateFormat("a").format(startTime) == DateFormat("a").format(endTime)) {
-      return "Scheduled: ${DateFormat("hh:mm").format(startTime)}-${DateFormat("hh:mm aa").format(endTime)}";
+      return "${busTime != null ? "Bus: ${DateFormat("hh:mm aa").format(busTime!)}\n" : ""}Scheduled: ${DateFormat("hh:mm").format(startTime)}-${DateFormat("hh:mm aa").format(endTime)}";
     } else {
-      return "Scheduled: ${DateFormat("hh:mm aa").format(startTime)} - ${DateFormat("hh:mm aa").format(endTime)}";
+      return "${busTime != null ? "Bus: ${DateFormat("hh:mm aa").format(busTime!)}\n" : ""}Scheduled: ${DateFormat("hh:mm aa").format(startTime)} - ${DateFormat("hh:mm aa").format(endTime)}";
     }
   }
 

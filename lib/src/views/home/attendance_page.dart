@@ -14,6 +14,7 @@ import 'package:lhs_fencing/src/views/home/widgets/checkout_button.dart';
 import 'package:lhs_fencing/src/views/home/widgets/event_schedule.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
+import 'package:lhs_fencing/src/widgets/text_badge.dart';
 
 @RoutePage()
 class AttendancePage extends ConsumerStatefulWidget {
@@ -64,14 +65,14 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
 
       return Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(125),
+          preferredSize: const Size.fromHeight(150),
           child: AppBar(
-            title: Text(attendance.practiceStartString),
+            title: Text(practice.type.type),
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(1),
               child: ListTile(
-                title: Text(practice.type.type),
-                subtitle: Text(attendance.attendanceStatus),
+                title: Text(attendance.attendanceStatus),
+                subtitle: Text("${practice.runTime}\n${practice.location}\n"),
                 trailing: attendance.checkOut != null
                     ? null
                     : attendance.attended

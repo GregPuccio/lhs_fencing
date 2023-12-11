@@ -34,14 +34,16 @@ class AdminUpcomingEvents extends StatelessWidget {
         return Column(
           children: [
             ListTile(
-              title: Row(
+              title: Wrap(
                 children: [
                   TextBadge(text: practice.team.type),
                   const SizedBox(width: 8),
-                  Text("${practice.type.type} | ${practice.timeframe}"),
+                  Text(practice.type.type),
+                  const Text(" | "),
+                  Text(practice.timeframe),
                 ],
               ),
-              subtitle: Text(practice.runTime),
+              subtitle: Text("${practice.runTime}\n${practice.location}"),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () => context.router.push(
                 PracticeRoute(practiceID: practice.id),

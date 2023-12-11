@@ -70,7 +70,13 @@ class TodaysAttendance extends ConsumerWidget {
                       ),
                       ListTile(
                         title: Text(practice.runTime),
-                        subtitle: AttendanceInfo(todaysAttendance),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(practice.location),
+                            AttendanceInfo(todaysAttendance),
+                          ],
+                        ),
                         trailing: todaysAttendance.checkOut != null
                             ? null
                             : todaysAttendance.attended
