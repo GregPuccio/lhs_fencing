@@ -324,7 +324,7 @@ class _PracticePageState extends ConsumerState<PracticePage> {
     }
 
     Widget whenFencerData(List<UserData> data) {
-      fencers = data;
+      fencers = data.toList();
       return ref.watch(practicesProvider).when(
           data: whenPracticeData,
           error: (error, stackTrace) => const ErrorPage(),
