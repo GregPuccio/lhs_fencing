@@ -43,6 +43,10 @@ class UserData extends Comparable<UserData> {
     required this.manager,
   });
 
+  String get fullShortenedName {
+    return "$firstName ${lastName.substring(0, 1)}";
+  }
+
   static UserData noUserCreate() {
     return UserData(
       id: const Uuid().v4(),

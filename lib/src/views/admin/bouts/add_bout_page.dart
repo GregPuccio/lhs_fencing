@@ -66,7 +66,7 @@ class _AddBoutPageState extends ConsumerState<AddBoutPage> {
                       fencers.length,
                       (index) => DropdownMenuItem(
                         value: fencers[index],
-                        child: Text(fencers[index].fullName),
+                        child: Text(fencers[index].fullShortenedName),
                       ),
                     ),
                     value: fencer,
@@ -102,7 +102,7 @@ class _AddBoutPageState extends ConsumerState<AddBoutPage> {
                       fencers.length,
                       (index) => DropdownMenuItem(
                         value: fencers[index],
-                        child: Text(fencers[index].fullName),
+                        child: Text(fencers[index].fullShortenedName),
                       ),
                     ),
                     value: opponent,

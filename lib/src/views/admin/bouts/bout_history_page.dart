@@ -68,7 +68,7 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                             fencers.length,
                             (index) => DropdownMenuItem(
                               value: fencers[index],
-                              child: Text(fencers[index].fullName),
+                              child: Text(fencers[index].fullShortenedName),
                             ),
                           ),
                           value: fencer,
@@ -97,7 +97,7 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                             fencers.length,
                             (index) => DropdownMenuItem(
                               value: fencers[index],
-                              child: Text(fencers[index].fullName),
+                              child: Text(fencers[index].fullShortenedName),
                             ),
                           ),
                           value: opponent,
