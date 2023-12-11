@@ -49,9 +49,18 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
     }
   }
 
-  void setTime({bool start = true}) async {
-    TimeOfDay timeOfDay =
-        TimeOfDay.fromDateTime(start ? practice.startTime : practice.endTime);
+  void setTime({
+    bool start = false,
+    bool bus = false,
+  }) async {
+    TimeOfDay timeOfDay = TimeOfDay.fromDateTime(start
+        ? practice.startTime
+        : bus
+            ? practice.busTime ??
+                practice.startTime.subtract(
+                  const Duration(hours: 1, minutes: 30),
+                )
+            : practice.endTime);
     TimeOfDay? value = await showTimePicker(
       context: context,
       initialTime: timeOfDay,
@@ -60,6 +69,14 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
       setState(() {
         if (start) {
           practice.startTime = DateTime(
+            practice.startTime.year,
+            practice.startTime.month,
+            practice.startTime.day,
+            value.hour,
+            value.minute,
+          );
+        } else if (bus) {
+          practice.busTime = DateTime(
             practice.startTime.year,
             practice.startTime.month,
             practice.startTime.day,
@@ -190,6 +207,18 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
               ),
             ),
             const Divider(),
+            if (practice.type.usesBus) ...[
+              ListTile(
+                title: const Text("Bus Time"),
+                subtitle: Text(TimeOfDay.fromDateTime(practice.busTime ??
+                        practice.startTime
+                            .subtract(const Duration(hours: 1, minutes: 30)))
+                    .format(context)),
+                trailing: const Icon(Icons.bus_alert),
+                onTap: () => setTime(bus: true),
+              ),
+              const Divider(),
+            ],
             Row(
               children: [
                 Flexible(

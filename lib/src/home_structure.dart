@@ -87,15 +87,20 @@ class _HomeStructureState extends ConsumerState<HomeStructure> {
         hashCode: (key) => key.day * 1000000 + key.month * 10000 + key.year,
       );
       for (var practice in practices) {
-        DateTime practiceDay = DateTime(practice.startTime.year,
-            practice.startTime.month, practice.startTime.day);
-        List<Practice>? practices = practicesByDay[practiceDay];
-        if (practices != null) {
-          practices.add(practice);
-        } else {
-          practicesByDay.addAll({
-            practiceDay: [practice]
-          });
+        if (userData.admin ||
+            userData.manager ||
+            practice.team == Team.both ||
+            practice.team == userData.team) {
+          DateTime practiceDay = DateTime(practice.startTime.year,
+              practice.startTime.month, practice.startTime.day);
+          List<Practice>? practices = practicesByDay[practiceDay];
+          if (practices != null) {
+            practices.add(practice);
+          } else {
+            practicesByDay.addAll({
+              practiceDay: [practice]
+            });
+          }
         }
       }
 

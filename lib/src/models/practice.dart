@@ -10,6 +10,7 @@ import 'package:lhs_fencing/src/models/user_data.dart';
 class Practice {
   String id;
   String location;
+  DateTime? busTime;
   DateTime startTime;
   DateTime endTime;
   TypePractice type;
@@ -19,6 +20,7 @@ class Practice {
   Practice({
     required this.id,
     required this.location,
+    this.busTime,
     required this.startTime,
     required this.endTime,
     required this.type,
@@ -82,6 +84,7 @@ Coach ${coach.firstName}
   Practice copyWith({
     String? id,
     String? location,
+    DateTime? busTime,
     DateTime? startTime,
     DateTime? endTime,
     TypePractice? type,
@@ -92,6 +95,7 @@ Coach ${coach.firstName}
     return Practice(
       id: id ?? this.id,
       location: location ?? this.location,
+      busTime: busTime ?? this.busTime,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       type: type ?? this.type,
@@ -105,6 +109,7 @@ Coach ${coach.firstName}
     return {
       'id': id,
       'location': location,
+      'busTime': busTime?.millisecondsSinceEpoch,
       'startTime': startTime.millisecondsSinceEpoch,
       'endTime': endTime.millisecondsSinceEpoch,
       'type': type.toMap(),
@@ -118,6 +123,9 @@ Coach ${coach.firstName}
     return Practice(
       id: map['id'] ?? '',
       location: map['location'] ?? '',
+      busTime: map['busTime'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['busTime'])
+          : null,
       startTime: DateTime.fromMillisecondsSinceEpoch(map['startTime']),
       endTime: DateTime.fromMillisecondsSinceEpoch(map['endTime']),
       type: TypePractice.fromMap(map['type'] ?? ""),

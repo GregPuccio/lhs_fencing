@@ -50,6 +50,7 @@ enum TypePractice {
   practice,
   meet,
   awayMeet,
+  spectating,
   quad,
   tournament,
   fundraiser;
@@ -62,6 +63,8 @@ enum TypePractice {
         return "Dual Meet (Home)";
       case TypePractice.awayMeet:
         return "Dual Meet (Away)";
+      case TypePractice.spectating:
+        return "Spectating";
       case TypePractice.quad:
         return "Quad Meet";
       case TypePractice.tournament:
@@ -80,6 +83,7 @@ enum TypePractice {
         return false;
       case TypePractice.tournament:
       case TypePractice.awayMeet:
+      case TypePractice.spectating:
         return true;
     }
   }
@@ -90,6 +94,7 @@ enum TypePractice {
       case TypePractice.tournament:
       case TypePractice.fundraiser:
       case TypePractice.quad:
+      case TypePractice.spectating:
         return false;
       case TypePractice.meet:
       case TypePractice.awayMeet:

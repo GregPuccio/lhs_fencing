@@ -26,6 +26,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
   late DateTimeRange dateRange;
   late TimeOfDay startTime;
   late TimeOfDay endTime;
+  late TimeOfDay busTime;
   TypePractice typePractice = TypePractice.practice;
   Team team = Team.both;
   String location = "Livingston Aux Gym";
@@ -42,6 +43,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
           (element) => widget.practiceDate!.weekday == element.weekday));
     }
     dateRange = DateTimeRange(start: today, end: today);
+    busTime = const TimeOfDay(hour: 16, minute: 30);
     startTime = const TimeOfDay(hour: 18, minute: 0);
     endTime = const TimeOfDay(hour: 20, minute: 0);
     super.initState();
@@ -192,6 +194,15 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
               ),
             ),
             const Divider(),
+            if (typePractice.usesBus) ...[
+              ListTile(
+                title: const Text("Bus Time"),
+                subtitle: Text(busTime.format(context)),
+                trailing: const Icon(Icons.bus_alert),
+                onTap: () => setTime(busTime),
+              ),
+              const Divider(),
+            ],
             Row(
               children: [
                 Flexible(
@@ -206,7 +217,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                   child: ListTile(
                     title: const Text("End Time"),
                     subtitle: Text(endTime.format(context)),
-                    trailing: const Icon(Icons.time_to_leave),
+                    trailing: const Icon(Icons.keyboard_return),
                     onTap: () => setTime(endTime, start: false),
                   ),
                 ),
@@ -222,6 +233,14 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                       id: const Uuid().v4(),
                       location:
                           location.isEmpty ? "Livingston Aux Gym" : location,
+                      busTime: typePractice.usesBus
+                          ? DateTime(
+                              dateRange.start.year,
+                              dateRange.start.month,
+                              dateRange.start.day + (i),
+                              busTime.hour,
+                              busTime.minute)
+                          : null,
                       startTime: DateTime(
                           dateRange.start.year,
                           dateRange.start.month,

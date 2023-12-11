@@ -21,7 +21,29 @@ class Activities {
   }
 
   Map<DateTime, String> awayMeetActivities() {
-    return {practice.startTime: "Meet Begins", practice.endTime: "Meet Ends"};
+    return {
+      practice.busTime!.subtract(const Duration(minutes: 30)): "Arrive at Gym",
+      practice.busTime!.subtract(const Duration(minutes: 5)):
+          "Be Ready to Leave",
+      practice.busTime!: "Bus Leaves",
+      practice.startTime: "Meet Begins",
+      practice.endTime: "Meet Ends",
+      practice.busTime!.add(const Duration(minutes: 30)):
+          "Arrive Back to LHS (Typical)",
+    };
+  }
+
+  Map<DateTime, String> spectatingActivities() {
+    return {
+      practice.busTime!.subtract(const Duration(minutes: 15)): "Arrive at Gym",
+      practice.busTime!.subtract(const Duration(minutes: 5)):
+          "Be Ready to Leave",
+      practice.busTime!: "Bus Leaves",
+      practice.startTime: "Meet Begins",
+      practice.endTime: "Meet Ends",
+      practice.busTime!.add(const Duration(minutes: 30)):
+          "Arrive Back to LHS (Typical)",
+    };
   }
 
   Map<DateTime, String> quadActivities() {
@@ -53,6 +75,8 @@ class Activities {
         return homeMeetActivities();
       case TypePractice.awayMeet:
         return awayMeetActivities();
+      case TypePractice.spectating:
+        return spectatingActivities();
       case TypePractice.quad:
         return quadActivities();
       case TypePractice.tournament:
