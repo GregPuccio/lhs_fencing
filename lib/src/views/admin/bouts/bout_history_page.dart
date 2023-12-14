@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
 import 'package:lhs_fencing/src/constants/date_utils.dart';
 import 'package:lhs_fencing/src/models/bout.dart';
@@ -62,59 +63,105 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Flexible(
-                        child: DropdownButton<UserData>(
-                          hint: const Text("Fencer 1"),
-                          items: List.generate(
-                            fencers.length,
-                            (index) => DropdownMenuItem(
-                              value: fencers[index],
-                              child: Text(fencers[index].fullShortenedName),
+                        child: Column(
+                          children: [
+                            const Text("Fencer 1"),
+                            TypeAheadField(
+                              suggestionsCallback: (pattern) {
+                                return fencers
+                                    .where((fencer) => fencer.fullName
+                                        .toLowerCase()
+                                        .contains(pattern.toLowerCase()))
+                                    .toList();
+                              },
+                              itemBuilder: (context, fencer) =>
+                                  Text(fencer.fullShortenedName),
+                              onSelected: (suggestion) {
+                                setState(() {
+                                  fencer = suggestion;
+                                });
+                              },
                             ),
-                          ),
-                          value: fencer,
-                          onChanged: (value) {
-                            setState(() {
-                              fencer = value;
-                            });
-                          },
-                          icon: fencer != null
-                              ? IconButton(
-                                  onPressed: () => setState(() {
-                                        fencer = null;
-                                      }),
-                                  icon: const Icon(Icons.clear))
-                              : null,
+                          ],
                         ),
                       ),
+                      // Flexible(
+                      //   child: DropdownButton<UserData>(
+                      //     hint: const Text("Fencer 1"),
+                      //     items: List.generate(
+                      //       fencers.length,
+                      //       (index) => DropdownMenuItem(
+                      //         value: fencers[index],
+                      //         child: Text(fencers[index].fullShortenedName),
+                      //       ),
+                      //     ),
+                      //     value: fencer,
+                      //     onChanged: (value) {
+                      //       setState(() {
+                      //         fencer = value;
+                      //       });
+                      //     },
+                      //     icon: fencer != null
+                      //         ? IconButton(
+                      //             onPressed: () => setState(() {
+                      //                   fencer = null;
+                      //                 }),
+                      //             icon: const Icon(Icons.clear))
+                      //         : null,
+                      //   ),
+                      // ),
                       const Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Text("vs."),
                       ),
                       Flexible(
-                        child: DropdownButton<UserData>(
-                          hint: const Text("Fencer 2"),
-                          items: List.generate(
-                            fencers.length,
-                            (index) => DropdownMenuItem(
-                              value: fencers[index],
-                              child: Text(fencers[index].fullShortenedName),
+                        child: Column(
+                          children: [
+                            const Text("Fencer 2"),
+                            TypeAheadField(
+                              suggestionsCallback: (pattern) {
+                                return fencers
+                                    .where((fencer) => fencer.fullName
+                                        .toLowerCase()
+                                        .contains(pattern.toLowerCase()))
+                                    .toList();
+                              },
+                              itemBuilder: (context, fencer) =>
+                                  Text(fencer.fullShortenedName),
+                              onSelected: (suggestion) {
+                                setState(() {
+                                  opponent = suggestion;
+                                });
+                              },
                             ),
-                          ),
-                          value: opponent,
-                          onChanged: (value) {
-                            setState(() {
-                              opponent = value;
-                            });
-                          },
-                          icon: opponent != null
-                              ? IconButton(
-                                  onPressed: () => setState(() {
-                                        opponent = null;
-                                      }),
-                                  icon: const Icon(Icons.clear))
-                              : null,
+                          ],
                         ),
                       ),
+                      // Flexible(
+                      //   child: DropdownButton<UserData>(
+                      //     hint: const Text("Fencer 2"),
+                      //     items: List.generate(
+                      //       fencers.length,
+                      //       (index) => DropdownMenuItem(
+                      //         value: fencers[index],
+                      //         child: Text(fencers[index].fullShortenedName),
+                      //       ),
+                      //     ),
+                      //     value: opponent,
+                      //     onChanged: (value) {
+                      //       setState(() {
+                      //         opponent = value;
+                      //       });
+                      //     },
+                      //     icon: opponent != null
+                      //         ? IconButton(
+                      //             onPressed: () => setState(() {
+                      //                   opponent = null;
+                      //                 }),
+                      //             icon: const Icon(Icons.clear))
+                      //         : null,
+                      //   ),
+                      // ),
                     ],
                   ),
                   ListTile(

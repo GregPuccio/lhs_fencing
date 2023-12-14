@@ -14,7 +14,6 @@ import 'package:lhs_fencing/src/views/home/widgets/checkout_button.dart';
 import 'package:lhs_fencing/src/views/home/widgets/event_schedule.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
-import 'package:lhs_fencing/src/widgets/text_badge.dart';
 
 @RoutePage()
 class AttendancePage extends ConsumerStatefulWidget {

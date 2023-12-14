@@ -33,6 +33,7 @@ dependencies:
   http: ^1.1.0
   html: ^0.15.4
   flutter_svg: ^2.0.9
+  flutter_typeahead: ^5.0.1
 
 dev_dependencies:
   auto_route_generator: ^7.3.2
