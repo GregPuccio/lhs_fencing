@@ -27,6 +27,22 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
   UserData? opponent;
   DateTime? selectedDate;
   List<Bout> bouts = [];
+  late TextEditingController fencer1Controller;
+  late TextEditingController fencer2Controller;
+
+  @override
+  void initState() {
+    fencer1Controller = TextEditingController();
+    fencer2Controller = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    fencer1Controller.dispose();
+    fencer2Controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,110 +75,95 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
             if (index == 0) {
               return Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Flexible(
-                        child: Column(
-                          children: [
-                            const Text("Fencer 1"),
-                            TypeAheadField(
-                              suggestionsCallback: (pattern) {
-                                return fencers
-                                    .where((fencer) => fencer.fullName
-                                        .toLowerCase()
-                                        .contains(pattern.toLowerCase()))
-                                    .toList();
-                              },
-                              itemBuilder: (context, fencer) =>
-                                  Text(fencer.fullShortenedName),
-                              onSelected: (suggestion) {
-                                setState(() {
-                                  fencer = suggestion;
-                                });
-                              },
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                          child: TypeAheadField(
+                            controller: fencer1Controller,
+                            builder: (context, controller, node) => TextField(
+                              controller: controller,
+                              focusNode: node,
+                              decoration: InputDecoration(
+                                label: const Text("Fencer 1"),
+                                suffixIcon: fencer != null
+                                    ? IconButton(
+                                        onPressed: () => setState(() {
+                                          fencer = null;
+                                          fencer1Controller.clear();
+                                        }),
+                                        icon: const Icon(Icons.clear),
+                                      )
+                                    : null,
+                              ),
                             ),
-                          ],
-                        ),
-                      ),
-                      // Flexible(
-                      //   child: DropdownButton<UserData>(
-                      //     hint: const Text("Fencer 1"),
-                      //     items: List.generate(
-                      //       fencers.length,
-                      //       (index) => DropdownMenuItem(
-                      //         value: fencers[index],
-                      //         child: Text(fencers[index].fullShortenedName),
-                      //       ),
-                      //     ),
-                      //     value: fencer,
-                      //     onChanged: (value) {
-                      //       setState(() {
-                      //         fencer = value;
-                      //       });
-                      //     },
-                      //     icon: fencer != null
-                      //         ? IconButton(
-                      //             onPressed: () => setState(() {
-                      //                   fencer = null;
-                      //                 }),
-                      //             icon: const Icon(Icons.clear))
-                      //         : null,
-                      //   ),
-                      // ),
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text("vs."),
-                      ),
-                      Flexible(
-                        child: Column(
-                          children: [
-                            const Text("Fencer 2"),
-                            TypeAheadField(
-                              suggestionsCallback: (pattern) {
-                                return fencers
-                                    .where((fencer) => fencer.fullName
-                                        .toLowerCase()
-                                        .contains(pattern.toLowerCase()))
-                                    .toList();
-                              },
-                              itemBuilder: (context, fencer) =>
-                                  Text(fencer.fullShortenedName),
-                              onSelected: (suggestion) {
-                                setState(() {
-                                  opponent = suggestion;
-                                });
-                              },
+                            suggestionsCallback: (pattern) {
+                              return fencers
+                                  .where((fencer) => fencer.fullName
+                                      .toLowerCase()
+                                      .contains(pattern.toLowerCase()))
+                                  .toList();
+                            },
+                            itemBuilder: (context, fencer) => ListTile(
+                              title: Text(fencer.fullShortenedName),
+                              subtitle: Text(
+                                  "${fencer.team.type} | ${fencer.weapon.type}"),
                             ),
-                          ],
+                            onSelected: (suggestion) {
+                              setState(() {
+                                fencer = suggestion;
+                                fencer1Controller.text = fencer!.fullName;
+                              });
+                            },
+                          ),
                         ),
-                      ),
-                      // Flexible(
-                      //   child: DropdownButton<UserData>(
-                      //     hint: const Text("Fencer 2"),
-                      //     items: List.generate(
-                      //       fencers.length,
-                      //       (index) => DropdownMenuItem(
-                      //         value: fencers[index],
-                      //         child: Text(fencers[index].fullShortenedName),
-                      //       ),
-                      //     ),
-                      //     value: opponent,
-                      //     onChanged: (value) {
-                      //       setState(() {
-                      //         opponent = value;
-                      //       });
-                      //     },
-                      //     icon: opponent != null
-                      //         ? IconButton(
-                      //             onPressed: () => setState(() {
-                      //                   opponent = null;
-                      //                 }),
-                      //             icon: const Icon(Icons.clear))
-                      //         : null,
-                      //   ),
-                      // ),
-                    ],
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text("vs."),
+                        ),
+                        Flexible(
+                          child: TypeAheadField(
+                            controller: fencer2Controller,
+                            builder: (context, controller, node) => TextField(
+                              controller: controller,
+                              focusNode: node,
+                              decoration: InputDecoration(
+                                label: const Text("Fencer 2"),
+                                suffixIcon: opponent != null
+                                    ? IconButton(
+                                        onPressed: () => setState(() {
+                                          opponent = null;
+                                          fencer2Controller.clear();
+                                        }),
+                                        icon: const Icon(Icons.clear),
+                                      )
+                                    : null,
+                              ),
+                            ),
+                            suggestionsCallback: (pattern) {
+                              return fencers
+                                  .where((fencer) => fencer.fullName
+                                      .toLowerCase()
+                                      .contains(pattern.toLowerCase()))
+                                  .toList();
+                            },
+                            itemBuilder: (context, fencer) => ListTile(
+                              title: Text(fencer.fullShortenedName),
+                              subtitle: Text(
+                                  "${fencer.team.type} | ${fencer.weapon.type}"),
+                            ),
+                            onSelected: (suggestion) {
+                              setState(() {
+                                opponent = suggestion;
+                                fencer2Controller.text = opponent!.fullName;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   ListTile(
                     title: Text(
@@ -190,6 +191,44 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                       }
                     }),
                   ),
+                  if (bouts.isNotEmpty) ...[
+                    if (fencer != null && opponent != null) ...[
+                      const Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            children: [
+                              Text(fencer!.fullName),
+                              Text(
+                                  "${bouts.where((bout) => bout.fencer.id == fencer!.id && bout.fencerWin).length}"),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Text(opponent!.fullName),
+                              Text(
+                                  "${bouts.where((bout) => bout.opponent.id == opponent!.id && bout.opponentWin).length}"),
+                            ],
+                          )
+                        ],
+                      ),
+                    ] else if (fencer != null) ...[
+                      const Divider(),
+                      Text("${fencer!.firstName}'s Overall Record"),
+                      Text(
+                          "${bouts.where((bout) => bout.fencer.id == fencer!.id && bout.fencerWin).length}"
+                          "-"
+                          "${bouts.where((bout) => bout.fencer.id == fencer!.id && bout.opponentWin).length}"),
+                    ] else if (opponent != null) ...[
+                      const Divider(),
+                      Text("${opponent!.firstName}'s Overall Record"),
+                      Text(
+                          "${bouts.where((bout) => bout.opponent.id == opponent!.id && bout.opponentWin).length}"
+                          "-"
+                          "${bouts.where((bout) => bout.opponent.id == opponent!.id && bout.fencerWin).length}"),
+                    ],
+                  ],
                 ],
               );
             } else {
@@ -223,6 +262,7 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                                 children: [
                                   Text(
                                     bout.fencer.fullName,
+                                    textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium
@@ -234,6 +274,7 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                                   ),
                                   Text(
                                     "${bout.fencerScore}",
+                                    textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium
@@ -256,6 +297,7 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                                 children: [
                                   Text(
                                     bout.opponent.fullName,
+                                    textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium
@@ -267,6 +309,7 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                                   ),
                                   Text(
                                     "${bout.opponentScore}",
+                                    textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium
