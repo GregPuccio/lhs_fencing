@@ -102,7 +102,7 @@ class Attendance {
     String checkedOut =
         checkOut != null ? " - ${DateFormat('h:mm aa').format(checkOut!)}" : "";
     String info =
-        "${practiceOver ? "Attended |" : "Checked In"} $checkedIn$checkedOut}";
+        "${practiceOver ? "Attended |" : "Checked In"} $checkedIn$checkedOut";
 
     String text = "Status: ";
     if (attended) {
