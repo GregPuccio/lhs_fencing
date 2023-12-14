@@ -192,8 +192,8 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                     }),
                   ),
                   if (bouts.isNotEmpty) ...[
+                    const Divider(),
                     if (fencer != null && opponent != null) ...[
-                      const Divider(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -214,19 +214,19 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                         ],
                       ),
                     ] else if (fencer != null) ...[
-                      const Divider(),
                       Text("${fencer!.firstName}'s Overall Record"),
                       Text(
                           "${bouts.where((bout) => bout.fencer.id == fencer!.id && bout.fencerWin).length}"
                           "-"
                           "${bouts.where((bout) => bout.fencer.id == fencer!.id && bout.opponentWin).length}"),
                     ] else if (opponent != null) ...[
-                      const Divider(),
                       Text("${opponent!.firstName}'s Overall Record"),
                       Text(
                           "${bouts.where((bout) => bout.opponent.id == opponent!.id && bout.opponentWin).length}"
                           "-"
                           "${bouts.where((bout) => bout.opponent.id == opponent!.id && bout.fencerWin).length}"),
+                    ] else ...[
+                      Text("${bouts.length} Bouts Found"),
                     ],
                   ],
                 ],
