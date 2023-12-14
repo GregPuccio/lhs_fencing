@@ -55,8 +55,8 @@ class _AddBoutPageState extends ConsumerState<AddBoutPage> {
       weapon = opponent?.weapon;
     }
     selectedDate = widget.selectedDate;
-    fencer1Controller = TextEditingController();
-    fencer2Controller = TextEditingController();
+    fencer1Controller = TextEditingController(text: fencer?.fullName);
+    fencer2Controller = TextEditingController(text: opponent?.fullName);
     super.initState();
   }
 
@@ -197,9 +197,11 @@ class _AddBoutPageState extends ConsumerState<AddBoutPage> {
                   ),
                 ),
                 onPressed: (index) {
-                  setState(() {
+                  if (weapon == Weapon.values[index]) {
+                    weapon = null;
+                  } else {
                     weapon = Weapon.values[index];
-                  });
+                  }
                 },
               ),
             ),

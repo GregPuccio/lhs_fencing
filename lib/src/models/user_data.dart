@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:lhs_fencing/src/constants/enums.dart';
@@ -234,5 +235,14 @@ class UserData extends Comparable<UserData> {
   @override
   int compareTo(UserData other) {
     return fullName.compareTo(other.fullName);
+  }
+
+  bool isAtPractice(List<Attendance> attendances, String? currentPracticeID) {
+    if (currentPracticeID == null) return false;
+    List<Attendance> fencerAttendances =
+        attendances.where((att) => att.userData.id == id).toList();
+    return fencerAttendances
+        .where((att) => att.id == currentPracticeID)
+        .any((att) => att.attended);
   }
 }

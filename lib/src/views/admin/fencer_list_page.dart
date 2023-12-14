@@ -33,6 +33,7 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
   Team? teamFilter;
   Weapon? weaponFilter;
   SchoolYear? yearFilter;
+  bool? atPractice;
 
   @override
   void initState() {
@@ -86,6 +87,13 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
       String? currentPracticeID;
       if (currentPractices.isNotEmpty) {
         currentPracticeID = currentPractices.first.id;
+      }
+      if (atPractice == true) {
+        filteredFencers.retainWhere(
+            (fencer) => fencer.isAtPractice(attendances, currentPracticeID));
+      } else if (atPractice == false) {
+        filteredFencers.retainWhere(
+            (fencer) => !fencer.isAtPractice(attendances, currentPracticeID));
       }
       return Scaffold(
           floatingActionButton: FloatingActionButton(
@@ -265,6 +273,55 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                                   ]),
                                 ),
                               ),
+                            if (currentPracticeID != null) ...[
+                              if (atPractice == null)
+                                PopupMenuButton<bool>(
+                                  initialValue: atPractice,
+                                  offset: const Offset(0, 30),
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 8),
+                                  itemBuilder: (context) => [
+                                    const PopupMenuItem(
+                                      value: true,
+                                      child: Text("At Practice"),
+                                    ),
+                                    const PopupMenuItem(
+                                      value: false,
+                                      child: Text("Not At Practice"),
+                                    ),
+                                  ],
+                                  icon: const Row(
+                                    children: [
+                                      Text("Attendance"),
+                                      Icon(Icons.arrow_drop_down),
+                                    ],
+                                  ),
+                                  onSelected: (bool value) => setState(() {
+                                    atPractice = value;
+                                  }),
+                                )
+                              else
+                                Card(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  child: IconButton(
+                                    iconSize: 16,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8),
+                                    onPressed: () => setState(() {
+                                      atPractice = null;
+                                    }),
+                                    icon: Row(children: [
+                                      Text(atPractice!
+                                          ? "At Practice"
+                                          : "Not At Practice"),
+                                      const SizedBox(width: 4),
+                                      const Icon(Icons.cancel)
+                                    ]),
+                                  ),
+                                ),
+                            ],
                           ],
                         ),
                       ),
@@ -281,9 +338,8 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
               List<Attendance> fencerAttendances = attendances
                   .where((att) => att.userData.id == fencer.id)
                   .toList();
-              bool atPractice = fencerAttendances
-                  .where((att) => att.id == currentPracticeID)
-                  .any((att) => att.attended);
+              bool atPractice =
+                  fencer.isAtPractice(fencerAttendances, currentPracticeID);
               int attendedPractices = getShownPractices(
                 practices,
                 fencerAttendances,

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
 import 'package:lhs_fencing/src/constants/date_utils.dart';
+import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/bout.dart';
 import 'package:lhs_fencing/src/models/bout_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
@@ -11,6 +12,7 @@ import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
+import 'package:lhs_fencing/src/widgets/text_badge.dart';
 
 @RoutePage()
 class BoutHistoryPage extends ConsumerStatefulWidget {
@@ -25,6 +27,7 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
   late List<UserData> fencers;
   UserData? fencer;
   UserData? opponent;
+  Weapon? weapon;
   DateTime? selectedDate;
   List<Bout> bouts = [];
   late TextEditingController fencer1Controller;
@@ -48,7 +51,10 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
   Widget build(BuildContext context) {
     Widget whenData(List<BoutMonth> seasons) {
       bouts.clear();
-      if (fencer != null || opponent != null || selectedDate != null) {
+      if (fencer != null ||
+          opponent != null ||
+          weapon != null ||
+          selectedDate != null) {
         bouts.addAll(seasons.map((s) => s.bouts).expand((x) => x));
       }
       if (fencer != null) {
@@ -57,13 +63,15 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
       if (opponent != null) {
         bouts.retainWhere((bout) => bout.opponent.id == opponent!.id);
       }
+      if (weapon != null) {
+        bouts.retainWhere((bout) => bout.fencer.weapon == weapon);
+      }
       if (selectedDate != null) {
         bouts.retainWhere((bout) => bout.date.isSameDayAs(selectedDate));
         if (fencer == null && opponent == null) {
           bouts.retainWhere((bout) => bout.original);
         }
       }
-      bouts = bouts.toSet().toList();
       return Scaffold(
         appBar: AppBar(
           title: const Text("Bout History"),
@@ -166,6 +174,29 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                     ),
                   ),
                   ListTile(
+                    title: const Text("Weapon"),
+                    trailing: ToggleButtons(
+                      isSelected: List.generate(Weapon.values.length - 1,
+                          (index) => Weapon.values[index] == weapon),
+                      children: List.generate(
+                        Weapon.values.length - 1,
+                        (index) => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(Weapon.values[index].type),
+                        ),
+                      ),
+                      onPressed: (index) {
+                        setState(() {
+                          if (weapon == Weapon.values[index]) {
+                            weapon = null;
+                          } else {
+                            weapon = Weapon.values[index];
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                  ListTile(
                     title: Text(
                         "Date: ${selectedDate != null ? DateFormat("EEEE, MMMM dd, yyyy").format(selectedDate!) : "Not Selected"}"),
                     trailing: selectedDate == null
@@ -214,19 +245,39 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                         ],
                       ),
                     ] else if (fencer != null) ...[
-                      Text("${fencer!.firstName}'s Overall Record"),
                       Text(
-                          "${bouts.where((bout) => bout.fencer.id == fencer!.id && bout.fencerWin).length}"
-                          "-"
-                          "${bouts.where((bout) => bout.fencer.id == fencer!.id && bout.opponentWin).length}"),
+                        "${fencer!.firstName}'s Overall Record",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      Text(
+                        "${bouts.where((bout) => bout.fencer.id == fencer!.id && bout.fencerWin).length}"
+                        "-"
+                        "${bouts.where((bout) => bout.fencer.id == fencer!.id && bout.opponentWin).length}",
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
                     ] else if (opponent != null) ...[
-                      Text("${opponent!.firstName}'s Overall Record"),
                       Text(
-                          "${bouts.where((bout) => bout.opponent.id == opponent!.id && bout.opponentWin).length}"
-                          "-"
-                          "${bouts.where((bout) => bout.opponent.id == opponent!.id && bout.fencerWin).length}"),
+                        "${opponent!.firstName}'s Overall Record",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      Text(
+                        "${bouts.where((bout) => bout.opponent.id == opponent!.id && bout.opponentWin).length}"
+                        "-"
+                        "${bouts.where((bout) => bout.opponent.id == opponent!.id && bout.fencerWin).length}",
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
                     ] else ...[
-                      Text("${bouts.length} Bouts Found"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextBadge(text: "${bouts.length}"),
+                          const SizedBox(width: 8),
+                          Text(
+                            "Bouts Found",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ],
+                      ),
                     ],
                   ],
                 ],
