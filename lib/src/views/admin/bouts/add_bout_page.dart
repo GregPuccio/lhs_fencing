@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
 import 'package:lhs_fencing/src/constants/date_utils.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
@@ -33,6 +34,15 @@ class _AddBoutPageState extends ConsumerState<AddBoutPage> {
   int? opponentScore;
   bool fencerWin = false;
   bool opponentWin = false;
+  late TextEditingController fencer1Controller;
+  late TextEditingController fencer2Controller;
+
+  @override
+  void dispose() {
+    fencer1Controller.dispose();
+    fencer2Controller.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -45,6 +55,8 @@ class _AddBoutPageState extends ConsumerState<AddBoutPage> {
       weapon = opponent?.weapon;
     }
     selectedDate = widget.selectedDate;
+    fencer1Controller = TextEditingController();
+    fencer2Controller = TextEditingController();
     super.initState();
   }
 
@@ -60,24 +72,45 @@ class _AddBoutPageState extends ConsumerState<AddBoutPage> {
             ListTile(
               title: Row(
                 children: [
-                  DropdownButton<UserData>(
-                    hint: const Text("Fencer 1"),
-                    items: List.generate(
-                      fencers.length,
-                      (index) => DropdownMenuItem(
-                        value: fencers[index],
-                        child: Text(fencers[index].fullShortenedName),
+                  Flexible(
+                    child: TypeAheadField(
+                      controller: fencer1Controller,
+                      builder: (context, controller, node) => TextField(
+                        controller: controller,
+                        focusNode: node,
+                        decoration: InputDecoration(
+                          label: const Text("Fencer 1"),
+                          suffixIcon: fencer != null
+                              ? IconButton(
+                                  onPressed: () => setState(() {
+                                    fencer = null;
+                                    fencer1Controller.clear();
+                                  }),
+                                  icon: const Icon(Icons.clear),
+                                )
+                              : null,
+                        ),
                       ),
+                      suggestionsCallback: (pattern) {
+                        return fencers
+                            .where((fencer) => fencer.fullName
+                                .toLowerCase()
+                                .contains(pattern.toLowerCase()))
+                            .toList();
+                      },
+                      itemBuilder: (context, fencer) => ListTile(
+                        title: Text(fencer.fullName),
+                        subtitle:
+                            Text("${fencer.team.type} | ${fencer.weapon.type}"),
+                      ),
+                      onSelected: (suggestion) {
+                        setState(() {
+                          fencer = suggestion;
+                          fencer1Controller.text = fencer!.fullName;
+                          weapon ??= fencer!.weapon;
+                        });
+                      },
                     ),
-                    value: fencer,
-                    onChanged: (value) {
-                      setState(() {
-                        fencer = value;
-                        weapon ??= fencer!.weapon != Weapon.unsure
-                            ? fencer!.weapon
-                            : weapon;
-                      });
-                    },
                   ),
                 ],
               ),
@@ -96,22 +129,45 @@ class _AddBoutPageState extends ConsumerState<AddBoutPage> {
             ListTile(
               title: Row(
                 children: [
-                  DropdownButton<UserData>(
-                    hint: const Text("Fencer 2"),
-                    items: List.generate(
-                      fencers.length,
-                      (index) => DropdownMenuItem(
-                        value: fencers[index],
-                        child: Text(fencers[index].fullShortenedName),
+                  Flexible(
+                    child: TypeAheadField(
+                      controller: fencer2Controller,
+                      builder: (context, controller, node) => TextField(
+                        controller: controller,
+                        focusNode: node,
+                        decoration: InputDecoration(
+                          label: const Text("Fencer 2"),
+                          suffixIcon: opponent != null
+                              ? IconButton(
+                                  onPressed: () => setState(() {
+                                    opponent = null;
+                                    fencer2Controller.clear();
+                                  }),
+                                  icon: const Icon(Icons.clear),
+                                )
+                              : null,
+                        ),
                       ),
+                      suggestionsCallback: (pattern) {
+                        return fencers
+                            .where((fencer) => fencer.fullName
+                                .toLowerCase()
+                                .contains(pattern.toLowerCase()))
+                            .toList();
+                      },
+                      itemBuilder: (context, fencer) => ListTile(
+                        title: Text(fencer.fullName),
+                        subtitle:
+                            Text("${fencer.team.type} | ${fencer.weapon.type}"),
+                      ),
+                      onSelected: (suggestion) {
+                        setState(() {
+                          opponent = suggestion;
+                          fencer2Controller.text = opponent!.fullName;
+                          weapon ??= opponent!.weapon;
+                        });
+                      },
                     ),
-                    value: opponent,
-                    onChanged: (value) {
-                      setState(() {
-                        opponent = value;
-                        weapon ??= opponent!.weapon;
-                      });
-                    },
                   ),
                 ],
               ),
