@@ -127,6 +127,7 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                                 fencer = suggestion;
                                 fencer1Controller.text = fencer!.fullName;
                               });
+                              FocusScope.of(context).unfocus();
                             },
                           ),
                         ),
@@ -171,6 +172,7 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                                 opponent = suggestion;
                                 fencer2Controller.text = opponent!.fullName;
                               });
+                              FocusScope.of(context).unfocus();
                             },
                           ),
                         ),
