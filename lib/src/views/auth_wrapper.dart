@@ -26,7 +26,9 @@ class AuthWrapperPage extends ConsumerWidget {
         if (!refreshedUser) {
           Future.delayed(Duration.zero, () async {
             UserData? newUserData = await getFencingData(userData, context);
-            if (newUserData != null) {
+            if (newUserData != null &&
+                (newUserData.club != userData.club ||
+                    newUserData.rating != userData.rating)) {
               if (context.mounted) {
                 return showDialog(
                     context: context,

@@ -266,7 +266,9 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                                   loadingData = false;
                                 });
                               } else {
-                                if (userData.usaFencingID.isEmpty) {
+                                if (userData.usaFencingID.isEmpty &&
+                                        value.club != userData.club ||
+                                    value.rating != userData.rating) {
                                   showDialog(
                                       context: context,
                                       builder: (context) => AlertDialog(
