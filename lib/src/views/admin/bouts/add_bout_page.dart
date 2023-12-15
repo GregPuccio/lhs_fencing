@@ -267,6 +267,7 @@ class _AddBoutPageState extends ConsumerState<AddBoutPage> {
                       selectedDate != null &&
                       (fencerScore != opponentScore || fencerWin || opponentWin)
                   ? () async {
+                      selectedDate = selectedDate!.addTime();
                       List<BoutMonth> months = ref.read(boutsProvider).value!;
                       fencer = fencer?.copyWith(weapon: weapon);
                       opponent = opponent?.copyWith(weapon: weapon);

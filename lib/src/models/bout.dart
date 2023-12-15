@@ -4,7 +4,7 @@ import 'package:uuid/uuid.dart';
 
 import 'package:lhs_fencing/src/models/user_data.dart';
 
-class Bout {
+class Bout implements Comparable<Bout> {
   String id;
   String partnerID;
   UserData fencer;
@@ -146,5 +146,15 @@ class Bout {
         opponentWin.hashCode ^
         date.hashCode ^
         original.hashCode;
+  }
+
+  @override
+  int compareTo(Bout other) {
+    int dateCompare = other.date.compareTo(date);
+    if (dateCompare == 0) {
+      return fencer.fullName.compareTo(other.fencer.fullName);
+    } else {
+      return dateCompare;
+    }
   }
 }

@@ -72,6 +72,7 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
           bouts.retainWhere((bout) => bout.original);
         }
       }
+      bouts.sort();
       return Scaffold(
         appBar: AppBar(
           title: const Text("Bout History"),
@@ -100,7 +101,9 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                                     ? IconButton(
                                         onPressed: () => setState(() {
                                           fencer = null;
+                                          opponent = null;
                                           fencer1Controller.clear();
+                                          fencer2Controller.clear();
                                         }),
                                         icon: const Icon(Icons.clear),
                                       )
@@ -135,6 +138,7 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                           child: TypeAheadField(
                             controller: fencer2Controller,
                             builder: (context, controller, node) => TextField(
+                              enabled: fencer != null,
                               controller: controller,
                               focusNode: node,
                               decoration: InputDecoration(
@@ -230,41 +234,138 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                         children: [
                           Column(
                             children: [
-                              Text(fencer!.fullName),
                               Text(
-                                  "${bouts.where((bout) => bout.fencer.id == fencer!.id && bout.fencerWin).length}"),
+                                fencer!.fullName,
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text(
+                                        "Wins",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
+                                      Text(
+                                        "${bouts.where((bout) => bout.fencerWin).length}",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        "TS",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
+                                      Text(
+                                        "${bouts.map((e) => e.fencerScore).fold(0, (p, e) => p + e)}",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge,
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ],
                           ),
                           Column(
                             children: [
-                              Text(opponent!.fullName),
                               Text(
-                                  "${bouts.where((bout) => bout.opponent.id == opponent!.id && bout.opponentWin).length}"),
+                                opponent!.fullName,
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text(
+                                        "Wins",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
+                                      Text(
+                                        "${bouts.where((bout) => bout.opponentWin).length}",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        "TS",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
+                                      Text(
+                                        "${bouts.map((e) => e.opponentScore).fold(0, (p, e) => p + e)}",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge,
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ],
                           )
                         ],
                       ),
                     ] else if (fencer != null) ...[
                       Text(
-                        "${fencer!.firstName}'s Overall Record",
-                        style: Theme.of(context).textTheme.titleMedium,
+                        fencer!.fullName,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      Text(
-                        "${bouts.where((bout) => bout.fencer.id == fencer!.id && bout.fencerWin).length}"
-                        "-"
-                        "${bouts.where((bout) => bout.fencer.id == fencer!.id && bout.opponentWin).length}",
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    ] else if (opponent != null) ...[
-                      Text(
-                        "${opponent!.firstName}'s Overall Record",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      Text(
-                        "${bouts.where((bout) => bout.opponent.id == opponent!.id && bout.opponentWin).length}"
-                        "-"
-                        "${bouts.where((bout) => bout.opponent.id == opponent!.id && bout.fencerWin).length}",
-                        style: Theme.of(context).textTheme.bodyLarge,
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                "Overall Record",
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              Text(
+                                "${bouts.where((bout) => bout.fencer.id == fencer!.id && bout.fencerWin).length}"
+                                "-"
+                                "${bouts.where((bout) => bout.fencer.id == fencer!.id && bout.opponentWin).length}",
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                "Touches Scored/Received",
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              Text(
+                                "${bouts.map((e) => e.fencerScore).fold(0, (p, e) => p + e)}/${bouts.map((e) => e.opponentScore).fold(0, (p, e) => p + e)}",
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          )
+                        ],
                       ),
                     ] else ...[
                       Row(
@@ -274,7 +375,7 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                           const SizedBox(width: 8),
                           Text(
                             "Bouts Found",
-                            style: Theme.of(context).textTheme.titleMedium,
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
                         ],
                       ),
@@ -285,105 +386,108 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
             } else {
               if (bouts.isEmpty) {
                 return Center(
-                  child: Text(fencer == null &&
-                          opponent == null &&
-                          selectedDate == null
-                      ? "Add a fencer or the date you are searching for above"
-                      : "No bouts found for this combination!"),
+                  child: Text(
+                      fencer == null && opponent == null && selectedDate == null
+                          ? "Add any filter above to look for bouts!"
+                          : "No bouts found for this combination!"),
                 );
               } else {
                 Bout bout = bouts[index - 1];
-                return Column(
-                  children: [
-                    Text(DateFormat("EEEE, MMMM dd, yyyy").format(bout.date),
-                        style: Theme.of(context).textTheme.bodyLarge),
-                    Table(
-                      columnWidths: const {2: FractionColumnWidth(0.2)},
-                      key: ValueKey(bout),
-                      children: [
-                        TableRow(
-                          children: [
-                            Container(
-                              color: bout.fencerWin
-                                  ? Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer
-                                  : null,
-                              child: Column(
-                                children: [
-                                  Text(
-                                    bout.fencer.fullName,
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          fontWeight: bout.fencerWin
-                                              ? FontWeight.bold
-                                              : null,
-                                        ),
-                                  ),
-                                  Text(
-                                    "${bout.fencerScore}",
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          fontWeight: bout.fencerWin
-                                              ? FontWeight.bold
-                                              : null,
-                                        ),
-                                  ),
-                                ],
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Text(DateFormat("EEEE, MMMM dd, yyyy").format(bout.date),
+                          style: Theme.of(context).textTheme.bodyLarge),
+                      const SizedBox(height: 8),
+                      Table(
+                        columnWidths: const {2: FractionColumnWidth(0.1)},
+                        key: ValueKey(bout),
+                        children: [
+                          TableRow(
+                            children: [
+                              Container(
+                                color: bout.fencerWin
+                                    ? Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer
+                                    : null,
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      bout.fencer.fullName,
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontWeight: bout.fencerWin
+                                                ? FontWeight.bold
+                                                : null,
+                                          ),
+                                    ),
+                                    Text(
+                                      "${bout.fencerScore}",
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontWeight: bout.fencerWin
+                                                ? FontWeight.bold
+                                                : null,
+                                          ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            Container(
-                              color: bout.opponentWin
-                                  ? Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer
-                                  : null,
-                              child: Column(
-                                children: [
-                                  Text(
-                                    bout.opponent.fullName,
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          fontWeight: bout.opponentWin
-                                              ? FontWeight.bold
-                                              : null,
-                                        ),
-                                  ),
-                                  Text(
-                                    "${bout.opponentScore}",
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          fontWeight: bout.opponentWin
-                                              ? FontWeight.bold
-                                              : null,
-                                        ),
-                                  ),
-                                ],
+                              Container(
+                                color: bout.opponentWin
+                                    ? Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer
+                                    : null,
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      bout.opponent.fullName,
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontWeight: bout.opponentWin
+                                                ? FontWeight.bold
+                                                : null,
+                                          ),
+                                    ),
+                                    Text(
+                                      "${bout.opponentScore}",
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontWeight: bout.opponentWin
+                                                ? FontWeight.bold
+                                                : null,
+                                          ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            IconButton(
-                              onPressed: () => context.router.push(
-                                EditBoutRoute(bout: bout),
+                              IconButton(
+                                onPressed: () => context.router.push(
+                                  EditBoutRoute(bout: bout),
+                                ),
+                                icon: const Icon(Icons.edit),
                               ),
-                              icon: const Icon(Icons.edit),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 );
               }
             }

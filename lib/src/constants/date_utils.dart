@@ -34,6 +34,15 @@ extension DateUtils on DateTime {
     return other.day == day && other.month == month && other.year == year;
   }
 
+  DateTime addTime() {
+    DateTime now = DateTime.now();
+    return add(Duration(
+        hours: now.hour,
+        minutes: now.minute,
+        milliseconds: now.millisecond,
+        microseconds: now.microsecond));
+  }
+
   DateTime get monthOnly {
     return DateTime(year, month);
   }
