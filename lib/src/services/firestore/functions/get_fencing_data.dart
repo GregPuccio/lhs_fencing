@@ -9,7 +9,8 @@ Future<UserData?> getFencingData(UserData userData, BuildContext context,
   UserData newUserData = UserData.fromJson(userData.toJson());
   try {
     Uri url;
-    if (newUserData.usaFencingID.isEmpty) {
+    print(newUserData.usaFencingID);
+    if (newUserData.usaFencingID.isEmpty && settingUp) {
       url = Uri.https('proxy-7jwpj4qcgq-uc.a.run.app',
           'https://member.usafencing.org/search/members', {
         'first': newUserData.firstName,
@@ -19,7 +20,7 @@ Future<UserData?> getFencingData(UserData userData, BuildContext context,
         'country': '',
         'id': '',
       });
-    } else {
+    } else if (newUserData.usaFencingID.isNotEmpty) {
       url = Uri.https('proxy-7jwpj4qcgq-uc.a.run.app',
           'https://member.usafencing.org/search/members', {
         'first': '',
@@ -29,6 +30,8 @@ Future<UserData?> getFencingData(UserData userData, BuildContext context,
         'country': '',
         'id': newUserData.usaFencingID,
       });
+    } else {
+      return null;
     }
     // final url = Uri.https("highschoolsports.nj.com",
     //     "/school/livingston-livingston/boysfencing/season/2022-2023/");
