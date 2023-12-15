@@ -113,6 +113,14 @@ class _HomePageState extends ConsumerState<HomePage> {
         const Divider(),
         if (ref.watch(userDataProvider).value!.manager == true) ...[
           ListTile(
+            leading: const Icon(Icons.list),
+            title: const Text("Bout List"),
+            subtitle: const Text("View, add or edit bout records for fencers"),
+            trailing: const Icon(Icons.arrow_forward),
+            onTap: () => context.router.push(const BoutHistoryRoute()),
+          ),
+          const Divider(),
+          ListTile(
             leading: const Icon(Icons.accessibility_new),
             title: const Text("Borrowed Equipment List"),
             subtitle:
