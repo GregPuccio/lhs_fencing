@@ -227,7 +227,7 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
                     subtitle: Text(TimeOfDay.fromDateTime(practice.startTime)
                         .format(context)),
                     trailing: const Icon(Icons.av_timer),
-                    onTap: () => setTime(),
+                    onTap: () => setTime(start: true),
                   ),
                 ),
                 Flexible(
@@ -236,7 +236,7 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
                     subtitle: Text(TimeOfDay.fromDateTime(practice.endTime)
                         .format(context)),
                     trailing: const Icon(Icons.time_to_leave),
-                    onTap: () => setTime(start: false),
+                    onTap: () => setTime(),
                   ),
                 ),
               ],

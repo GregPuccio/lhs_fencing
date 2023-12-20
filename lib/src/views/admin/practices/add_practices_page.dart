@@ -78,7 +78,8 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
     }
   }
 
-  void setTime(TimeOfDay timeOfDay, {bool start = true}) async {
+  void setTime(TimeOfDay timeOfDay,
+      {bool start = false, bool bus = false}) async {
     TimeOfDay? value = await showTimePicker(
       context: context,
       initialTime: timeOfDay,
@@ -87,6 +88,8 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
       setState(() {
         if (start) {
           startTime = value;
+        } else if (bus) {
+          busTime = value;
         } else {
           endTime = value;
         }
@@ -199,7 +202,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                 title: const Text("Bus Time"),
                 subtitle: Text(busTime.format(context)),
                 trailing: const Icon(Icons.bus_alert),
-                onTap: () => setTime(busTime),
+                onTap: () => setTime(busTime, bus: true),
               ),
               const Divider(),
             ],
@@ -210,7 +213,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                     title: const Text("Start Time"),
                     subtitle: Text(startTime.format(context)),
                     trailing: const Icon(Icons.av_timer),
-                    onTap: () => setTime(startTime),
+                    onTap: () => setTime(startTime, start: true),
                   ),
                 ),
                 Flexible(
@@ -218,7 +221,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                     title: const Text("End Time"),
                     subtitle: Text(endTime.format(context)),
                     trailing: const Icon(Icons.keyboard_return),
-                    onTap: () => setTime(endTime, start: false),
+                    onTap: () => setTime(endTime),
                   ),
                 ),
               ],
