@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
+import 'package:lhs_fencing/src/models/bout.dart';
+import 'package:lhs_fencing/src/models/bout_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
@@ -30,6 +32,7 @@ class FencerListPage extends ConsumerStatefulWidget {
 class _FencerListPageState extends ConsumerState<FencerListPage> {
   late TextEditingController controller;
   List<Attendance> attendances = [];
+  List<Practice> practices = [];
   Team? teamFilter;
   Weapon? weaponFilter;
   SchoolYear? yearFilter;
@@ -53,11 +56,10 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
   @override
   Widget build(BuildContext context) {
     List<UserData> fencers = [];
-    Widget whenData(List<PracticeMonth> practiceMonths) {
-      List<Practice> practices = [];
-      for (var month in practiceMonths) {
-        practices.addAll(month.practices.where((practice) => practice.startTime
-            .isBefore(DateTime.now().add(const Duration(hours: 1)))));
+    Widget whenData(List<BoutMonth> boutMonths) {
+      List<Bout> bouts = [];
+      for (var month in boutMonths) {
+        bouts.addAll(month.bouts);
       }
       List<UserData> filteredFencers = fencers.toList();
       if (controller.text.isNotEmpty) {
@@ -142,7 +144,8 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                       padding: const EdgeInsets.only(bottom: 4.0, left: 15),
                       child: SizedBox(
                         height: 30,
-                        child: Row(
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
                           children: [
                             if (teamFilter == null)
                               PopupMenuButton<Team>(
@@ -425,6 +428,11 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                             ],
                           ),
                         ],
+                        Text(
+                          "Practice Bout Record: ${bouts.where((bout) => bout.fencer.id == fencer.id && bout.fencerWin).length}"
+                          "-"
+                          "${bouts.where((bout) => bout.fencer.id == fencer.id && bout.opponentWin).length}",
+                        ),
                         const Divider(),
                         Text(
                             "${fencer.team.name.capitalize} | ${fencer.schoolYear.type} | ${fencer.manager ? "Manager" : fencer.weapon.type}"),
@@ -466,13 +474,26 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
           ));
     }
 
+    Widget whenPracticeData(List<PracticeMonth> practiceMonths) {
+      practices.clear();
+      for (var month in practiceMonths) {
+        practices.addAll(month.practices.where((practice) => practice.startTime
+            .isBefore(DateTime.now().add(const Duration(hours: 1)))));
+      }
+      return ref.watch(boutsProvider).when(
+            data: whenData,
+            error: (error, stackTrace) => const ErrorPage(),
+            loading: () => const LoadingPage(),
+          );
+    }
+
     Widget whenAttendanceData(List<AttendanceMonth> attendanceMonths) {
       attendances.clear();
       for (var month in attendanceMonths) {
         attendances.addAll(month.attendances);
       }
       return ref.watch(practicesProvider).when(
-            data: whenData,
+            data: whenPracticeData,
             error: (error, stackTrace) => const ErrorPage(),
             loading: () => const LoadingPage(),
           );
