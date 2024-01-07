@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
+import 'package:lhs_fencing/src/models/bout.dart';
+import 'package:lhs_fencing/src/models/bout_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
@@ -100,17 +102,63 @@ class _HomePageState extends ConsumerState<HomePage> {
         color: Theme.of(context).disabledColor,
       ),
     ];
+    List<BoutMonth> boutMonths = ref.watch(userBoutsProvider).value ?? [];
+    List<Bout> bouts = [];
+    for (var month in boutMonths) {
+      bouts.addAll(month.bouts);
+    }
 
     List<Practice> upcomingPractices = widget.practices
         .where((prac) => prac.startTime.isAfter(DateTime.now()))
         .toList();
     upcomingPractices
         .removeWhere((prac) => prac.id == widget.upcomingPractice?.id);
-
     return ListView(
       children: [
         const WelcomeHeader(),
         const Divider(),
+        if (bouts.isNotEmpty) ...[
+          Column(
+            children: [
+              Text(
+                "Practice Bout Record",
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      Text(
+                        "Overall Record",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      Text(
+                        "${bouts.where((bout) => bout.fencerWin).length}"
+                        "-"
+                        "${bouts.where((bout) => bout.opponentWin).length}",
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                        "Touches Scored/Received",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      Text(
+                        "${bouts.map((e) => e.fencerScore).fold(0, (p, e) => p + e)}/${bouts.map((e) => e.opponentScore).fold(0, (p, e) => p + e)}",
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ],
+          ),
+          const Divider(),
+        ],
         if (ref.watch(userDataProvider).value!.manager == true) ...[
           ListTile(
             leading: const Icon(Icons.list),

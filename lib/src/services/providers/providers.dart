@@ -105,3 +105,13 @@ final boutsProvider = StreamProvider((ref) {
     builder: (map, docID) => BoutMonth.fromMap(map!).copyWith(id: docID),
   );
 });
+
+final userBoutsProvider = StreamProvider((ref) {
+  final auth = ref.watch(authStateChangesProvider);
+  final database = ref.watch(databaseProvider);
+  return database.collectionGroupStream(
+      groupTerm: boutCollection,
+      builder: (map, docID) => BoutMonth.fromMap(map!).copyWith(id: docID),
+      queryBuilder: (query) =>
+          query.where("fencerID", isEqualTo: auth.value!.uid));
+});
