@@ -74,8 +74,22 @@ Coach ${coach.firstName}
     }
   }
 
-  bool get tooSoonForCheckIn =>
-      DateTime.now().difference(startTime).inMinutes < -15;
+  bool get tooSoonForCheckIn {
+    switch (type) {
+      case TypePractice.practice:
+      case TypePractice.quad:
+        return DateTime.now().difference(startTime).inMinutes < -15;
+
+      case TypePractice.meet:
+      case TypePractice.fundraiser:
+      case TypePractice.spectating:
+        return DateTime.now().difference(startTime).inMinutes < -45;
+      case TypePractice.awayMeet:
+      case TypePractice.tournament:
+        return DateTime.now().difference(busTime!).inMinutes < -30;
+    }
+  }
+
   bool get isTooLate => DateTime.now().difference(startTime).inMinutes > 60;
   bool get canCheckIn => DateTime.now().difference(startTime).inMinutes >= -15;
   bool get isLate => DateTime.now().difference(startTime).inMinutes > 15;
