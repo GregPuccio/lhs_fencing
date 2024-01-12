@@ -218,6 +218,10 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
           child: Column(
             children: [
               Text(
+                "${widget.practice.type.type} - ${widget.practice.location}",
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              Text(
                 widget.practice.startString,
                 style: Theme.of(context).textTheme.titleMedium,
               ),

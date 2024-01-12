@@ -392,6 +392,8 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                       if (user.email != null &&
                           (user.email!.contains("livingston") ||
                               user.email!.contains("lps"))) {
+                        userData.clubDays
+                            .sort((a, b) => a.weekday.compareTo(b.weekday));
                         if (widget.userData != null) {
                           FirestoreService.instance
                               .updateData(
@@ -456,6 +458,41 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                     label: Text(
                         "${widget.userData == null ? "Save" : "Update"} My Information"),
                   ),
+                  // if (ref.watch(userDataProvider).value?.admin == true) ...[
+                  //   const Divider(),
+                  //   ListTile(
+                  //     title: const Text("No Longer On Our Team?"),
+                  //     trailing: OutlinedButton.icon(
+                  //       style: OutlinedButton.styleFrom(
+                  //           side: BorderSide(
+                  //               color: Theme.of(context).colorScheme.error),
+                  //           foregroundColor:
+                  //               Theme.of(context).colorScheme.error),
+                  //       onPressed: () => showDialog(
+                  //           context: context,
+                  //           builder: (context) {
+                  //             return AlertDialog(
+                  //               title: const Text("Delete Account?"),
+                  //               content: const Text(
+                  //                   "Please note this CAN NOT be undone!\nThe student will need to create a new profile for this season and will not be able to link into bouts or attendances that previously existed.\nThis will NOT delete the bouts of other students who have fenced with this student."),
+                  //               actions: [
+                  //                 TextButton(
+                  //                   onPressed: () =>
+                  //                       AuthService().deleteAccount(),
+                  //                   child: const Text("Delete Account"),
+                  //                 ),
+                  //                 TextButton(
+                  //                   onPressed: () => context.popRoute(),
+                  //                   child: const Text("Cancel"),
+                  //                 ),
+                  //               ],
+                  //             );
+                  //           }),
+                  //       icon: const Text("Delete Account"),
+                  //       label: const Icon(Icons.delete_forever),
+                  //     ),
+                  //   ),
+                  // ],
                   const SizedBox(height: 32),
                   if (widget.userData == null && widget.user != null) ...[
                     const Divider(),

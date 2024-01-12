@@ -387,6 +387,23 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                 ),
               ];
 
+              List<Bout> boutsWon = bouts
+                  .where(
+                      (bout) => bout.fencer.id == fencer.id && bout.fencerWin)
+                  .toList();
+              int fencerWin = boutsWon.length;
+              int touchesScored = boutsWon.fold(
+                  0, (previousValue, bout) => previousValue + bout.fencerScore);
+              List<Bout> boutsLost = bouts
+                  .where(
+                      (bout) => bout.fencer.id == fencer.id && bout.opponentWin)
+                  .toList();
+              int fencerLoss = boutsLost.length;
+              int touchesReceived = boutsLost.fold(
+                  0, (previousValue, bout) => previousValue + bout.fencerScore);
+              String percentWins = (fencerWin / (fencerWin + fencerLoss) * 100)
+                  .toStringAsFixed(0);
+
               return Column(
                 children: [
                   if (atPractice) const TextBadge(text: "At Current Practice"),
@@ -429,10 +446,9 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                           ),
                         ],
                         Text(
-                          "Practice Bout Record: ${bouts.where((bout) => bout.fencer.id == fencer.id && bout.fencerWin).length}"
-                          "-"
-                          "${bouts.where((bout) => bout.fencer.id == fencer.id && bout.opponentWin).length}",
-                        ),
+                            "Bouts: ${fencerWin + fencerLoss} | WR: $percentWins%"),
+                        Text(
+                            "Record: $fencerWin-$fencerLoss | TS: $touchesScored TR: $touchesReceived"),
                         const Divider(),
                         Text(
                             "${fencer.team.name.capitalize} | ${fencer.schoolYear.type} | ${fencer.manager ? "Manager" : fencer.weapon.type}"),

@@ -55,6 +55,8 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
           attendances.addAll(month.attendances);
         }
       }
+      practices
+          .retainWhere((p) => p.team == fencer.team || p.team == Team.both);
       practices.sort((a, b) => -a.startTime.compareTo(b.startTime));
 
       List<List<Practice>> practiceLists = [
@@ -157,12 +159,19 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (isToday) const TextBadge(text: "Today's Practice"),
+                        if (isToday)
+                          TextBadge(text: "Today's ${practice.type.type}"),
                         Text(practice.startString),
                       ],
                     ),
-                    subtitle: Text(
-                        "${attendance.wasLate ? "Arrived Late" : ""}${attendance.wasLate && attendance.leftEarly ? " | " : " "}${attendance.leftEarly ? "Left Early" : ""}"),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("${practice.type.type} - ${practice.location}"),
+                        Text(
+                            "${attendance.wasLate ? "Arrived Late" : ""}${attendance.wasLate && attendance.leftEarly ? " | " : " "}${attendance.leftEarly ? "Left Early" : ""}"),
+                      ],
+                    ),
                     trailing: Icon(
                       attendance.attended
                           ? Icons.check

@@ -56,4 +56,11 @@ class AuthService {
       return null;
     }
   }
+
+  // Future deleteAccount() async {
+  //   var credential = Credentials.applicationDefault();
+  //   try {} catch (e) {
+  //     return null;
+  //   }
+  // }
 }
