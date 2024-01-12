@@ -63,7 +63,7 @@ class CheckInButton extends ConsumerWidget {
                 );
               }
               // if we are too early to check in (more than 15 minutes before practice)
-              else if (!practice.tooSoonForCheckIn) {
+              else if (practice.tooSoonForCheckIn) {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
