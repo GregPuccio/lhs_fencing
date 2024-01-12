@@ -102,6 +102,20 @@ enum TypePractice {
     }
   }
 
+  bool get shouldGetLocation {
+    switch (this) {
+      case TypePractice.practice:
+      case TypePractice.meet:
+      case TypePractice.awayMeet:
+      case TypePractice.quad:
+      case TypePractice.tournament:
+        return true;
+      case TypePractice.fundraiser:
+      case TypePractice.spectating:
+        return false;
+    }
+  }
+
   String toMap() => name;
   static TypePractice fromMap(String map) =>
       values.byName(map.isEmpty ? "practice" : map);
