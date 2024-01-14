@@ -109,7 +109,7 @@ enum TypePractice {
       case TypePractice.awayMeet:
       case TypePractice.quad:
       case TypePractice.tournament:
-      // return true;
+        return true;
       case TypePractice.fundraiser:
       case TypePractice.spectating:
         return false;
