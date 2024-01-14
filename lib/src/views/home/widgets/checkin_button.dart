@@ -162,9 +162,9 @@ class CheckInButton extends ConsumerWidget {
                   LocationService.getLocation().then((locationData) {
                     if (locationData != null) {
                       if (locationData.latitude! < 40.7840 &&
-                          locationData.latitude! > 40.7835 &&
+                          locationData.latitude! > 40.7830 &&
                           locationData.longitude! < -74.3222 &&
-                          locationData.longitude! > -74.3216) {
+                          locationData.longitude! > -74.3205) {
                         tryCheckIn();
                       } else {
                         showDialog(
@@ -172,7 +172,7 @@ class CheckInButton extends ConsumerWidget {
                           builder: (context) => AlertDialog(
                             title: const Text("Not At Practice"),
                             content: const Text(
-                                "Your location is showing that you are not yet at the gym! Please do not check in unless you have already arrived.\nIf this is an error please report it to Coach Greg and check in with any coach."),
+                                "You have access to check in ONLY when your location is showing that you are at the gym! Please do not check in until you have arrived.\nIf this is an error please report it to Coach Greg and check in with any coach."),
                             actions: [
                               TextButton(
                                 onPressed: () => context.popRoute(),
@@ -190,7 +190,7 @@ class CheckInButton extends ConsumerWidget {
                         builder: (context) => AlertDialog(
                           title: const Text("Location Services Issue"),
                           content: const Text(
-                              "Your location is taken from your phone to determine whether you are at the gym or not. This location is not saved. Please fix your location access (refresh the website to get the location pop-up again) or check in with a coach."),
+                              "You will only have access to check in when your location is showing that you are at the gym. This information is not saved. Please fix your location access (refresh the website to get the location pop-up again) or check in with a coach."),
                           actions: [
                             TextButton(
                                 onPressed: () => context.popRoute(),
