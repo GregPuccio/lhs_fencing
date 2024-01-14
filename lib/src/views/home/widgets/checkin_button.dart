@@ -190,7 +190,7 @@ class CheckInButton extends ConsumerWidget {
                         builder: (context) => AlertDialog(
                           title: const Text("Location Services Issue"),
                           content: const Text(
-                              "Your location is taken from your phone to determine whether you are at the gym or not. This location is not saved. Please fix your location access or check in with a coach."),
+                              "Your location is taken from your phone to determine whether you are at the gym or not. This location is not saved. Please fix your location access (refresh the website to get the location pop-up again) or check in with a coach."),
                           actions: [
                             TextButton(
                                 onPressed: () => context.popRoute(),
