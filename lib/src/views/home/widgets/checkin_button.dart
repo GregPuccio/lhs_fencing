@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/constants/date_utils.dart';
+import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/comment.dart';
@@ -43,6 +44,7 @@ class CheckInButton extends ConsumerWidget {
           ? null
           : () async {
               String practiceType = practice.type.type;
+              String practiceTooEarlyTime = practice.type.tooEarlyTime;
               // if we are too late to check in (more than an hour after start)
               if (practice.isTooLate) {
                 showDialog(
@@ -69,7 +71,7 @@ class CheckInButton extends ConsumerWidget {
                   builder: (context) => AlertDialog(
                     title: const Text("Too Early For Check In"),
                     content: Text(
-                        "You cannot check in for attendance before the $practiceType has started. Make sure it is less than 15 minutes ahead of the $practiceType before you try checking in again."),
+                        "You cannot check in for attendance before the $practiceType has started. Make sure it is less than $practiceTooEarlyTime ahead of the $practiceType before you try checking in again."),
                     actions: [
                       TextButton(
                         onPressed: () => context.popRoute(),
@@ -106,7 +108,7 @@ class CheckInButton extends ConsumerWidget {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                  "Please only check in when you are at the $practiceType. Are you currently at the ${practice.location}?"),
+                                  "Please only check in when you are at the $practiceType. Are you currently at the ${practice.type == TypePractice.meet ? "Home Meet " : ""}${practice.location}?"),
                             ],
                           ),
                         ),

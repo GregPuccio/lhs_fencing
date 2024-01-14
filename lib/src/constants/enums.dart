@@ -116,6 +116,21 @@ enum TypePractice {
     }
   }
 
+  String get tooEarlyTime {
+    switch (this) {
+      case practice:
+      case quad:
+        return "15 minutes";
+      case TypePractice.meet:
+      case TypePractice.fundraiser:
+      case TypePractice.spectating:
+        return "45 minutes";
+      case TypePractice.awayMeet:
+      case TypePractice.tournament:
+        return "30 minutes";
+    }
+  }
+
   String toMap() => name;
   static TypePractice fromMap(String map) =>
       values.byName(map.isEmpty ? "practice" : map);
