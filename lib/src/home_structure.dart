@@ -88,7 +88,6 @@ class _HomeStructureState extends ConsumerState<HomeStructure> {
       );
       for (var practice in practices) {
         if (userData.admin ||
-            userData.manager ||
             practice.team == Team.both ||
             practice.team == userData.team) {
           DateTime practiceDay = DateTime(practice.startTime.year,

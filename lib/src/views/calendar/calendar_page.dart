@@ -62,7 +62,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
   Widget build(BuildContext context) {
     UserData userData = ref.watch(userDataProvider).value!;
     return Scaffold(
-      body: ListView(
+      body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -104,32 +104,40 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
             ),
           ),
           const SizedBox(height: 8.0),
-          ValueListenableBuilder(
-            valueListenable: _selectedEvents,
-            builder: (context, value, child) {
-              if (value.isNotEmpty) {
-                if (userData.admin) {
-                  return AdminEventListTile(
-                    practice: value.first,
-                    attendances: widget.attendances,
+          Flexible(
+            child: ValueListenableBuilder(
+              valueListenable: _selectedEvents,
+              builder: (context, value, child) {
+                if (value.isNotEmpty) {
+                  return ListView.builder(
+                    itemCount: value.length,
+                    itemBuilder: (context, index) {
+                      Practice practice = value[index];
+                      if (userData.admin) {
+                        return AdminEventListTile(
+                          practice: practice,
+                          attendances: widget.attendances,
+                        );
+                      } else {
+                        Attendance attendance = widget.attendances.firstWhere(
+                          (attendance) => attendance.id == practice.id,
+                          orElse: () => Attendance.noUserCreate(practice),
+                        );
+                        return EventListTile(
+                          practice: practice,
+                          attendance: attendance,
+                        );
+                      }
+                    },
                   );
                 } else {
-                  Attendance attendance = widget.attendances.firstWhere(
-                    (attendance) => attendance.id == value.first.id,
-                    orElse: () => Attendance.noUserCreate(value.first),
-                  );
-                  return EventListTile(
-                    practice: value.first,
-                    attendance: attendance,
+                  return const ListTile(
+                    title: Text(
+                        "Select a day on the calendar above, with an event on it"),
                   );
                 }
-              } else {
-                return const ListTile(
-                  title: Text(
-                      "Select a day on the calendar above, with an event on it"),
-                );
-              }
-            },
+              },
+            ),
           )
         ],
       ),

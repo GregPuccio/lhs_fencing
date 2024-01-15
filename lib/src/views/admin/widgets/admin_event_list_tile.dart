@@ -63,6 +63,7 @@ class AdminEventListTile extends ConsumerWidget {
       leading: SizedBox(
         width: MediaQuery.of(context).size.width / 2.5,
         child: PieChart(
+          key: ValueKey(showingSections),
           PieChartData(
             borderData: FlBorderData(show: false),
             sectionsSpace: 2,
