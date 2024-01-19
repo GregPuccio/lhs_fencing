@@ -102,20 +102,6 @@ enum TypePractice {
     }
   }
 
-  bool get shouldGetLocation {
-    switch (this) {
-      case TypePractice.practice:
-      case TypePractice.meet:
-      case TypePractice.awayMeet:
-      case TypePractice.quad:
-      case TypePractice.tournament:
-        return true;
-      case TypePractice.fundraiser:
-      case TypePractice.spectating:
-        return false;
-    }
-  }
-
   String get tooEarlyTime {
     switch (this) {
       case practice:
