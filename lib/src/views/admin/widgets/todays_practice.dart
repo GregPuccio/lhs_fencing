@@ -76,7 +76,8 @@ class TodaysPractice extends ConsumerWidget {
     }
 
     Widget whenFencerData(List<UserData> data) {
-      fencers = data;
+      fencers = data.toList();
+      fencers.retainWhere((fencer) => fencer.active);
       return ref.watch(allAttendancesProvider).when(
           data: whenData,
           error: (error, stackTrace) => const ErrorTile(),

@@ -84,6 +84,7 @@ Coach ${coach.firstName}
       case TypePractice.fundraiser:
       case TypePractice.spectating:
         return DateTime.now().difference(startTime).inMinutes < -45;
+
       case TypePractice.awayMeet:
       case TypePractice.tournament:
         return DateTime.now().difference(busTime!).inMinutes < -30;

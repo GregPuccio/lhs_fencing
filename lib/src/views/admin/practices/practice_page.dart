@@ -89,8 +89,9 @@ class _PracticePageState extends ConsumerState<PracticePage> {
         }
       }
       fencers.sort();
-      fencers.retainWhere((fencer) =>
-          practice.team == Team.both ? true : fencer.team == practice.team);
+      fencers.retainWhere((fencer) => practice.team == Team.both
+          ? true
+          : fencer.team == practice.team && fencer.active);
       List<UserData> filteredFencers = fencers.toList();
       if (controller.text.isNotEmpty) {
         filteredFencers = fencers

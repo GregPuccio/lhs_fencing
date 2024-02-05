@@ -117,7 +117,7 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
               children: [
                 const Text("Fencer List"),
                 const SizedBox(width: 8),
-                TextBadge(text: "${fencers.length}"),
+                TextBadge(text: "${filteredFencers.length}/${fencers.length}"),
               ],
             ),
             // actions: [
