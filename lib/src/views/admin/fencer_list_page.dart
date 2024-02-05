@@ -38,6 +38,9 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
   SchoolYear? yearFilter;
   bool? atPractice;
 
+  /// null is all fencers, true is active only, false is inactive only
+  bool? activeFilter = true;
+
   @override
   void initState() {
     controller = TextEditingController();
@@ -80,6 +83,9 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
       }
       if (weaponFilter != null) {
         filteredFencers.retainWhere((fencer) => fencer.weapon == weaponFilter);
+      }
+      if (activeFilter != null) {
+        filteredFencers.retainWhere((fencer) => fencer.active == activeFilter);
       }
       List<Practice> currentPractices = practices
           .where((p) =>
@@ -319,6 +325,53 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                                       Text(atPractice!
                                           ? "At Practice"
                                           : "Not At Practice"),
+                                      const SizedBox(width: 4),
+                                      const Icon(Icons.cancel)
+                                    ]),
+                                  ),
+                                ),
+                              if (activeFilter == null)
+                                PopupMenuButton<bool>(
+                                  initialValue: activeFilter,
+                                  offset: const Offset(0, 30),
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 8),
+                                  itemBuilder: (context) => [
+                                    const PopupMenuItem(
+                                      value: true,
+                                      child: Text("Active Only"),
+                                    ),
+                                    const PopupMenuItem(
+                                      value: false,
+                                      child: Text("Inactive Only"),
+                                    ),
+                                  ],
+                                  icon: const Row(
+                                    children: [
+                                      Text("Active"),
+                                      Icon(Icons.arrow_drop_down),
+                                    ],
+                                  ),
+                                  onSelected: (bool value) => setState(() {
+                                    activeFilter = value;
+                                  }),
+                                )
+                              else
+                                Card(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  child: IconButton(
+                                    iconSize: 16,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8),
+                                    onPressed: () => setState(() {
+                                      activeFilter = null;
+                                    }),
+                                    icon: Row(children: [
+                                      Text(activeFilter!
+                                          ? "Active Only"
+                                          : "Inactive Only"),
                                       const SizedBox(width: 4),
                                       const Icon(Icons.cancel)
                                     ]),

@@ -22,27 +22,28 @@ class UserData extends Comparable<UserData> {
   String rating;
   String club;
   Equipment equipment;
+  bool active;
 
   bool admin;
   bool manager;
 
-  UserData({
-    required this.id,
-    required this.email,
-    required this.firstName,
-    required this.lastName,
-    required this.usaFencingID,
-    required this.team,
-    required this.weapon,
-    required this.schoolYear,
-    required this.startDate,
-    required this.clubDays,
-    required this.rating,
-    required this.club,
-    required this.equipment,
-    required this.admin,
-    required this.manager,
-  });
+  UserData(
+      {required this.id,
+      required this.email,
+      required this.firstName,
+      required this.lastName,
+      required this.usaFencingID,
+      required this.team,
+      required this.weapon,
+      required this.schoolYear,
+      required this.startDate,
+      required this.clubDays,
+      required this.rating,
+      required this.club,
+      required this.equipment,
+      required this.admin,
+      required this.manager,
+      required this.active});
 
   /// [firstName] [lastInitial].
   String get fullShortenedName {
@@ -66,6 +67,7 @@ class UserData extends Comparable<UserData> {
       rating: "",
       club: "",
       equipment: Equipment.create(),
+      active: true,
     );
   }
 
@@ -92,6 +94,7 @@ class UserData extends Comparable<UserData> {
       rating: "",
       club: "",
       equipment: Equipment.create(),
+      active: true,
     );
   }
 
@@ -119,24 +122,25 @@ class UserData extends Comparable<UserData> {
     Equipment? equipment,
     bool? admin,
     bool? manager,
+    bool? active,
   }) {
     return UserData(
-      id: id ?? this.id,
-      email: email ?? this.email,
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      usaFencingID: usaFencingID ?? this.usaFencingID,
-      team: team ?? this.team,
-      weapon: weapon ?? this.weapon,
-      schoolYear: schoolYear ?? this.schoolYear,
-      startDate: startDate ?? this.startDate,
-      clubDays: clubDays ?? this.clubDays,
-      rating: rating ?? this.rating,
-      club: club ?? this.club,
-      equipment: equipment ?? this.equipment,
-      admin: admin ?? this.admin,
-      manager: manager ?? this.manager,
-    );
+        id: id ?? this.id,
+        email: email ?? this.email,
+        firstName: firstName ?? this.firstName,
+        lastName: lastName ?? this.lastName,
+        usaFencingID: usaFencingID ?? this.usaFencingID,
+        team: team ?? this.team,
+        weapon: weapon ?? this.weapon,
+        schoolYear: schoolYear ?? this.schoolYear,
+        startDate: startDate ?? this.startDate,
+        clubDays: clubDays ?? this.clubDays,
+        rating: rating ?? this.rating,
+        club: club ?? this.club,
+        equipment: equipment ?? this.equipment,
+        admin: admin ?? this.admin,
+        manager: manager ?? this.manager,
+        active: active ?? this.active);
   }
 
   Map<String, dynamic> toMap() {
@@ -156,6 +160,7 @@ class UserData extends Comparable<UserData> {
       'equipment': equipment.toMap(),
       'admin': admin,
       'manager': manager,
+      'active': active,
     };
   }
 
@@ -178,6 +183,7 @@ class UserData extends Comparable<UserData> {
       equipment: Equipment.fromMap(map['equipment'] ?? {}),
       admin: map['admin'] ?? false,
       manager: map['manager'] ?? false,
+      active: map['manager'] ?? true,
     );
   }
 
@@ -188,7 +194,7 @@ class UserData extends Comparable<UserData> {
 
   @override
   String toString() {
-    return 'UserData(id: $id, email: $email, firstName: $firstName, lastName: $lastName, usaFencingID: $usaFencingID, team: $team, weapon: $weapon, schoolYear: $schoolYear, startDate: $startDate, clubDays: $clubDays, rating: $rating, club: $club, equipment: $equipment, admin: $admin, manager: $manager)';
+    return 'UserData(id: $id, email: $email, firstName: $firstName, lastName: $lastName, usaFencingID: $usaFencingID, team: $team, weapon: $weapon, schoolYear: $schoolYear, startDate: $startDate, clubDays: $clubDays, rating: $rating, club: $club, equipment: $equipment, admin: $admin, manager: $manager, active: $active)';
   }
 
   @override
@@ -210,7 +216,8 @@ class UserData extends Comparable<UserData> {
         other.club == club &&
         other.equipment == equipment &&
         other.admin == admin &&
-        other.manager == manager;
+        other.manager == manager &&
+        other.active == active;
   }
 
   @override
@@ -229,7 +236,8 @@ class UserData extends Comparable<UserData> {
         club.hashCode ^
         equipment.hashCode ^
         admin.hashCode ^
-        manager.hashCode;
+        manager.hashCode ^
+        active.hashCode;
   }
 
   @override
