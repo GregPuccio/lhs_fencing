@@ -183,7 +183,7 @@ class UserData extends Comparable<UserData> {
       equipment: Equipment.fromMap(map['equipment'] ?? {}),
       admin: map['admin'] ?? false,
       manager: map['manager'] ?? false,
-      active: map['manager'] ?? true,
+      active: map['active'] ?? true,
     );
   }
 
