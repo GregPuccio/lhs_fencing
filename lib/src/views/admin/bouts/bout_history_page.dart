@@ -511,7 +511,7 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
 
     Widget whenFencerData(List<UserData> data) {
       fencers = data;
-      return ref.watch(boutsProvider).when(
+      return ref.watch(thisSeasonBoutsProvider).when(
           data: whenData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage());

@@ -9,156 +9,6 @@
 
 part of 'router.dart';
 
-abstract class _$AppRouter extends RootStackRouter {
-  // ignore: unused_element
-  _$AppRouter({super.navigatorKey});
-
-  @override
-  final Map<String, PageFactory> pagesMap = {
-    AddBoutRoute.name: (routeData) {
-      final args = routeData.argsAs<AddBoutRouteArgs>(
-          orElse: () => const AddBoutRouteArgs());
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: AddBoutPage(
-          fencer: args.fencer,
-          opponent: args.opponent,
-          selectedDate: args.selectedDate,
-          key: args.key,
-        ),
-      );
-    },
-    AddDrillsRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const AddDrillsPage(),
-      );
-    },
-    AddPracticesRoute.name: (routeData) {
-      final args = routeData.argsAs<AddPracticesRouteArgs>(
-          orElse: () => const AddPracticesRouteArgs());
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: AddPracticesPage(
-          practiceDate: args.practiceDate,
-          key: args.key,
-        ),
-      );
-    },
-    AttendanceRoute.name: (routeData) {
-      final pathParams = routeData.inheritedPathParams;
-      final args = routeData.argsAs<AttendanceRouteArgs>(
-          orElse: () => AttendanceRouteArgs(
-              practiceID: pathParams.getString('practiceID')));
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: AttendancePage(
-          practiceID: args.practiceID,
-          key: args.key,
-        ),
-      );
-    },
-    AuthWrapperRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const AuthWrapperPage(),
-      );
-    },
-    BoutHistoryRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const BoutHistoryPage(),
-      );
-    },
-    DrillsListRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const DrillsListPage(),
-      );
-    },
-    EditBoutRoute.name: (routeData) {
-      final args = routeData.argsAs<EditBoutRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: EditBoutPage(
-          bout: args.bout,
-          key: args.key,
-        ),
-      );
-    },
-    EditDrillsRoute.name: (routeData) {
-      final args = routeData.argsAs<EditDrillsRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: EditDrillsPage(
-          drill: args.drill,
-          key: args.key,
-        ),
-      );
-    },
-    EditFencerStatusRoute.name: (routeData) {
-      final args = routeData.argsAs<EditFencerStatusRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: EditFencerStatusPage(
-          args.fencer,
-          args.practice,
-          attendance: args.attendance,
-          key: args.key,
-        ),
-      );
-    },
-    EditPracticeRoute.name: (routeData) {
-      final args = routeData.argsAs<EditPracticeRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: EditPracticePage(
-          practice: args.practice,
-          key: args.key,
-        ),
-      );
-    },
-    EquipmentListRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const EquipmentListPage(),
-      );
-    },
-    EventsListRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const EventsListPage(),
-      );
-    },
-    FencerDetailsRoute.name: (routeData) {
-      final args = routeData.argsAs<FencerDetailsRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: FencerDetailsPage(
-          fencerID: args.fencerID,
-          key: args.key,
-        ),
-      );
-    },
-    FencerListRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const FencerListPage(),
-      );
-    },
-    PracticeRoute.name: (routeData) {
-      final args = routeData.argsAs<PracticeRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: PracticePage(
-          practiceID: args.practiceID,
-          key: args.key,
-        ),
-      );
-    },
-  };
-}
-
 /// generated route for
 /// [AddBoutPage]
 class AddBoutRoute extends PageRouteInfo<AddBoutRouteArgs> {
@@ -181,8 +31,19 @@ class AddBoutRoute extends PageRouteInfo<AddBoutRouteArgs> {
 
   static const String name = 'AddBoutRoute';
 
-  static const PageInfo<AddBoutRouteArgs> page =
-      PageInfo<AddBoutRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args =
+          data.argsAs<AddBoutRouteArgs>(orElse: () => const AddBoutRouteArgs());
+      return AddBoutPage(
+        fencer: args.fencer,
+        opponent: args.opponent,
+        selectedDate: args.selectedDate,
+        key: args.key,
+      );
+    },
+  );
 }
 
 class AddBoutRouteArgs {
@@ -218,7 +79,12 @@ class AddDrillsRoute extends PageRouteInfo<void> {
 
   static const String name = 'AddDrillsRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const AddDrillsPage();
+    },
+  );
 }
 
 /// generated route for
@@ -239,8 +105,17 @@ class AddPracticesRoute extends PageRouteInfo<AddPracticesRouteArgs> {
 
   static const String name = 'AddPracticesRoute';
 
-  static const PageInfo<AddPracticesRouteArgs> page =
-      PageInfo<AddPracticesRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<AddPracticesRouteArgs>(
+          orElse: () => const AddPracticesRouteArgs());
+      return AddPracticesPage(
+        practiceDate: args.practiceDate,
+        key: args.key,
+      );
+    },
+  );
 }
 
 class AddPracticesRouteArgs {
@@ -278,8 +153,19 @@ class AttendanceRoute extends PageRouteInfo<AttendanceRouteArgs> {
 
   static const String name = 'AttendanceRoute';
 
-  static const PageInfo<AttendanceRouteArgs> page =
-      PageInfo<AttendanceRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<AttendanceRouteArgs>(
+          orElse: () => AttendanceRouteArgs(
+              practiceID: pathParams.getString('practiceID')));
+      return AttendancePage(
+        practiceID: args.practiceID,
+        key: args.key,
+      );
+    },
+  );
 }
 
 class AttendanceRouteArgs {
@@ -309,7 +195,12 @@ class AuthWrapperRoute extends PageRouteInfo<void> {
 
   static const String name = 'AuthWrapperRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const AuthWrapperPage();
+    },
+  );
 }
 
 /// generated route for
@@ -323,7 +214,12 @@ class BoutHistoryRoute extends PageRouteInfo<void> {
 
   static const String name = 'BoutHistoryRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const BoutHistoryPage();
+    },
+  );
 }
 
 /// generated route for
@@ -337,7 +233,12 @@ class DrillsListRoute extends PageRouteInfo<void> {
 
   static const String name = 'DrillsListRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const DrillsListPage();
+    },
+  );
 }
 
 /// generated route for
@@ -358,8 +259,16 @@ class EditBoutRoute extends PageRouteInfo<EditBoutRouteArgs> {
 
   static const String name = 'EditBoutRoute';
 
-  static const PageInfo<EditBoutRouteArgs> page =
-      PageInfo<EditBoutRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<EditBoutRouteArgs>();
+      return EditBoutPage(
+        bout: args.bout,
+        key: args.key,
+      );
+    },
+  );
 }
 
 class EditBoutRouteArgs {
@@ -396,8 +305,16 @@ class EditDrillsRoute extends PageRouteInfo<EditDrillsRouteArgs> {
 
   static const String name = 'EditDrillsRoute';
 
-  static const PageInfo<EditDrillsRouteArgs> page =
-      PageInfo<EditDrillsRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<EditDrillsRouteArgs>();
+      return EditDrillsPage(
+        drill: args.drill,
+        key: args.key,
+      );
+    },
+  );
 }
 
 class EditDrillsRouteArgs {
@@ -438,8 +355,18 @@ class EditFencerStatusRoute extends PageRouteInfo<EditFencerStatusRouteArgs> {
 
   static const String name = 'EditFencerStatusRoute';
 
-  static const PageInfo<EditFencerStatusRouteArgs> page =
-      PageInfo<EditFencerStatusRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<EditFencerStatusRouteArgs>();
+      return EditFencerStatusPage(
+        args.fencer,
+        args.practice,
+        attendance: args.attendance,
+        key: args.key,
+      );
+    },
+  );
 }
 
 class EditFencerStatusRouteArgs {
@@ -482,8 +409,16 @@ class EditPracticeRoute extends PageRouteInfo<EditPracticeRouteArgs> {
 
   static const String name = 'EditPracticeRoute';
 
-  static const PageInfo<EditPracticeRouteArgs> page =
-      PageInfo<EditPracticeRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<EditPracticeRouteArgs>();
+      return EditPracticePage(
+        practice: args.practice,
+        key: args.key,
+      );
+    },
+  );
 }
 
 class EditPracticeRouteArgs {
@@ -513,7 +448,12 @@ class EquipmentListRoute extends PageRouteInfo<void> {
 
   static const String name = 'EquipmentListRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const EquipmentListPage();
+    },
+  );
 }
 
 /// generated route for
@@ -527,7 +467,12 @@ class EventsListRoute extends PageRouteInfo<void> {
 
   static const String name = 'EventsListRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const EventsListPage();
+    },
+  );
 }
 
 /// generated route for
@@ -548,8 +493,16 @@ class FencerDetailsRoute extends PageRouteInfo<FencerDetailsRouteArgs> {
 
   static const String name = 'FencerDetailsRoute';
 
-  static const PageInfo<FencerDetailsRouteArgs> page =
-      PageInfo<FencerDetailsRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<FencerDetailsRouteArgs>();
+      return FencerDetailsPage(
+        fencerID: args.fencerID,
+        key: args.key,
+      );
+    },
+  );
 }
 
 class FencerDetailsRouteArgs {
@@ -579,7 +532,12 @@ class FencerListRoute extends PageRouteInfo<void> {
 
   static const String name = 'FencerListRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const FencerListPage();
+    },
+  );
 }
 
 /// generated route for
@@ -600,8 +558,16 @@ class PracticeRoute extends PageRouteInfo<PracticeRouteArgs> {
 
   static const String name = 'PracticeRoute';
 
-  static const PageInfo<PracticeRouteArgs> page =
-      PageInfo<PracticeRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<PracticeRouteArgs>();
+      return PracticePage(
+        practiceID: args.practiceID,
+        key: args.key,
+      );
+    },
+  );
 }
 
 class PracticeRouteArgs {

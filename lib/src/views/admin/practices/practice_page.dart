@@ -220,7 +220,7 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                                     "Do you want to send an email to all of the students not present for this practice?\n(This will open a prepopulated message in the email app and you will be able to edit it before sending)"),
                                 actions: [
                                   TextButton(
-                                    onPressed: () => context.router.pop(),
+                                    onPressed: () => context.router.maybePop(),
                                     child: const Text("No, cancel"),
                                   ),
                                   TextButton(
@@ -241,8 +241,10 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                                           query: practice.emailMessage(
                                               fencerLists, tod, coach));
                                       try {
-                                        launchUrl(url).then(
-                                            (value) => context.router.pop());
+                                        launchUrl(url).then((value) =>
+                                            context.mounted
+                                                ? context.router.maybePop()
+                                                : 0);
                                       } catch (e) {
                                         ScaffoldMessenger.of(context)
                                             .clearSnackBars();
@@ -313,7 +315,7 @@ class _PracticePageState extends ConsumerState<PracticePage> {
       PracticeMonth month = data.firstWhere(
           (element) => element.practices
               .any((element) => element.id == widget.practiceID), orElse: () {
-        context.popRoute();
+        context.maybePop();
         return PracticeMonth(id: "id", practices: [], month: DateTime.now());
       });
       practice = month.practices

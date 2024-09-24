@@ -1,14 +1,19 @@
-String userCollection = "users23";
-String practiceCollection = "practices23";
-String attendanceCollection = "attendances23";
+String lastSeasonUserCollection = "users23";
+String userCollection = "users24";
+String practiceCollection = "practices24";
+String attendanceCollection = "attendances24";
 String drillCollection = "drills";
 String drillSeason23 = "drills23";
-String boutCollection = "bouts23";
+String drillSeason24 = "drills24";
+String boutsSeason23 = "bouts23";
+String boutsSeason24 = "bouts24";
 
 class FirestorePath {
   final FirestorePath firestorePath = FirestorePath();
 
   /// users
+  static String lastSeasonUser(String userID) =>
+      '$lastSeasonUserCollection/$userID';
   static String user(String userID) => '$userCollection/$userID';
   static String users() => userCollection;
 
@@ -27,8 +32,8 @@ class FirestorePath {
   static String drill(String drillSeasonID) =>
       '$drillCollection/$drillSeasonID';
 
-  static String bouts(String fencerID) =>
-      '$userCollection/$fencerID/$boutCollection';
-  static String bout(String fencerID, String month) =>
-      '${bouts(fencerID)}/$month';
+  static String currentSeasonBoutMonths(String fencerID) =>
+      '$userCollection/$fencerID/$boutsSeason24';
+  static String currentSeasonBoutMonth(String fencerID, String month) =>
+      '${currentSeasonBoutMonths(fencerID)}/$month';
 }

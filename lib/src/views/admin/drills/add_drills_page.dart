@@ -92,7 +92,8 @@ class _AddDrillsPageState extends ConsumerState<AddDrillsPage> {
                         path: FirestorePath.drill(seasons[index].id),
                         data: seasons[index].toMap(),
                       )
-                      .then((value) => context.popRoute());
+                      .then(
+                          (value) => context.mounted ? context.maybePop() : 0);
                 } else {
                   seasons[index].drills.add(drill);
                   await FirestoreService.instance
@@ -100,7 +101,8 @@ class _AddDrillsPageState extends ConsumerState<AddDrillsPage> {
                         path: FirestorePath.drill(seasons[index].id),
                         data: seasons[index].toMap(),
                       )
-                      .then((value) => context.popRoute());
+                      .then(
+                          (value) => context.mounted ? context.maybePop() : 0);
                 }
               },
               icon: const Text("Add Drill"),

@@ -268,7 +268,8 @@ class _AddBoutPageState extends ConsumerState<AddBoutPage> {
                       (fencerScore != opponentScore || fencerWin || opponentWin)
                   ? () async {
                       selectedDate = selectedDate!.addTime();
-                      List<BoutMonth> months = ref.read(boutsProvider).value!;
+                      List<BoutMonth> months =
+                          ref.read(thisSeasonBoutsProvider).value!;
                       fencer = fencer?.copyWith(weapon: weapon);
                       opponent = opponent?.copyWith(weapon: weapon);
                       // create bout for [fencer]
@@ -319,15 +320,15 @@ class _AddBoutPageState extends ConsumerState<AddBoutPage> {
                                 bout1.date.monthOnly.millisecondsSinceEpoch
                                     .toString());
                         await FirestoreService.instance.setData(
-                          path:
-                              FirestorePath.bout(fencer!.id, months[index].id),
+                          path: FirestorePath.currentSeasonBoutMonth(
+                              fencer!.id, months[index].id),
                           data: months[index].toMap(),
                         );
                       } else {
                         months[index].bouts.add(bout1);
                         await FirestoreService.instance.updateData(
-                          path:
-                              FirestorePath.bout(fencer!.id, months[index].id),
+                          path: FirestorePath.currentSeasonBoutMonth(
+                              fencer!.id, months[index].id),
                           data: months[index].toMap(),
                         );
                       }
@@ -350,20 +351,22 @@ class _AddBoutPageState extends ConsumerState<AddBoutPage> {
                                     .toString());
                         await FirestoreService.instance
                             .setData(
-                              path: FirestorePath.bout(
+                              path: FirestorePath.currentSeasonBoutMonth(
                                   opponent!.id, months[index].id),
                               data: months[index].toMap(),
                             )
-                            .then((value) => context.popRoute());
+                            .then((value) =>
+                                context.mounted ? context.maybePop() : 0);
                       } else {
                         months[index].bouts.add(bout2);
                         await FirestoreService.instance
                             .updateData(
-                              path: FirestorePath.bout(
+                              path: FirestorePath.currentSeasonBoutMonth(
                                   opponent!.id, months[index].id),
                               data: months[index].toMap(),
                             )
-                            .then((value) => context.popRoute());
+                            .then((value) =>
+                                context.mounted ? context.maybePop() : 0);
                       }
                     }
                   : null,

@@ -44,12 +44,33 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
     super.initState();
   }
 
+  void updateWithLastYearsInfo(UserData lastYearUser) {
+    setState(() {
+      userData.firstName = lastYearUser.firstName;
+      userData.lastName = lastYearUser.lastName;
+      userData.schoolYear =
+          SchoolYear.values[lastYearUser.schoolYear.index + 1];
+      userData.team = lastYearUser.team;
+      userData.weapon = lastYearUser.weapon;
+      usaFencingIDController.text = lastYearUser.usaFencingID;
+      userData.usaFencingID = lastYearUser.usaFencingID;
+      clubController.text = lastYearUser.club;
+      userData.club = lastYearUser.club;
+      ratingController.text = lastYearUser.rating;
+      userData.rating = lastYearUser.rating;
+      userData.clubDays = lastYearUser.clubDays;
+      userData.startDate = lastYearUser.startDate;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget whenData(User? user) {
       if (user == null) {
         return const LoadingPage();
       } else {
+        UserData? lastYearUser =
+            ref.watch(lastSeasonUserDataProvider).asData?.value;
         return WillPopScope(
           onWillPop: () async {
             if (widget.userData == userData || widget.user == null) {
@@ -63,7 +84,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                             "Please note that you have unsaved changes, please choose an option below."),
                         actions: [
                           TextButton(
-                            onPressed: () => context.popRoute(true),
+                            onPressed: () => context.maybePop(true),
                             child: const Text("Discard Changes"),
                           ),
                           TextButton(
@@ -73,15 +94,19 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                                   data: userData.toMap(),
                                 )
                                 .then(
-                                  (value) => context.popRoute(true).then(
-                                        (value) => ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                            content: Text(
-                                                "Profile Updated Successfully!"),
-                                          ),
-                                        ),
-                                      ),
+                                  (value) => context.mounted
+                                      ? context.maybePop(true).then(
+                                            (value) => context.mounted
+                                                ? ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                          "Profile Updated Successfully!"),
+                                                    ),
+                                                  )
+                                                : 0,
+                                          )
+                                      : 0,
                                 ),
                             child: const Text("Save Changes"),
                           ),
@@ -99,15 +124,25 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                 children: [
                   if (widget.userData == null && widget.user != null) ...[
                     const Text(
-                      "Welcome to the 2023-24 Season!",
+                      "Welcome to the 2024-25 Season!",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 25),
                     ),
                     const Text(
-                      'Please fill out all fields below.',
+                      'Please fill out the fields below.',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 16),
                     ),
+                    if (lastYearUser != null && widget.userData == null) ...[
+                      const Divider(),
+                      ListTile(
+                        title: const Text("Returning Fencer?"),
+                        subtitle: const Text(
+                            "Looks like you were on the team last year!\nTap here to pull last years account info."),
+                        trailing: const Icon(Icons.refresh),
+                        onTap: () => updateWithLastYearsInfo(lastYearUser),
+                      ),
+                    ],
                     const Divider(),
                     const SizedBox(height: 16),
                   ],
@@ -149,17 +184,8 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                     }),
                   ),
                   const SizedBox(height: 8),
-                  const Divider(),
-                  if (ref.watch(userDataProvider).value?.admin == true)
-                    CheckboxListTile.adaptive(
-                        title: const Text("Manager"),
-                        value: userData.manager,
-                        onChanged: (value) {
-                          setState(() {
-                            userData.manager = value ?? false;
-                          });
-                        }),
-                  if (ref.watch(userDataProvider).value?.admin == true)
+                  if (ref.watch(userDataProvider).value?.admin == true) ...[
+                    const Divider(),
                     CheckboxListTile.adaptive(
                         title: const Text("Active"),
                         value: userData.active,
@@ -168,46 +194,50 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                             userData.active = value ?? false;
                           });
                         }),
+                  ],
                   const SizedBox(height: 8),
                   const Divider(),
-                  ListTile(
-                    title: const Text("School Year"),
-                    trailing: DropdownButton(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      value: userData.schoolYear,
-                      items: List.generate(
-                        SchoolYear.values.length,
-                        (index) => DropdownMenuItem(
-                          value: SchoolYear.values[index],
-                          child: Text(SchoolYear.values[index].type),
+                  if (user.email!.contains("lps") &&
+                      widget.userData == null) ...[
+                    ListTile(
+                      title: const Text("School Year"),
+                      trailing: DropdownButton(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        value: userData.schoolYear,
+                        items: List.generate(
+                          SchoolYear.values.length,
+                          (index) => DropdownMenuItem(
+                            value: SchoolYear.values[index],
+                            child: Text(SchoolYear.values[index].type),
+                          ),
                         ),
+                        onChanged: (value) => setState(() {
+                          if (value != null) {
+                            userData.schoolYear = value;
+                          }
+                        }),
                       ),
-                      onChanged: (value) => setState(() {
-                        if (value != null) {
-                          userData.schoolYear = value;
-                        }
-                      }),
                     ),
-                  ),
-                  ListTile(
-                    title: const Text("Team"),
-                    trailing: ToggleButtons(
-                      isSelected: List.generate(
+                    ListTile(
+                      title: const Text("Team"),
+                      trailing: ToggleButtons(
+                        isSelected: List.generate(
+                            Team.values.length - 1,
+                            (index) =>
+                                userData.team.type == Team.values[index].type),
+                        children: List.generate(
                           Team.values.length - 1,
-                          (index) =>
-                              userData.team.type == Team.values[index].type),
-                      children: List.generate(
-                        Team.values.length - 1,
-                        (index) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(Team.values[index].type),
+                          (index) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(Team.values[index].type),
+                          ),
                         ),
+                        onPressed: (index) => setState(() {
+                          userData.team = Team.values[index];
+                        }),
                       ),
-                      onPressed: (index) => setState(() {
-                        userData.team = Team.values[index];
-                      }),
                     ),
-                  ),
+                  ],
                   ListTile(
                     title: const Text("Weapon"),
                     trailing: ToggleButtons(
@@ -257,7 +287,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                             getFencingData(userData, context,
                                     settingUp: widget.userData == null)
                                 .then((value) {
-                              if (value == null) {
+                              if (value == null && context.mounted) {
                                 showDialog(
                                     context: context,
                                     builder: (context) => AlertDialog(
@@ -278,27 +308,29 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                                 });
                               } else {
                                 if (userData.usaFencingID.isEmpty &&
-                                        value.club != userData.club ||
-                                    value.rating != userData.rating) {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                            title: const Text(
-                                                "Membership Data Found!"),
-                                            content: Text(
-                                                "Club: ${value.club}\n ${userData.weapon.type} Rating: ${value.rating}\n\nIf this is not you, please enter and use your USA Fencing ID to update your data."),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () =>
-                                                    Navigator.pop(context),
-                                                child: const Text("Close"),
-                                              )
-                                            ],
-                                          ));
+                                        value?.club != userData.club ||
+                                    value?.rating != userData.rating) {
+                                  if (context.mounted) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                              title: const Text(
+                                                  "Membership Data Found!"),
+                                              content: Text(
+                                                  "Club: ${value?.club}\n ${userData.weapon.type} Rating: ${value?.rating}\n\nIf this is not you, please enter and use your USA Fencing ID to update your data."),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                  child: const Text("Close"),
+                                                )
+                                              ],
+                                            ));
+                                  }
                                 }
                                 setState(() {
                                   usaFencingIDController.text = userData
-                                      .usaFencingID = value.usaFencingID;
+                                      .usaFencingID = value!.usaFencingID;
                                   clubController.text =
                                       userData.club = value.club;
                                   ratingController.text =
@@ -413,15 +445,19 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                           )
                               .then((value) {
                             userData = widget.userData!;
-                            return context.popRoute().then(
-                                  (value) => ScaffoldMessenger.of(context)
-                                      .showSnackBar(
-                                    const SnackBar(
-                                      content:
-                                          Text("Profile Updated Successfully!"),
-                                    ),
-                                  ),
-                                );
+                            return context.mounted
+                                ? context.maybePop().then(
+                                      (value) => context.mounted
+                                          ? ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    "Profile Updated Successfully!"),
+                                              ),
+                                            )
+                                          : 0,
+                                    )
+                                : 0;
                           });
                         } else if (widget.user != null) {
                           FirestoreService.instance.setData(
@@ -435,15 +471,19 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                             data: userData.toMap(),
                           )
                               .then((value) {
-                            return context.popRoute().then(
-                                  (value) => ScaffoldMessenger.of(context)
-                                      .showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          "Fencer Profile Created Successfully!"),
-                                    ),
-                                  ),
-                                );
+                            return context.mounted
+                                ? context.maybePop().then(
+                                      (value) => context.mounted
+                                          ? ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    "Fencer Profile Created Successfully!"),
+                                              ),
+                                            )
+                                          : 0,
+                                    )
+                                : 0;
                           });
                         }
                       } else {
@@ -455,7 +495,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                                 "Only use your Livingston email address to log in. No other addresses can be recognized at this time."),
                             actions: [
                               TextButton(
-                                onPressed: () => context.popRoute(),
+                                onPressed: () => context.maybePop(),
                                 child: const Text(
                                   "Understood",
                                 ),
@@ -493,7 +533,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   //                   child: const Text("Delete Account"),
                   //                 ),
                   //                 TextButton(
-                  //                   onPressed: () => context.popRoute(),
+                  //                   onPressed: () => context.maybePop(),
                   //                   child: const Text("Cancel"),
                   //                 ),
                   //               ],

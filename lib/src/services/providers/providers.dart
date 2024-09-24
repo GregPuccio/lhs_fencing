@@ -38,6 +38,21 @@ final databaseProvider = Provider<FirestoreService>((ref) {
   throw UnimplementedError();
 });
 
+final lastSeasonUserDataProvider = StreamProvider<UserData?>((ref) {
+  final auth = ref.watch(authStateChangesProvider);
+  final database = ref.watch(databaseProvider);
+  return database.documentStream(
+    path: FirestorePath.lastSeasonUser(auth.value!.uid),
+    builder: (map, docID) {
+      if (map != null) {
+        return UserData.fromMap(map).copyWith(id: docID);
+      } else {
+        return null;
+      }
+    },
+  );
+});
+
 final userDataProvider = StreamProvider<UserData?>((ref) {
   final auth = ref.watch(authStateChangesProvider);
   final database = ref.watch(databaseProvider);
@@ -98,19 +113,19 @@ final drillsProvider = StreamProvider((ref) {
   );
 });
 
-final boutsProvider = StreamProvider((ref) {
+final thisSeasonBoutsProvider = StreamProvider((ref) {
   final database = ref.watch(databaseProvider);
   return database.collectionGroupStream(
-    groupTerm: boutCollection,
+    groupTerm: boutsSeason24,
     builder: (map, docID) => BoutMonth.fromMap(map!).copyWith(id: docID),
   );
 });
 
-final userBoutsProvider = StreamProvider((ref) {
+final thisSeasonUserBoutsProvider = StreamProvider((ref) {
   final auth = ref.watch(authStateChangesProvider);
   final database = ref.watch(databaseProvider);
   return database.collectionGroupStream(
-      groupTerm: boutCollection,
+      groupTerm: boutsSeason24,
       builder: (map, docID) => BoutMonth.fromMap(map!).copyWith(id: docID),
       queryBuilder: (query) =>
           query.where("fencerID", isEqualTo: auth.value!.uid));

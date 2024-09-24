@@ -27,7 +27,7 @@ part 'router.gr.dart';
 //dart run build_runner build
 
 @AutoRouterConfig(replaceInRouteName: 'Page,Route')
-class AppRouter extends _$AppRouter {
+class AppRouter extends RootStackRouter {
   @override
   RouteType get defaultRouteType => const RouteType.cupertino();
 

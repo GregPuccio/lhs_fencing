@@ -8,7 +8,14 @@ import 'package:uuid/uuid.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/equipment.dart';
 
-class UserData extends Comparable<UserData> {
+mixin Compare<T> implements Comparable<T> {
+  bool operator <=(T other) => compareTo(other) <= 0;
+  bool operator >=(T other) => compareTo(other) >= 0;
+  bool operator <(T other) => compareTo(other) < 0;
+  bool operator >(T other) => compareTo(other) > 0;
+}
+
+class UserData with Compare<UserData> {
   String id;
   String email;
   String firstName;
@@ -25,7 +32,6 @@ class UserData extends Comparable<UserData> {
   bool active;
 
   bool admin;
-  bool manager;
 
   UserData(
       {required this.id,
@@ -42,7 +48,6 @@ class UserData extends Comparable<UserData> {
       required this.club,
       required this.equipment,
       required this.admin,
-      required this.manager,
       required this.active});
 
   /// [firstName] [lastInitial].
@@ -58,7 +63,6 @@ class UserData extends Comparable<UserData> {
       lastName: "",
       usaFencingID: "",
       admin: false,
-      manager: false,
       team: Team.boys,
       weapon: Weapon.unsure,
       schoolYear: SchoolYear.freshman,
@@ -85,7 +89,6 @@ class UserData extends Comparable<UserData> {
       lastName: lastName,
       usaFencingID: "",
       admin: false,
-      manager: false,
       team: Team.boys,
       weapon: Weapon.unsure,
       schoolYear: SchoolYear.freshman,
@@ -139,7 +142,6 @@ class UserData extends Comparable<UserData> {
         club: club ?? this.club,
         equipment: equipment ?? this.equipment,
         admin: admin ?? this.admin,
-        manager: manager ?? this.manager,
         active: active ?? this.active);
   }
 
@@ -159,7 +161,6 @@ class UserData extends Comparable<UserData> {
       'club': club,
       'equipment': equipment.toMap(),
       'admin': admin,
-      'manager': manager,
       'active': active,
     };
   }
@@ -182,7 +183,6 @@ class UserData extends Comparable<UserData> {
       club: map['club'] ?? '',
       equipment: Equipment.fromMap(map['equipment'] ?? {}),
       admin: map['admin'] ?? false,
-      manager: map['manager'] ?? false,
       active: map['active'] ?? true,
     );
   }
@@ -194,7 +194,7 @@ class UserData extends Comparable<UserData> {
 
   @override
   String toString() {
-    return 'UserData(id: $id, email: $email, firstName: $firstName, lastName: $lastName, usaFencingID: $usaFencingID, team: $team, weapon: $weapon, schoolYear: $schoolYear, startDate: $startDate, clubDays: $clubDays, rating: $rating, club: $club, equipment: $equipment, admin: $admin, manager: $manager, active: $active)';
+    return 'UserData(id: $id, email: $email, firstName: $firstName, lastName: $lastName, usaFencingID: $usaFencingID, team: $team, weapon: $weapon, schoolYear: $schoolYear, startDate: $startDate, clubDays: $clubDays, rating: $rating, club: $club, equipment: $equipment, admin: $admin, active: $active)';
   }
 
   @override
@@ -216,7 +216,6 @@ class UserData extends Comparable<UserData> {
         other.club == club &&
         other.equipment == equipment &&
         other.admin == admin &&
-        other.manager == manager &&
         other.active == active;
   }
 
@@ -236,7 +235,6 @@ class UserData extends Comparable<UserData> {
         club.hashCode ^
         equipment.hashCode ^
         admin.hashCode ^
-        manager.hashCode ^
         active.hashCode;
   }
 

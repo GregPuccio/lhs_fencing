@@ -289,8 +289,8 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                         data: month.toMap());
                   }
                 }
-                if (mounted) {
-                  context.popRoute();
+                if (context.mounted) {
+                  context.maybePop();
                 }
               },
               icon: const Text("Add to Calendar"),

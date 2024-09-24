@@ -25,7 +25,9 @@ class AuthWrapperPage extends ConsumerWidget {
       if (userData != null) {
         if (!refreshedUser) {
           Future.delayed(Duration.zero, () async {
-            UserData? newUserData = await getFencingData(userData, context);
+            UserData? newUserData = context.mounted
+                ? await getFencingData(userData, context)
+                : null;
             if (newUserData != null &&
                 (newUserData.club != userData.club ||
                     newUserData.rating != userData.rating)) {
@@ -76,22 +78,27 @@ class AuthWrapperPage extends ConsumerWidget {
                                     data: newUserData.toMap(),
                                   )
                                   .then(
-                                    (value) => context.popRoute().then(
-                                          (value) =>
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                            const SnackBar(
-                                              content: Text("Profile updated!"),
-                                            ),
-                                          ),
-                                        ),
+                                    (value) => context.mounted
+                                        ? context.maybePop().then(
+                                              (value) => context.mounted
+                                                  ? ScaffoldMessenger.of(
+                                                          context)
+                                                      .showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text(
+                                                            "Profile updated!"),
+                                                      ),
+                                                    )
+                                                  : 0,
+                                            )
+                                        : 0,
                                   );
                             },
                             child: const Text("Update my profile!"),
                           ),
                           TextButton(
                             onPressed: () {
-                              context.popRoute();
+                              context.maybePop();
                             },
                             child: const Text("Don't update"),
                           ),

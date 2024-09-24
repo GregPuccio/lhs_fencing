@@ -32,7 +32,7 @@ class _EditBoutPageState extends ConsumerState<EditBoutPage> {
   @override
   Widget build(BuildContext context) {
     Future saveChanges() async {
-      List<BoutMonth> seasons = ref.read(boutsProvider).value!;
+      List<BoutMonth> seasons = ref.read(thisSeasonBoutsProvider).value!;
       Bout partnerBout = Bout(
         id: bout.partnerID,
         partnerID: bout.id,
@@ -67,7 +67,8 @@ class _EditBoutPageState extends ConsumerState<EditBoutPage> {
       );
 
       await FirestoreService.instance.updateData(
-        path: FirestorePath.bout(bout.fencer.id, seasons[index].id),
+        path: FirestorePath.currentSeasonBoutMonth(
+            bout.fencer.id, seasons[index].id),
         data: seasons[index].toMap(),
       );
 
@@ -83,12 +84,13 @@ class _EditBoutPageState extends ConsumerState<EditBoutPage> {
 
       await FirestoreService.instance
           .updateData(
-            path: FirestorePath.bout(partnerBout.fencer.id, seasons[index].id),
+            path: FirestorePath.currentSeasonBoutMonth(
+                partnerBout.fencer.id, seasons[index].id),
             data: seasons[index].toMap(),
           )
           .then((value) => bout = widget.bout);
-      if (mounted) {
-        context.popRoute(true);
+      if (context.mounted) {
+        context.maybePop(true);
       }
     }
 
@@ -107,7 +109,7 @@ class _EditBoutPageState extends ConsumerState<EditBoutPage> {
                   child: const Text("Save"),
                 ),
                 TextButton(
-                  onPressed: () => context.popRoute(true),
+                  onPressed: () => context.maybePop(true),
                   child: const Text("Discard"),
                 ),
               ],
@@ -133,7 +135,7 @@ class _EditBoutPageState extends ConsumerState<EditBoutPage> {
                             TextButton(
                               onPressed: () async {
                                 List<BoutMonth> seasons =
-                                    ref.read(boutsProvider).value!;
+                                    ref.read(thisSeasonBoutsProvider).value!;
 
                                 int index = seasons.indexWhere((m) =>
                                     m.fencerID == bout.fencer.id &&
@@ -142,7 +144,7 @@ class _EditBoutPageState extends ConsumerState<EditBoutPage> {
                                             .millisecondsSinceEpoch
                                             .toString());
                                 await FirestoreService.instance.updateData(
-                                  path: FirestorePath.bout(
+                                  path: FirestorePath.currentSeasonBoutMonth(
                                       bout.fencer.id, seasons[index].id),
                                   data: {
                                     "bouts": FieldValue.arrayRemove(
@@ -160,29 +162,29 @@ class _EditBoutPageState extends ConsumerState<EditBoutPage> {
                                       (b) => b.id == bout.partnerID);
                                   await FirestoreService.instance
                                       .updateData(
-                                    path: FirestorePath.bout(
+                                    path: FirestorePath.currentSeasonBoutMonth(
                                         bout.opponent.id, seasons[index].id),
                                     data: seasons[index].toMap(),
                                   )
                                       .then((value) {
-                                    if (mounted) {
-                                      context.popRoute(true);
+                                    if (context.mounted) {
+                                      context.maybePop(true);
                                     }
                                   });
-                                } else if (mounted) {
-                                  context.popRoute(true);
+                                } else if (context.mounted) {
+                                  context.maybePop(true);
                                 }
                               },
                               child: const Text("Delete"),
                             ),
                             TextButton(
-                              onPressed: () => context.popRoute(),
+                              onPressed: () => context.maybePop(),
                               child: const Text("Cancel"),
                             ),
                           ],
                         )).then((value) {
-                  if (value == true) {
-                    context.popRoute(true);
+                  if (value == true && context.mounted) {
+                    context.maybePop(true);
                   }
                 });
               },

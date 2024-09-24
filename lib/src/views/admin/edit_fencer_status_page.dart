@@ -196,18 +196,22 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                         "Are you sure you would like to delete this attendance entry?"),
                     actions: [
                       TextButton(
-                        onPressed: () => context.router.pop(),
+                        onPressed: () => context.router.maybePop(),
                         child: const Text("No, cancel"),
                       ),
                       TextButton(
-                        onPressed: () => deleteAttendance()
-                            .then((value) => context.router.pop(true)),
+                        onPressed: () => deleteAttendance().then((value) =>
+                            context.mounted
+                                ? context.router.maybePop(true)
+                                : 0),
                         child: const Text("Yes, delete"),
                       ),
                     ],
                   ),
                 ).then((value) {
-                  if (value == true) context.router.pop();
+                  if (value == true && context.mounted) {
+                    context.router.maybePop();
+                  }
                 }),
                 icon: const Icon(Icons.delete),
               ),
@@ -301,7 +305,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
               OutlinedButton.icon(
                 onPressed: () async {
                   await saveStatus();
-                  if (mounted) {
+                  if (context.mounted) {
                     ScaffoldMessenger.of(context).clearSnackBars();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

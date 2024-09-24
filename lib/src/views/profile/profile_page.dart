@@ -33,13 +33,13 @@ class ProfilePage extends ConsumerWidget {
           content: const Text("Are you sure you would like to sign out?"),
           actions: [
             TextButton(
-              onPressed: () => context.popRoute(),
+              onPressed: () => context.maybePop(),
               child: const Text("No, cancel"),
             ),
             TextButton(
               onPressed: () async {
                 AuthService().signOut();
-                context.router.pop();
+                context.router.maybePop();
               },
               child: const Text("Yes, sign out"),
             ),
@@ -57,7 +57,7 @@ class ProfilePage extends ConsumerWidget {
             textAlign: TextAlign.center,
           ),
           subtitle: Text(
-            "${userData.admin ? "Coach" : userData.schoolYear.type} | ${userData.manager ? "Manager" : "${userData.weapon.type} Fencer"} | ${userData.admin ? Team.both.type : userData.team == Team.both ? userData.team.type : "${userData.team.type} Team"}",
+            "${userData.admin ? "Coach" : userData.schoolYear.type} | ${userData.weapon == Weapon.manager ? "Manager" : "${userData.weapon.type} Fencer"} | ${userData.admin ? Team.both.type : userData.team == Team.both ? userData.team.type : "${userData.team.type} Team"}",
             textAlign: TextAlign.center,
           ),
         ),

@@ -102,7 +102,8 @@ class _HomePageState extends ConsumerState<HomePage> {
         color: Theme.of(context).disabledColor,
       ),
     ];
-    List<BoutMonth> boutMonths = ref.watch(userBoutsProvider).value ?? [];
+    List<BoutMonth> boutMonths =
+        ref.watch(thisSeasonUserBoutsProvider).value ?? [];
     List<Bout> bouts = [];
     for (var month in boutMonths) {
       bouts.addAll(month.bouts);
@@ -159,7 +160,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
           const Divider(),
         ],
-        if (ref.watch(userDataProvider).value!.manager == true) ...[
+        if (ref.watch(userDataProvider).value!.weapon == Weapon.manager) ...[
           ListTile(
             leading: const Icon(Icons.list),
             title: const Text("Bout List"),

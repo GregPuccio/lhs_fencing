@@ -21,7 +21,7 @@ class Instructions extends StatelessWidget {
       ),
       actions: [
         TextButton(
-          onPressed: () => context.popRoute(),
+          onPressed: () => context.maybePop(),
           child: const Text("Got It!"),
         )
       ],

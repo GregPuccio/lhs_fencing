@@ -34,7 +34,12 @@ Future<UserData?> getFencingData(UserData userData, BuildContext context,
     }
     // final url = Uri.https("highschoolsports.nj.com",
     //     "/school/livingston-livingston/boysfencing/season/2022-2023/");
-    final response = await http.get(url);
+    final response = await http.get(
+      url,
+      headers: {
+        'X-Requested-With': 'XMLHTTPREQUEST',
+      },
+    );
     dom.Document html = dom.Document.html(response.body);
 
     List titles = [];
@@ -72,6 +77,7 @@ Future<UserData?> getFencingData(UserData userData, BuildContext context,
           break;
 
         case Weapon.unsure:
+        case Weapon.manager:
           if (newUserData.rating != "U") {
             newUserData.rating = "U";
           }

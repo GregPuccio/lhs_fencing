@@ -54,7 +54,7 @@ class CheckInButton extends ConsumerWidget {
                         "You cannot check in through the app this late after the $practiceType has begun. Ask one of the coaches to check you in."),
                     actions: [
                       TextButton(
-                        onPressed: () => context.popRoute(),
+                        onPressed: () => context.maybePop(),
                         child: const Text(
                           "Understood",
                         ),
@@ -73,7 +73,7 @@ class CheckInButton extends ConsumerWidget {
                         "You cannot check in for attendance before the $practiceType has started. Make sure it is less than $practiceTooEarlyTime ahead of the $practiceType before you try checking in again."),
                     actions: [
                       TextButton(
-                        onPressed: () => context.popRoute(),
+                        onPressed: () => context.maybePop(),
                         child: const Text(
                           "Understood",
                         ),
@@ -112,7 +112,7 @@ class CheckInButton extends ConsumerWidget {
                       ),
                       actions: [
                         TextButton(
-                          onPressed: () => context.popRoute(),
+                          onPressed: () => context.maybePop(),
                           child: const Text("No, cancel"),
                         ),
                         TextButton(
@@ -122,7 +122,9 @@ class CheckInButton extends ConsumerWidget {
                               lateReason: controller.text.isNotEmpty
                                   ? "Late: ${controller.text}"
                                   : null,
-                            ).then((value) => context.router.pop());
+                            ).then((value) => context.mounted
+                                ? context.router.maybePop()
+                                : 0);
                           },
                           child: const Text("Yes, check in"),
                         ),
@@ -140,13 +142,14 @@ class CheckInButton extends ConsumerWidget {
                           "Check in ONLY when you have arrived at the $practiceType or at the location of the event! Are you currently at ${practice.location}?"),
                       actions: [
                         TextButton(
-                          onPressed: () => context.popRoute(),
+                          onPressed: () => context.maybePop(),
                           child: const Text("No, cancel"),
                         ),
                         TextButton(
                           onPressed: () {
-                            checkIn(practice)
-                                .then((value) => context.router.pop());
+                            checkIn(practice).then((value) => context.mounted
+                                ? context.router.maybePop()
+                                : 0);
                           },
                           child: const Text("Yes, check in"),
                         ),

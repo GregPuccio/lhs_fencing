@@ -21,8 +21,8 @@ class EventSchedule extends StatelessWidget {
         DataTable(
           // decoration: BoxDecoration(
           //     color: Theme.of(context).colorScheme.primaryContainer),
-          border: TableBorder.all(
-              color: Theme.of(context).colorScheme.onBackground),
+          border:
+              TableBorder.all(color: Theme.of(context).colorScheme.onSurface),
           headingTextStyle: Theme.of(context)
               .textTheme
               .titleSmall

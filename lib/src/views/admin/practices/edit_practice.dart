@@ -126,20 +126,20 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
                                       [widget.practice.toMap()])
                                 },
                               );
-                              if (mounted) {
-                                context.popRoute(true);
+                              if (context.mounted) {
+                                context.maybePop(true);
                               }
                             },
                             child: const Text("Delete"),
                           ),
                           TextButton(
-                            onPressed: () => context.popRoute(),
+                            onPressed: () => context.maybePop(),
                             child: const Text("Cancel"),
                           ),
                         ],
                       )).then((value) {
-                if (value == true) {
-                  context.popRoute(true);
+                if (value == true && context.mounted) {
+                  context.maybePop(true);
                 }
                 return null;
               });
@@ -271,8 +271,8 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
                   path: FirestorePath.practice(months[index].id),
                   data: months[index].toMap(),
                 );
-                if (mounted) {
-                  context.popRoute();
+                if (context.mounted) {
+                  context.maybePop();
                 }
               },
               icon: const Text("Save Changes"),

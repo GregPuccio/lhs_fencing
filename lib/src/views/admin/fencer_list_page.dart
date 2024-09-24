@@ -504,7 +504,7 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                             "Record: $fencerWin-$fencerLoss | TS: $touchesScored TR: $touchesReceived"),
                         const Divider(),
                         Text(
-                            "${fencer.team.name.capitalize} | ${fencer.schoolYear.type} | ${fencer.manager ? "Manager" : fencer.weapon.type}"),
+                            "${fencer.team.name.capitalize} | ${fencer.schoolYear.type} | ${fencer.weapon.type}"),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -549,7 +549,7 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
         practices.addAll(month.practices.where((practice) => practice.startTime
             .isBefore(DateTime.now().add(const Duration(hours: 1)))));
       }
-      return ref.watch(boutsProvider).when(
+      return ref.watch(thisSeasonBoutsProvider).when(
             data: whenData,
             error: (error, stackTrace) => const ErrorPage(),
             loading: () => const LoadingPage(),

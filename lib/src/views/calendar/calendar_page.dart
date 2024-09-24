@@ -24,15 +24,19 @@ class CalendarPage extends ConsumerStatefulWidget {
 
 class _CalendarPageState extends ConsumerState<CalendarPage> {
   late final ValueNotifier<List<Practice>> _selectedEvents;
-  DateTime seasonStart = DateTime(2022, 11, 20);
-  DateTime seasonEnd = DateTime(2024, 3, 5);
+  DateTime seasonStart = DateTime(2024, 11, 25);
+  DateTime seasonEnd = DateTime(2025, 3, 9);
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
   @override
   void initState() {
     super.initState();
-    _focusedDay.isBefore(seasonStart) ? _focusedDay = seasonStart : null;
+    _focusedDay.isBefore(seasonStart)
+        ? _focusedDay = seasonStart
+        : _focusedDay.isAfter(seasonEnd)
+            ? _focusedDay = seasonEnd
+            : null;
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
   }

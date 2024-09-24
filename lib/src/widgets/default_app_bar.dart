@@ -22,7 +22,7 @@ class DefaultAppBar extends ConsumerWidget implements PreferredSizeWidget {
           Text(editUser
               ? "Edit Profile Info"
               : currentIndex == 1
-                  ? "2023-24 Season Calendar"
+                  ? "2024-25 Season Calendar"
                   : currentIndex == 2
                       ? "Useful Fencing Links"
                       : "LHS Fencing ${currentIndex == 3 ? "Profile" : "Attendance"}"),

@@ -48,8 +48,8 @@ class _EditDrillsPageState extends ConsumerState<EditDrillsPage> {
             data: seasons[index].toMap(),
           )
           .then((value) => drill = widget.drill);
-      if (mounted) {
-        context.popRoute(true);
+      if (context.mounted) {
+        context.maybePop(true);
       }
     }
 
@@ -68,7 +68,7 @@ class _EditDrillsPageState extends ConsumerState<EditDrillsPage> {
                   child: const Text("Save"),
                 ),
                 TextButton(
-                  onPressed: () => context.popRoute(true),
+                  onPressed: () => context.maybePop(true),
                   child: const Text("Discard"),
                 ),
               ],
@@ -105,20 +105,20 @@ class _EditDrillsPageState extends ConsumerState<EditDrillsPage> {
                                         [widget.drill.toMap()])
                                   },
                                 );
-                                if (mounted) {
-                                  context.popRoute(true);
+                                if (context.mounted) {
+                                  context.maybePop(true);
                                 }
                               },
                               child: const Text("Delete"),
                             ),
                             TextButton(
-                              onPressed: () => context.popRoute(),
+                              onPressed: () => context.maybePop(),
                               child: const Text("Cancel"),
                             ),
                           ],
                         )).then((value) {
-                  if (value == true) {
-                    context.popRoute(true);
+                  if (value == true && context.mounted) {
+                    context.maybePop(true);
                   }
                 });
               },
