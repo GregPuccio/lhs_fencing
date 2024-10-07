@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/views/home/widgets/instructions.dart';
-import 'package:lhs_fencing/src/widgets/livingston_logo.dart';
+import 'package:lhs_fencing/src/widgets/image_assets.dart';
 
 class DefaultAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final int currentIndex;
@@ -16,7 +16,12 @@ class DefaultAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AppBar(
-      leading: editUser ? null : livingstonLogo,
+      leading: editUser
+          ? null
+          : Padding(
+              padding: const EdgeInsets.fromLTRB(8, 4, 0, 0),
+              child: livingstonLogo,
+            ),
       title: Column(
         children: [
           Text(editUser

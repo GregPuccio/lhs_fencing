@@ -12,6 +12,7 @@ import 'package:lhs_fencing/src/services/firestore/functions/get_fencing_data.da
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
+import 'package:lhs_fencing/src/widgets/image_assets.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 
 class AccountSetupPage extends ConsumerStatefulWidget {
@@ -48,8 +49,9 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
     setState(() {
       userData.firstName = lastYearUser.firstName;
       userData.lastName = lastYearUser.lastName;
-      userData.schoolYear =
-          SchoolYear.values[lastYearUser.schoolYear.index + 1];
+      userData.schoolYear = SchoolYear.values[lastYearUser.schoolYear.index -
+          1 +
+          (lastYearUser.schoolYear.index > SchoolYear.values.length ? 0 : 1)];
       userData.team = lastYearUser.team;
       userData.weapon = lastYearUser.weapon;
       usaFencingIDController.text = lastYearUser.usaFencingID;
@@ -136,10 +138,13 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                     if (lastYearUser != null && widget.userData == null) ...[
                       const Divider(),
                       ListTile(
+                        leading: Icon(Icons.info_outline,
+                            color: Theme.of(context).primaryColor),
                         title: const Text("Returning Fencer?"),
                         subtitle: const Text(
-                            "Looks like you were on the team last year!\nTap here to pull last years account info."),
-                        trailing: const Icon(Icons.refresh),
+                            "Welcome back! Tap here to pull last year's account info."),
+                        trailing: Icon(Icons.refresh,
+                            color: Theme.of(context).primaryColor),
                         onTap: () => updateWithLastYearsInfo(lastYearUser),
                       ),
                     ],
@@ -240,22 +245,27 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   ],
                   ListTile(
                     title: const Text("Weapon"),
-                    trailing: ToggleButtons(
-                      isSelected: List.generate(
-                          Weapon.values.length,
-                          (index) =>
-                              userData.weapon.type ==
-                              Weapon.values[index].type),
-                      children: List.generate(
-                        Weapon.values.length,
-                        (index) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(Weapon.values[index].type),
+                    subtitle: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ToggleButtons(
+                          isSelected: List.generate(
+                              Weapon.values.length,
+                              (index) =>
+                                  userData.weapon.type ==
+                                  Weapon.values[index].type),
+                          children: List.generate(
+                            Weapon.values.length,
+                            (index) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(Weapon.values[index].type),
+                            ),
+                          ),
+                          onPressed: (index) => setState(() {
+                            userData.weapon = Weapon.values[index];
+                          }),
                         ),
-                      ),
-                      onPressed: (index) => setState(() {
-                        userData.weapon = Weapon.values[index];
-                      }),
+                      ],
                     ),
                   ),
                   const Divider(),
@@ -272,14 +282,34 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   ),
                   const SizedBox(height: 8),
                   ListTile(
+                    leading: usaFencingLogo,
                     title: const Text("USA Fencing Member?"),
                     subtitle: Text(
-                        "Tap here to pull your USA Fencing info. We will search using your ${widget.userData == null ? "first and last name if no USA Fencing ID is input above, and your selected weapon." : "USA Fencing ID and your selected weapon."}"),
+                        "Tap here to pull your USA Fencing info.\nWe will search using your ${userData.usaFencingID.length == 9 ? "USA Fencing ID" : "first and last name, if you dont provide your ID,"} and selected weapon."),
                     trailing: loadingData
                         ? const CircularProgressIndicator.adaptive()
-                        : const Icon(Icons.download),
+                        : Icon(Icons.download,
+                            color: Theme.of(context).primaryColor),
                     onTap: !loadingData
                         ? () {
+                            if (userData.weapon == Weapon.unsure ||
+                                userData.weapon == Weapon.manager) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        title: const Text("Weapon Not Set"),
+                                        content: const Text(
+                                            "Please select a weapon from the buttons above.\nWithout your weapon information, we will not be able to retrieve your membership information correctly."),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            child: const Text("Close"),
+                                          )
+                                        ],
+                                      ));
+                              return;
+                            }
                             setState(() {
                               loadingData = true;
                             });
@@ -317,7 +347,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                                               title: const Text(
                                                   "Membership Data Found!"),
                                               content: Text(
-                                                  "Club: ${value?.club}\n ${userData.weapon.type} Rating: ${value?.rating}\n\nIf this is not you, please enter and use your USA Fencing ID to update your data."),
+                                                  "Member ID: ${value?.usaFencingID}\nClub: ${value?.club}\n${userData.weapon.type} Rating: ${value?.rating}\n\nIf this is not you, please enter and use your USA Fencing ID to update your data."),
                                               actions: [
                                                 TextButton(
                                                   onPressed: () =>
@@ -432,9 +462,10 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   const SizedBox(height: 32),
                   OutlinedButton.icon(
                     onPressed: () {
-                      if (user.email != null &&
-                          (user.email!.contains("livingston") ||
-                              user.email!.contains("lps"))) {
+                      if (user.email != null // &&
+                          // (user.email!.contains("livingston") ||
+                          //     user.email!.contains("lps"))
+                          ) {
                         userData.clubDays
                             .sort((a, b) => a.weekday.compareTo(b.weekday));
                         if (lastYearUser != null) {

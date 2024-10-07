@@ -50,23 +50,56 @@ class _AuthPageState extends State<AuthPage> {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              Text(
-                "Welcome to the Livingston Fencing Team's Attendance App!",
-                style: Theme.of(context).textTheme.titleLarge,
-                textAlign: TextAlign.center,
+              ListTile(
+                title: Text(
+                  "Welcome to the Livingston Fencing Team's Attendance App!",
+                  style: Theme.of(context).textTheme.titleLarge,
+                  textAlign: TextAlign.center,
+                ),
               ),
               const SizedBox(height: 20),
-              Text(
-                "Please use this app to check in at all practices and team related events.",
-                style: Theme.of(context).textTheme.titleMedium,
-                textAlign: TextAlign.center,
+              const Divider(),
+              ListTile(
+                title: Row(children: [
+                  Icon(Icons.check, color: Theme.of(context).primaryColor),
+                  const SizedBox(width: 8),
+                  const Text("Attendance:"),
+                ]),
+                subtitle: const Text(
+                  "This site will be used to keep track of all attendances.\nIf you encounter any issues be sure to reach out to a coach immediately.",
+                ),
               ),
+              const Divider(),
+              ListTile(
+                title: Row(children: [
+                  Icon(Icons.calendar_month,
+                      color: Theme.of(context).primaryColor),
+                  const SizedBox(width: 8),
+                  const Text("Schedule:"),
+                ]),
+                subtitle: const Text(
+                  "This site is updated frequently to keep you informed about practices and team related events.",
+                ),
+              ),
+              const Divider(),
+              ListTile(
+                title: Row(children: [
+                  Icon(Icons.info_outline,
+                      color: Theme.of(context).primaryColor),
+                  const SizedBox(width: 8),
+                  const Text("Information:"),
+                ]),
+                subtitle: const Text(
+                  "This site countains a list of links that can be used to help you grow as a fencer and to find more tournament related info.",
+                ),
+              ),
+              const Divider(),
               const SizedBox(height: 20),
               OAuthProviderButton(
                 provider: GoogleProvider(clientId: googleClientID),
               ),
               Text(
-                "Make sure to use your school email when signing in!",
+                "Be sure to sign in using your school email address.",
                 style: Theme.of(context).textTheme.titleSmall,
                 textAlign: TextAlign.center,
               ),
