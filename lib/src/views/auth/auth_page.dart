@@ -51,7 +51,7 @@ class _AuthPageState extends State<AuthPage> {
             children: [
               const SizedBox(height: 20),
               Text(
-                "Welcome to the LHS Fencing Team's Attendance App",
+                "Welcome to the Livingston Fencing Team's Attendance App!",
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),

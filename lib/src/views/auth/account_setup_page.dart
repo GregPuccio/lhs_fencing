@@ -437,6 +437,9 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                               user.email!.contains("lps"))) {
                         userData.clubDays
                             .sort((a, b) => a.weekday.compareTo(b.weekday));
+                        if (lastYearUser != null) {
+                          userData.equipment = lastYearUser.equipment;
+                        }
                         if (widget.userData != null) {
                           FirestoreService.instance
                               .updateData(

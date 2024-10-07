@@ -18,7 +18,7 @@ class AppData {
   // update this info before I trigger GitHub actions CI/CD that builds them.
   // static const String appName = 'FlexColor\u{00AD}Scheme';
   static const String version = '0.0.1';
-  static const String name = 'LHS Fencing Attendance';
+  static const String name = 'Livingston Fencing';
   // static const String packageUrl = 'https://pub.dev/packages/flex_color_scheme';
   // static const String flutterVersion = 'stable v2.5.3';
   // static const String copyright = '© 2020, 2021';

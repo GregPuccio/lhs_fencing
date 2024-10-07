@@ -25,17 +25,21 @@ class DefaultAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   ? "2024-25 Season Calendar"
                   : currentIndex == 2
                       ? "Useful Fencing Links"
-                      : "LHS Fencing ${currentIndex == 3 ? "Profile" : "Attendance"}"),
+                      : currentIndex == 3
+                          ? "App Profile"
+                          : "Livingston High School Fencing"),
         ],
       ),
-      actions: [
-        if (currentIndex == 0 && showInstructions)
-          IconButton(
-            onPressed: () => showDialog(
-                context: context, builder: (context) => const Instructions()),
-            icon: const Icon(Icons.help),
-          ),
-      ],
+      actions: (currentIndex == 0 && showInstructions)
+          ? [
+              IconButton(
+                onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => const Instructions()),
+                icon: const Icon(Icons.help),
+              ),
+            ]
+          : null,
     );
   }
 

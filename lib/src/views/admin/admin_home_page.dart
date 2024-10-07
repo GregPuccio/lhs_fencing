@@ -105,6 +105,10 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
             //   trailing: const Icon(Icons.arrow_forward),
             //   onTap: () => context.router.push(EventsListRoute()),
             // ),
+            // ListTile(
+            //   title: const Text("Tap Here"),
+            //   onTap: () => getCurrentBoysStats(context),
+            // ),
             const Divider(),
             if (currentPractice != null)
               TodaysPractice(

@@ -39,7 +39,7 @@ class Practice {
 
   String emailMessage(
       List<List<UserData>> fencerLists, String tod, UserData coach) {
-    return """bcc=${List.generate(fencerLists.last.length, (index) => fencerLists.last[index].email).join(",")}&subject=$emailString LHS Fencing Attendance
+    return """bcc=${List.generate(fencerLists.last.length, (index) => fencerLists.last[index].email).join(",")}&subject=Livingston Fencing Attendance $emailString
 &body=Good $tod students,
 
 Our records are showing that you did not attend the ${type.type} on $emailString.

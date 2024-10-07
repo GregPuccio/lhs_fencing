@@ -182,10 +182,10 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                   ListTile(
                     title: const Text("Weapon"),
                     trailing: ToggleButtons(
-                      isSelected: List.generate(Weapon.values.length - 1,
+                      isSelected: List.generate(Weapon.values.length - 2,
                           (index) => Weapon.values[index] == weapon),
                       children: List.generate(
-                        Weapon.values.length - 1,
+                        Weapon.values.length - 2,
                         (index) => Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(Weapon.values[index].type),
@@ -390,7 +390,7 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                 return Center(
                   child: Text(
                       fencer == null && opponent == null && selectedDate == null
-                          ? "Add any filter above to look for bouts!"
+                          ? "Add any filter above to search for bouts!"
                           : "No bouts found for this combination!"),
                 );
               } else {

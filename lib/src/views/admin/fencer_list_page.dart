@@ -486,17 +486,11 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (fencer.club.isNotEmpty) ...[
-                          Wrap(
-                            children: [
-                              Text(fencer.club),
-                              if (fencer.clubDays.isNotEmpty) ...[
-                                const SizedBox(width: 8),
-                                Text(
-                                  "(${fencer.clubDays.map((e) => e.abbreviation).join(",")})",
-                                ),
-                              ],
-                            ],
-                          ),
+                          Text(fencer.club),
+                          if (fencer.clubDays.isNotEmpty)
+                            Text(
+                              "At Club: ${fencer.clubDays.map((e) => e.abbreviation).join(", ")}",
+                            ),
                         ],
                         Text(
                             "Bouts: ${fencerWin + fencerLoss} | WR: $percentWins%"),
@@ -513,6 +507,9 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                             String percentage =
                                 (showingSections[index].value * 100)
                                     .toStringAsFixed(2);
+                            String amount = (showingSections[index].value *
+                                    practices.length)
+                                .toStringAsFixed(0);
                             return Column(
                               children: [
                                 Indicator(
@@ -520,7 +517,7 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                                   size: 12,
                                   color: showingSections[index].color,
                                   text:
-                                      "${PracticeShowState.values[index + 1].type}|$percentage%",
+                                      "${PracticeShowState.values[index + 1].type}: $amount ($percentage%)",
                                   isSquare: true,
                                 ),
                                 const SizedBox(
