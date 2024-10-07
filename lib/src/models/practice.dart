@@ -10,22 +10,24 @@ import 'package:lhs_fencing/src/models/user_data.dart';
 class Practice {
   String id;
   String location;
+  DateTime? atGymTime;
   DateTime? busTime;
   DateTime startTime;
   DateTime endTime;
   TypePractice type;
   Team team;
-  Map activities;
+  Map? activities;
   List<UserData> busCoaches;
   Practice({
     required this.id,
     required this.location,
+    this.atGymTime,
     this.busTime,
     required this.startTime,
     required this.endTime,
     required this.type,
     required this.team,
-    required this.activities,
+    this.activities,
     required this.busCoaches,
   });
 
@@ -68,9 +70,9 @@ Coach ${coach.firstName}
 
   String get runTime {
     if (DateFormat("a").format(startTime) == DateFormat("a").format(endTime)) {
-      return "${busTime != null ? "Bus: ${DateFormat("hh:mm aa").format(busTime!)}\n" : ""}Scheduled: ${DateFormat("hh:mm").format(startTime)}-${DateFormat("hh:mm aa").format(endTime)}";
+      return "${atGymTime != null ? "At Gym: ${DateFormat("hh:mm aa").format(atGymTime!)} " : ""}${busTime != null ? "Bus: ${DateFormat("hh:mm aa").format(busTime!)}\n" : ""}Scheduled: ${DateFormat("hh:mm").format(startTime)}-${DateFormat("hh:mm aa").format(endTime)}";
     } else {
-      return "${busTime != null ? "Bus: ${DateFormat("hh:mm aa").format(busTime!)}\n" : ""}Scheduled: ${DateFormat("hh:mm aa").format(startTime)} - ${DateFormat("hh:mm aa").format(endTime)}";
+      return "${atGymTime != null ? "At Gym: ${DateFormat("hh:mm aa").format(atGymTime!)} " : ""}${busTime != null ? "Bus: ${DateFormat("hh:mm aa").format(busTime!)}\n" : ""}Scheduled: ${DateFormat("hh:mm aa").format(startTime)} - ${DateFormat("hh:mm aa").format(endTime)}";
     }
   }
 
@@ -82,12 +84,13 @@ Coach ${coach.firstName}
 
       case TypePractice.meet:
       case TypePractice.fundraiser:
-      case TypePractice.spectating:
+      case TypePractice.spectatingHome:
         return DateTime.now().difference(startTime).inMinutes < -45;
 
       case TypePractice.awayMeet:
       case TypePractice.tournament:
-        return DateTime.now().difference(busTime!).inMinutes < -30;
+      case TypePractice.spectatingAway:
+        return DateTime.now().difference(atGymTime!).inMinutes < -30;
     }
   }
 
@@ -129,7 +132,7 @@ Coach ${coach.firstName}
       'endTime': endTime.millisecondsSinceEpoch,
       'type': type.toMap(),
       'team': team.toMap(),
-      // 'activities': activities,
+      'activities': activities,
       'busCoaches': busCoaches.map((x) => x.toMap()).toList(),
     };
   }

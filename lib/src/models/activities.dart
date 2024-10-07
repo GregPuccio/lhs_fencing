@@ -33,7 +33,15 @@ class Activities {
     };
   }
 
-  Map<DateTime, String> spectatingActivities() {
+  Map<DateTime, String> spectatingHomeActivities() {
+    return {
+      practice.startTime.subtract(const Duration(minutes: 15)): "Arrive at Gym",
+      practice.startTime: "Meet Begins",
+      practice.endTime: "Meet Ends",
+    };
+  }
+
+  Map<DateTime, String> spectatingAwayActivities() {
     return {
       practice.busTime!.subtract(const Duration(minutes: 15)): "Arrive at Gym",
       practice.busTime!.subtract(const Duration(minutes: 5)):
@@ -75,8 +83,10 @@ class Activities {
         return homeMeetActivities();
       case TypePractice.awayMeet:
         return awayMeetActivities();
-      case TypePractice.spectating:
-        return spectatingActivities();
+      case TypePractice.spectatingHome:
+        return spectatingHomeActivities();
+      case TypePractice.spectatingAway:
+        return spectatingAwayActivities();
       case TypePractice.quad:
         return quadActivities();
       case TypePractice.tournament:

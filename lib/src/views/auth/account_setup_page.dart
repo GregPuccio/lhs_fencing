@@ -246,7 +246,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   ListTile(
                     title: const Text("Weapon"),
                     subtitle: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ToggleButtons(
                           isSelected: List.generate(
@@ -408,7 +408,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                     ListTile(
                       title: const Text("Typical Days At Club"),
                       subtitle: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ToggleButtons(
                             isSelected: List.generate(

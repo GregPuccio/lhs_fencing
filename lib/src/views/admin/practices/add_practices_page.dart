@@ -97,6 +97,37 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
     }
   }
 
+  List<Practice> get eventsToGenerate {
+    List<Practice> list = [];
+    final daysToGenerate = dateRange.end.difference(dateRange.start).inDays;
+    List<Practice> days = List.generate(daysToGenerate + 1, (i) {
+      Practice practice = Practice(
+          id: const Uuid().v4(),
+          location: location.isEmpty ? "Livingston Aux Gym" : location,
+          busTime: typePractice.usesBus
+              ? DateTime(dateRange.start.year, dateRange.start.month,
+                  dateRange.start.day + (i), busTime.hour, busTime.minute)
+              : null,
+          startTime: DateTime(dateRange.start.year, dateRange.start.month,
+              dateRange.start.day + (i), startTime.hour, startTime.minute),
+          endTime: DateTime(dateRange.start.year, dateRange.start.month,
+              dateRange.start.day + (i), endTime.hour, endTime.minute),
+          type: typePractice,
+          team: team,
+          activities: {},
+          busCoaches: []);
+      practice.activities = Activities(practice).activities;
+      return practice;
+    });
+    for (var day in days) {
+      if (daysOfWeek.any((dow) => dow.weekday == day.startTime.weekday)) {
+        list.add(day);
+      }
+    }
+    print(list.map((e) => e.startTime));
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,61 +135,127 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
         title: const Text("Add Events"),
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 16),
         child: Column(
           children: [
-            ListTile(
-              title: const Text("Team"),
-              trailing: DropdownButton<Team>(
-                  value: team,
-                  items: List.generate(
-                    Team.values.length,
-                    (index) => DropdownMenuItem(
-                      value: Team.values[index],
-                      child: Text(Team.values[index].type),
+            Row(
+              children: [
+                Flexible(
+                  child: ListTile(
+                    title: Row(
+                      children: [
+                        Icon(
+                          Icons.group,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text("Team"),
+                      ],
+                    ),
+                    subtitle: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        DropdownButton<Team>(
+                            value: team,
+                            items: List.generate(
+                              Team.values.length,
+                              (index) => DropdownMenuItem(
+                                value: Team.values[index],
+                                child: Text(Team.values[index].type),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              if (value == null) return;
+                              setState(() {
+                                team = value;
+                              });
+                            }),
+                      ],
                     ),
                   ),
-                  onChanged: (value) {
-                    if (value == null) return;
-                    setState(() {
-                      team = value;
-                    });
-                  }),
+                ),
+                const VerticalDivider(),
+                Flexible(
+                  child: ListTile(
+                    title: Row(
+                      children: [
+                        Icon(
+                          Icons.event_note,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text("Type"),
+                      ],
+                    ),
+                    subtitle: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        DropdownButton<TypePractice>(
+                            value: typePractice,
+                            items: List.generate(
+                              TypePractice.values.length,
+                              (index) => DropdownMenuItem(
+                                value: TypePractice.values[index],
+                                child: Text(TypePractice.values[index].type),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              if (value == null) return;
+                              setState(() {
+                                typePractice = value;
+                              });
+                            }),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
             const Divider(),
             ListTile(
-              title: const Text("Type"),
-              trailing: DropdownButton<TypePractice>(
-                  value: typePractice,
-                  items: List.generate(
-                    TypePractice.values.length,
-                    (index) => DropdownMenuItem(
-                      value: TypePractice.values[index],
-                      child: Text(TypePractice.values[index].type),
+              title: Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.pin_drop,
+                      color: Theme.of(context).primaryColor,
                     ),
-                  ),
-                  onChanged: (value) {
-                    if (value == null) return;
-                    setState(() {
-                      typePractice = value;
-                    });
-                  }),
+                    const SizedBox(width: 8),
+                    const Text("Location"),
+                  ],
+                ),
+              ),
+              subtitle: TextFormField(
+                initialValue: location,
+                onChanged: (value) => location = value,
+              ),
             ),
             const Divider(),
             ListTile(
+              leading: Icon(
+                Icons.date_range,
+                color: Theme.of(context).primaryColor,
+              ),
               title: const Text("Date Range"),
               subtitle: Text(
                 "${DateFormat.yMd().format(dateRange.start)} - ${DateFormat.yMd().format(dateRange.end)}",
               ),
-              trailing: const Icon(Icons.date_range),
+              trailing: Icon(Icons.edit, color: Theme.of(context).primaryColor),
               onTap: setDateRange,
             ),
             const Divider(),
             ListTile(
-              title: const Text(
-                "Days of the Week",
-              ),
-              subtitle: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                leading: Icon(
+                  Icons.edit_calendar,
+                  color: Theme.of(context).primaryColor,
+                ),
+                title: const Text("Days of Each Week"),
+                subtitle: const Text(
+                    "Which days of the week will this event to occur on?")),
+            ListTile(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ToggleButtons(
                     isSelected: List.generate(
@@ -186,22 +283,14 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
               ),
             ),
             const Divider(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  label: Text("Location"),
-                ),
-                initialValue: location,
-                onChanged: (value) => location = value,
-              ),
-            ),
-            const Divider(),
             if (typePractice.usesBus) ...[
               ListTile(
+                leading: Icon(
+                  Icons.bus_alert,
+                  color: Theme.of(context).primaryColor,
+                ),
                 title: const Text("Bus Time"),
                 subtitle: Text(busTime.format(context)),
-                trailing: const Icon(Icons.bus_alert),
                 onTap: () => setTime(busTime, bus: true),
               ),
               const Divider(),
@@ -210,23 +299,56 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
               children: [
                 Flexible(
                   child: ListTile(
+                    leading: Icon(
+                      Icons.av_timer,
+                      color: Theme.of(context).primaryColor,
+                    ),
                     title: const Text("Start Time"),
                     subtitle: Text(startTime.format(context)),
-                    trailing: const Icon(Icons.av_timer),
                     onTap: () => setTime(startTime, start: true),
                   ),
                 ),
+                const VerticalDivider(),
                 Flexible(
                   child: ListTile(
+                    leading: Icon(
+                      Icons.keyboard_return,
+                      color: Theme.of(context).primaryColor,
+                    ),
                     title: const Text("End Time"),
                     subtitle: Text(endTime.format(context)),
-                    trailing: const Icon(Icons.keyboard_return),
                     onTap: () => setTime(endTime),
                   ),
                 ),
               ],
             ),
             const Divider(),
+            ExpansionTile(
+              leading: Icon(
+                Icons.summarize,
+                color: Theme.of(context).primaryColor,
+              ),
+              title: const Text("Summary Of Events To Be Added:"),
+              subtitle: const Text("Tap here to show/hide"),
+              children: List.generate(
+                eventsToGenerate.length,
+                (i) {
+                  Practice event = eventsToGenerate[i];
+                  return ListTile(
+                    leading: Text(
+                      "${i + 1})",
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    title: Text(event.type.type),
+                    subtitle:
+                        Text("${DateFormat("EEEE, MM/d/yyy hh:mm aa").format(
+                      event.startTime,
+                    )} - ${DateFormat("hh:mm aa").format(event.endTime)}"),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 20),
             OutlinedButton.icon(
               onPressed: () async {
                 final daysToGenerate =
@@ -293,7 +415,7 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                   context.maybePop();
                 }
               },
-              icon: const Text("Add to Calendar"),
+              icon: const Text("Add These Events"),
               label: const Icon(Icons.add),
             )
           ],
