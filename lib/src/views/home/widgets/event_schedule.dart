@@ -9,7 +9,7 @@ class EventSchedule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<DateTime, String> activities = Activities(practice).activities;
+    Map<String, DateTime> activities = Activities(practice).activities;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -50,14 +50,14 @@ class EventSchedule extends StatelessWidget {
               DataCell(
                 Text(
                   DateFormat("hh:mm aa").format(
-                    activities.keys.elementAt(index),
+                    activities.values.elementAt(index),
                   ),
                 ),
               ),
               DataCell(
                 Center(
                   child: Text(
-                    activities.values.elementAt(index),
+                    activities.keys.elementAt(index),
                     textAlign: TextAlign.center,
                   ),
                 ),

@@ -6,76 +6,82 @@ class Activities {
 
   Activities(this.practice);
 
-  Map<DateTime, String> practiceActivities() {
+  Map<String, DateTime> practiceActivities() {
     return {
-      practice.startTime: "Warm Up",
-      practice.startTime.add(const Duration(minutes: 20)): "Footwork",
-      practice.startTime.add(const Duration(minutes: 50)): "Drills",
-      practice.startTime.add(const Duration(minutes: 80)): "Fencing",
-      practice.endTime: "End"
+      "Warm Up": practice.startTime,
+      "Footwork": practice.startTime.add(const Duration(minutes: 20)),
+      "Drills": practice.startTime.add(const Duration(minutes: 50)),
+      "Fencing": practice.startTime.add(const Duration(minutes: 80)),
+      "End": practice.endTime,
     };
   }
 
-  Map<DateTime, String> homeMeetActivities() {
-    return {practice.startTime: "Meet Begins", practice.endTime: "Meet Ends"};
-  }
-
-  Map<DateTime, String> awayMeetActivities() {
+  Map<String, DateTime> homeMeetActivities() {
     return {
-      practice.busTime!.subtract(const Duration(minutes: 30)): "Arrive at Gym",
-      practice.busTime!.subtract(const Duration(minutes: 5)):
-          "Be Ready to Leave",
-      practice.busTime!: "Bus Leaves",
-      practice.startTime: "Meet Begins",
-      practice.endTime: "Meet Ends",
-      practice.busTime!.add(const Duration(minutes: 30)):
-          "Arrive Back to LHS (Typical)",
+      "Meet Begins": practice.startTime,
+      "Meet Ends": practice.endTime,
     };
   }
 
-  Map<DateTime, String> spectatingHomeActivities() {
+  Map<String, DateTime> awayMeetActivities() {
     return {
-      practice.startTime.subtract(const Duration(minutes: 15)): "Arrive at Gym",
-      practice.startTime: "Meet Begins",
-      practice.endTime: "Meet Ends",
+      "Arrive at Gym": practice.busTime!.subtract(const Duration(minutes: 30)),
+      "Be Ready to Leave":
+          practice.busTime!.subtract(const Duration(minutes: 5)),
+      "Bus Leaves": practice.busTime!,
+      "Meet Begins": practice.startTime,
+      "Meet Ends": practice.endTime,
+      "Arrive Back to LHS (Typical)":
+          practice.busTime!.add(const Duration(minutes: 30)),
     };
   }
 
-  Map<DateTime, String> spectatingAwayActivities() {
+  Map<String, DateTime> spectatingHomeActivities() {
     return {
-      practice.busTime!.subtract(const Duration(minutes: 15)): "Arrive at Gym",
-      practice.busTime!.subtract(const Duration(minutes: 5)):
-          "Be Ready to Leave",
-      practice.busTime!: "Bus Leaves",
-      practice.startTime: "Meet Begins",
-      practice.endTime: "Meet Ends",
-      practice.busTime!.add(const Duration(minutes: 30)):
-          "Arrive Back to LHS (Typical)",
+      "Arrive at Gym": practice.startTime.subtract(const Duration(minutes: 15)),
+      "Meet Begins": practice.startTime,
+      "Meet Ends": practice.endTime,
     };
   }
 
-  Map<DateTime, String> quadActivities() {
-    return {practice.startTime: "Warm Up", practice.endTime: "End"};
-  }
-
-  Map<DateTime, String> tournamentActivities() {
+  Map<String, DateTime> spectatingAwayActivities() {
     return {
-      practice.startTime: "Warm Up",
-      practice.startTime.add(const Duration(minutes: 20)): "Footwork",
-      practice.startTime.add(const Duration(minutes: 50)): "Drills",
-      practice.startTime.add(const Duration(minutes: 80)): "Fencing",
-      practice.endTime: "End"
+      "Arrive at Gym": practice.busTime!.subtract(const Duration(minutes: 15)),
+      "Be Ready to Leave":
+          practice.busTime!.subtract(const Duration(minutes: 5)),
+      "Bus Leaves": practice.busTime!,
+      "Meet Begins": practice.startTime,
+      "Meet Ends": practice.endTime,
+      "Arrive Back to LHS (Typical)":
+          practice.busTime!.add(const Duration(minutes: 30)),
     };
   }
 
-  Map<DateTime, String> fundraiserActivities() {
+  Map<String, DateTime> quadActivities() {
     return {
-      practice.startTime: "Fundraiser Begins",
-      practice.endTime: "Fundraiser Ends"
+      "Warm Up": practice.startTime,
+      "End": practice.endTime,
     };
   }
 
-  Map<DateTime, String> get activities {
+  Map<String, DateTime> tournamentActivities() {
+    return {
+      "Warm Up": practice.startTime,
+      "Footwork": practice.startTime.add(const Duration(minutes: 20)),
+      "Drills": practice.startTime.add(const Duration(minutes: 50)),
+      "Fencing": practice.startTime.add(const Duration(minutes: 80)),
+      "End": practice.endTime,
+    };
+  }
+
+  Map<String, DateTime> fundraiserActivities() {
+    return {
+      "Fundraiser Begins": practice.startTime,
+      "Fundraiser Ends": practice.endTime,
+    };
+  }
+
+  Map<String, DateTime> get activities {
     switch (practice.type) {
       case TypePractice.practice:
         return practiceActivities();

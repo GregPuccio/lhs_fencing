@@ -6,6 +6,11 @@ extension DateUtils on DateTime {
     return now.day == day && now.month == month && now.year == year;
   }
 
+  DateTime get today {
+    DateTime now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
+  }
+
   bool get isTomorrow {
     final tomorrow = DateTime.now().add(const Duration(days: 1));
     return tomorrow.day == day &&

@@ -124,7 +124,6 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
         list.add(day);
       }
     }
-    print(list.map((e) => e.startTime));
     return list;
   }
 

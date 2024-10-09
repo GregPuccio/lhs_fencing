@@ -16,7 +16,7 @@ class Practice {
   DateTime endTime;
   TypePractice type;
   Team team;
-  Map? activities;
+  Map<String, DateTime>? activities;
   List<UserData> busCoaches;
   Practice({
     required this.id,
@@ -107,7 +107,7 @@ Coach ${coach.firstName}
     DateTime? endTime,
     TypePractice? type,
     Team? team,
-    Map? activities,
+    Map<String, DateTime>? activities,
     List<UserData>? busCoaches,
   }) {
     return Practice(
@@ -148,7 +148,9 @@ Coach ${coach.firstName}
       endTime: DateTime.fromMillisecondsSinceEpoch(map['endTime']),
       type: TypePractice.fromMap(map['type'] ?? ""),
       team: Team.fromMap(map['team'] ?? ""),
-      activities: Map.from(map['activities'] ?? {}),
+      activities: Map<String, DateTime>.from(((map['activities'] ?? {}))
+              .map((k, v) => MapEntry<String, DateTime>(k, v.toDate())) ??
+          {}),
       busCoaches: List<UserData>.from(
           map['busCoaches']?.map((x) => UserData.fromMap(x)) ?? []),
     );
