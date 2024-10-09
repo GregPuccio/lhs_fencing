@@ -72,7 +72,7 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
                         ),
                         const SizedBox(height: 8),
                         const Text(
-                          "Borrowed\nEquipment",
+                          "Gear",
                           textAlign: TextAlign.center,
                         ),
                       ],
