@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/comment.dart';
@@ -306,11 +305,27 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                           Icons.av_timer,
                           color: Theme.of(context).primaryColor,
                         ),
-                        title: const Text("Check In Time"),
+                        title: const Text("Check In"),
                         subtitle: Text(startTime.format(context)),
                         onTap: () => setTime(startTime),
                       ),
                     ),
+                    Flexible(
+                      child: ListTile(
+                        leading: Icon(
+                          Icons.time_to_leave,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        enabled: selectCheckOutTime,
+                        title: const Text("Check Out"),
+                        subtitle: Text(endTime.format(context)),
+                        onTap: () => setTime(endTime, start: false),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
                     Flexible(
                       child: CheckboxListTile(
                         enabled: widget.practice.type.adjustsLineup,
@@ -321,25 +336,12 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                         }),
                       ),
                     ),
-                  ],
-                ),
-                Row(
-                  children: [
                     Flexible(
                       child: CheckboxListTile(
-                        title: const Text("Check Out"),
+                        title: const Text("Enable Check Out"),
                         value: selectCheckOutTime,
                         onChanged: (value) =>
                             setState(() => selectCheckOutTime = value ?? true),
-                      ),
-                    ),
-                    Flexible(
-                      child: ListTile(
-                        enabled: selectCheckOutTime,
-                        title: const Text("Check Out Time"),
-                        subtitle: Text(endTime.format(context)),
-                        trailing: const Icon(Icons.time_to_leave),
-                        onTap: () => setTime(endTime, start: false),
                       ),
                     ),
                   ],
