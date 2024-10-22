@@ -168,6 +168,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
               ),
               if (widget.fencer.club.isNotEmpty) ...[
                 Wrap(
+                  alignment: WrapAlignment.center,
                   children: [
                     Text(
                       widget.fencer.club,
@@ -266,36 +267,34 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                     const Text("Attendance Status"),
                   ],
                 ),
-                subtitle: Center(
-                  child: ToggleButtons(
-                    isSelected: attendanceStatus,
-                    children: const [
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text("Present"),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text("Absent: Excused"),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text("Absent: Unexcused"),
-                      )
-                    ],
-                    onPressed: (index) {
-                      setState(() {
-                        for (int i = 0; i < 3; i++) {
-                          if (i == index) {
-                            attendanceStatus[i] = true;
-                          } else {
-                            attendanceStatus[i] = false;
-                          }
-                        }
-                      });
-                    },
+              ),
+              ToggleButtons(
+                isSelected: attendanceStatus,
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Present"),
                   ),
-                ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Absent: Excused"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Absent: Unexcused"),
+                  )
+                ],
+                onPressed: (index) {
+                  setState(() {
+                    for (int i = 0; i < 3; i++) {
+                      if (i == index) {
+                        attendanceStatus[i] = true;
+                      } else {
+                        attendanceStatus[i] = false;
+                      }
+                    }
+                  });
+                },
               ),
               if (attendanceStatus[0]) ...[
                 const Divider(),

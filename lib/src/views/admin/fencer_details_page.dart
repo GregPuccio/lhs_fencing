@@ -85,6 +85,7 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
                 ),
                 if (fencer.club.isNotEmpty) ...[
                   Wrap(
+                    alignment: WrapAlignment.center,
                     children: [
                       Text(
                         fencer.club,
