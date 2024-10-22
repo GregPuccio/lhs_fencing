@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/comment.dart';
@@ -238,7 +239,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                         color: Theme.of(context).primaryColor,
                       ),
                       subtitle: const Text("Date & Time"),
-                      title: Text(DateFormat("EEEE, MM/d\nh:mm aa")
+                      title: Text(DateFormat("EEE, MM/d\nh:mm aa")
                           .format(widget.practice.startTime)),
                     ),
                   ),
@@ -255,38 +256,45 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
               ),
               const Divider(),
               ListTile(
-                leading: Icon(
-                  Icons.event_available,
-                  color: Theme.of(context).primaryColor,
-                ),
-                title: const Text("Attendance Status"),
-                subtitle: ToggleButtons(
-                  isSelected: attendanceStatus,
-                  children: const [
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text("Present"),
+                title: Row(
+                  children: [
+                    Icon(
+                      Icons.event_available,
+                      color: Theme.of(context).primaryColor,
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text("Absent: Excused"),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text("Absent: Unexcused"),
-                    )
+                    const SizedBox(width: 8),
+                    const Text("Attendance Status"),
                   ],
-                  onPressed: (index) {
-                    setState(() {
-                      for (int i = 0; i < 3; i++) {
-                        if (i == index) {
-                          attendanceStatus[i] = true;
-                        } else {
-                          attendanceStatus[i] = false;
+                ),
+                subtitle: Center(
+                  child: ToggleButtons(
+                    isSelected: attendanceStatus,
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text("Present"),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text("Absent: Excused"),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text("Absent: Unexcused"),
+                      )
+                    ],
+                    onPressed: (index) {
+                      setState(() {
+                        for (int i = 0; i < 3; i++) {
+                          if (i == index) {
+                            attendanceStatus[i] = true;
+                          } else {
+                            attendanceStatus[i] = false;
+                          }
                         }
-                      }
-                    });
-                  },
+                      });
+                    },
+                  ),
                 ),
               ),
               if (attendanceStatus[0]) ...[
@@ -305,23 +313,34 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                       ),
                     ),
                     Flexible(
-                      child: Column(
-                        children: [
-                          CheckboxListTile(
-                            title: Text(
-                                "${selectCheckOutTime ? "Remove" : "Add"} Check Out"),
-                            value: selectCheckOutTime,
-                            onChanged: (value) => setState(
-                                () => selectCheckOutTime = value ?? true),
-                          ),
-                          if (selectCheckOutTime)
-                            ListTile(
-                              title: const Text("Check Out Time"),
-                              subtitle: Text(endTime.format(context)),
-                              trailing: const Icon(Icons.time_to_leave),
-                              onTap: () => setTime(endTime, start: false),
-                            ),
-                        ],
+                      child: CheckboxListTile(
+                        enabled: widget.practice.type.adjustsLineup,
+                        title: const Text("Subbed In"),
+                        value: widget.attendance.participated,
+                        onChanged: (value) => setState(() {
+                          widget.attendance.participated = value ?? false;
+                        }),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Flexible(
+                      child: CheckboxListTile(
+                        title: const Text("Check Out"),
+                        value: selectCheckOutTime,
+                        onChanged: (value) =>
+                            setState(() => selectCheckOutTime = value ?? true),
+                      ),
+                    ),
+                    Flexible(
+                      child: ListTile(
+                        enabled: selectCheckOutTime,
+                        title: const Text("Check Out Time"),
+                        subtitle: Text(endTime.format(context)),
+                        trailing: const Icon(Icons.time_to_leave),
+                        onTap: () => setTime(endTime, start: false),
                       ),
                     ),
                   ],
