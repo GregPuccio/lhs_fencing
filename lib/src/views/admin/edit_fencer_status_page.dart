@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/comment.dart';
@@ -16,9 +17,9 @@ import 'package:lhs_fencing/src/widgets/text_badge.dart';
 class EditFencerStatusPage extends ConsumerStatefulWidget {
   final UserData fencer;
   final Practice practice;
-  final Attendance? attendance;
-  const EditFencerStatusPage(this.fencer, this.practice,
-      {this.attendance, super.key});
+  final Attendance attendance;
+  const EditFencerStatusPage(this.fencer, this.practice, this.attendance,
+      {super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -47,22 +48,21 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
       setState(() {});
     });
     startTime = TimeOfDay(
-        hour:
-            widget.attendance?.checkIn?.hour ?? widget.practice.startTime.hour,
-        minute: widget.attendance?.checkIn?.minute ??
+        hour: widget.attendance.checkIn?.hour ?? widget.practice.startTime.hour,
+        minute: widget.attendance.checkIn?.minute ??
             widget.practice.startTime.minute);
     endTime = TimeOfDay(
-      hour: widget.attendance?.checkOut?.hour ?? widget.practice.endTime.hour,
+      hour: widget.attendance.checkOut?.hour ?? widget.practice.endTime.hour,
       minute:
-          widget.attendance?.checkOut?.minute ?? widget.practice.endTime.minute,
+          widget.attendance.checkOut?.minute ?? widget.practice.endTime.minute,
     );
     attendanceStatus = [
-      widget.attendance?.checkIn != null,
-      widget.attendance?.excusedAbsense ?? false,
-      widget.attendance?.unexcusedAbsense ?? false
+      widget.attendance.checkIn != null,
+      widget.attendance.excusedAbsense,
+      widget.attendance.unexcusedAbsense,
     ];
-    selectCheckOutTime = widget.attendance?.checkOut != null;
-    comments = widget.attendance?.comments ?? [];
+    selectCheckOutTime = widget.attendance.checkOut != null;
+    comments = widget.attendance.comments;
     super.initState();
   }
 
@@ -86,8 +86,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
       endTime.hour,
       endTime.minute,
     );
-    Attendance newAttendance =
-        widget.attendance ?? Attendance.create(widget.practice, widget.fencer);
+    Attendance newAttendance = widget.attendance;
     newAttendance = newAttendance.copyWith(
         comments: comments,
         excusedAbsense: attendanceStatus[1],
@@ -112,7 +111,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
     return await removeAttendance(
       widget.fencer.id,
       fencerMonths,
-      widget.attendance!,
+      widget.attendance,
     );
   }
 
@@ -144,7 +143,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
       }
       Attendance attendance = attendances.firstWhere(
         (attendance) {
-          return attendance.id == widget.attendance?.id;
+          return attendance.id == widget.attendance.id;
         },
         orElse: () => Attendance.create(widget.practice, widget.fencer),
       );
@@ -186,120 +185,147 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
             ],
           ),
           actions: [
-            if (widget.attendance != null)
-              IconButton(
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text("Delete Attendance"),
-                    content: const Text(
-                        "Are you sure you would like to delete this attendance entry?"),
-                    actions: [
-                      TextButton(
-                        onPressed: () => context.router.maybePop(),
-                        child: const Text("No, cancel"),
-                      ),
-                      TextButton(
-                        onPressed: () => deleteAttendance().then((value) =>
-                            context.mounted
-                                ? context.router.maybePop(true)
-                                : 0),
-                        child: const Text("Yes, delete"),
-                      ),
-                    ],
-                  ),
-                ).then((value) {
-                  if (value == true && context.mounted) {
-                    context.router.maybePop();
-                  }
-                }),
-                icon: const Icon(Icons.delete),
-              ),
+            IconButton(
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Delete Attendance"),
+                  content: const Text(
+                      "Are you sure you would like to delete this attendance entry?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => context.router.maybePop(),
+                      child: const Text("No, cancel"),
+                    ),
+                    TextButton(
+                      onPressed: () => deleteAttendance().then((value) =>
+                          context.mounted ? context.router.maybePop(true) : 0),
+                      child: const Text("Yes, delete"),
+                    ),
+                  ],
+                ),
+              ).then((value) {
+                if (value == true && context.mounted) {
+                  context.router.maybePop();
+                }
+              }),
+              icon: const Icon(Icons.delete),
+            ),
           ],
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Column(
             children: [
-              Text(
-                "${widget.practice.type.type} - ${widget.practice.location}",
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              Text(
-                widget.practice.startString,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
               if (widget.fencer.clubDays.isNotEmpty && clubDay)
                 const TextBadge(text: "Normally At Club Today"),
-              const Divider(),
-              Text(
-                "Attendance Status",
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              ToggleButtons(
-                isSelected: attendanceStatus,
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text("Present"),
+              Row(
+                children: [
+                  Flexible(
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.event_note,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      subtitle: const Text("Event Type"),
+                      title: Text(widget.practice.type.type),
+                    ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text("Absent: Excused"),
+                  Flexible(
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.date_range,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      subtitle: const Text("Date & Time"),
+                      title: Text(DateFormat("EEEE, MM/d\nh:mm aa")
+                          .format(widget.practice.startTime)),
+                    ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text("Absent: Unexcused"),
-                  )
                 ],
-                onPressed: (index) {
-                  setState(() {
-                    for (int i = 0; i < 3; i++) {
-                      if (i == index) {
-                        attendanceStatus[i] = true;
-                      } else {
-                        attendanceStatus[i] = false;
+              ),
+              const Divider(),
+              ListTile(
+                leading: Icon(
+                  Icons.pin_drop,
+                  color: Theme.of(context).primaryColor,
+                ),
+                subtitle: const Text("Location"),
+                title: Text(widget.practice.location),
+              ),
+              const Divider(),
+              ListTile(
+                leading: Icon(
+                  Icons.event_available,
+                  color: Theme.of(context).primaryColor,
+                ),
+                title: const Text("Attendance Status"),
+                subtitle: ToggleButtons(
+                  isSelected: attendanceStatus,
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text("Present"),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text("Absent: Excused"),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text("Absent: Unexcused"),
+                    )
+                  ],
+                  onPressed: (index) {
+                    setState(() {
+                      for (int i = 0; i < 3; i++) {
+                        if (i == index) {
+                          attendanceStatus[i] = true;
+                        } else {
+                          attendanceStatus[i] = false;
+                        }
                       }
-                    }
-                  });
-                },
+                    });
+                  },
+                ),
               ),
               if (attendanceStatus[0]) ...[
                 const Divider(),
-                CheckboxListTile(
-                  title: const Text("Include Check In Time"),
-                  value: attendanceStatus[0],
-                  onChanged: (value) =>
-                      setState(() => attendanceStatus[0] = value ?? true),
+                Row(
+                  children: [
+                    Flexible(
+                      child: ListTile(
+                        leading: Icon(
+                          Icons.av_timer,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        title: const Text("Check In Time"),
+                        subtitle: Text(startTime.format(context)),
+                        onTap: () => setTime(startTime),
+                      ),
+                    ),
+                    Flexible(
+                      child: Column(
+                        children: [
+                          CheckboxListTile(
+                            title: Text(
+                                "${selectCheckOutTime ? "Remove" : "Add"} Check Out"),
+                            value: selectCheckOutTime,
+                            onChanged: (value) => setState(
+                                () => selectCheckOutTime = value ?? true),
+                          ),
+                          if (selectCheckOutTime)
+                            ListTile(
+                              title: const Text("Check Out Time"),
+                              subtitle: Text(endTime.format(context)),
+                              trailing: const Icon(Icons.time_to_leave),
+                              onTap: () => setTime(endTime, start: false),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 8),
-                if (attendanceStatus[0]) ...[
-                  ListTile(
-                    title: const Text("Check In Time"),
-                    subtitle: Text(startTime.format(context)),
-                    trailing: const Icon(Icons.av_timer),
-                    onTap: () => setTime(startTime),
-                  ),
-                  const SizedBox(height: 8),
-                ],
-                const Divider(),
-                CheckboxListTile(
-                  title: const Text("Include Check Out Time"),
-                  value: selectCheckOutTime,
-                  onChanged: (value) =>
-                      setState(() => selectCheckOutTime = value ?? true),
-                ),
-                const SizedBox(height: 8),
-                if (selectCheckOutTime) ...[
-                  ListTile(
-                    title: const Text("Check Out Time"),
-                    subtitle: Text(endTime.format(context)),
-                    trailing: const Icon(Icons.time_to_leave),
-                    onTap: () => setTime(endTime, start: false),
-                  ),
-                  const SizedBox(height: 8),
-                ],
               ],
               const Divider(),
               OutlinedButton.icon(

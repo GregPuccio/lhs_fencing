@@ -7,6 +7,7 @@ String drillSeason23 = "drills23";
 String drillSeason24 = "drills24";
 String boutsSeason23 = "bouts23";
 String boutsSeason24 = "bouts24";
+String lineupSeason24 = "lineup24";
 
 class FirestorePath {
   final FirestorePath firestorePath = FirestorePath();
@@ -36,4 +37,7 @@ class FirestorePath {
       '$userCollection/$fencerID/$boutsSeason24';
   static String currentSeasonBoutMonth(String fencerID, String month) =>
       '${currentSeasonBoutMonths(fencerID)}/$month';
+
+  static String lineups() => lineupSeason24;
+  static String lineup(String lineupID) => '$lineupSeason24/$lineupID';
 }

@@ -339,7 +339,7 @@ class EditFencerStatusRoute extends PageRouteInfo<EditFencerStatusRouteArgs> {
   EditFencerStatusRoute({
     required UserData fencer,
     required Practice practice,
-    Attendance? attendance,
+    required Attendance attendance,
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
@@ -362,7 +362,7 @@ class EditFencerStatusRoute extends PageRouteInfo<EditFencerStatusRouteArgs> {
       return EditFencerStatusPage(
         args.fencer,
         args.practice,
-        attendance: args.attendance,
+        args.attendance,
         key: args.key,
       );
     },
@@ -373,7 +373,7 @@ class EditFencerStatusRouteArgs {
   const EditFencerStatusRouteArgs({
     required this.fencer,
     required this.practice,
-    this.attendance,
+    required this.attendance,
     this.key,
   });
 
@@ -381,7 +381,7 @@ class EditFencerStatusRouteArgs {
 
   final Practice practice;
 
-  final Attendance? attendance;
+  final Attendance attendance;
 
   final Key? key;
 
@@ -536,6 +536,25 @@ class FencerListRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const FencerListPage();
+    },
+  );
+}
+
+/// generated route for
+/// [LineupPage]
+class LineupRoute extends PageRouteInfo<void> {
+  const LineupRoute({List<PageRouteInfo>? children})
+      : super(
+          LineupRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'LineupRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const LineupPage();
     },
   );
 }

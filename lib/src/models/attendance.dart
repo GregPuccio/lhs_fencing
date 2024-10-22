@@ -19,6 +19,8 @@ class Attendance {
   List<Comment> comments;
   bool excusedAbsense;
   bool unexcusedAbsense;
+  bool participated;
+
   Attendance({
     required this.id,
     required this.practiceStart,
@@ -29,6 +31,7 @@ class Attendance {
     required this.comments,
     required this.excusedAbsense,
     required this.unexcusedAbsense,
+    this.participated = false,
   });
 
   static Attendance noUserCreate(Practice practice) {
@@ -69,6 +72,7 @@ class Attendance {
     List<Comment>? comments,
     bool? excusedAbsense,
     bool? unexcusedAbsense,
+    bool? participated,
   }) {
     return Attendance(
       id: id ?? this.id,
@@ -80,6 +84,7 @@ class Attendance {
       comments: comments ?? this.comments,
       excusedAbsense: excusedAbsense ?? this.excusedAbsense,
       unexcusedAbsense: unexcusedAbsense ?? this.unexcusedAbsense,
+      participated: participated ?? this.participated,
     );
   }
 
@@ -162,6 +167,7 @@ class Attendance {
       'comments': comments.map((x) => x.toMap()).toList(),
       'excusedAbsense': excusedAbsense,
       'unexcusedAbsense': unexcusedAbsense,
+      'participated': participated,
     };
   }
 
@@ -181,6 +187,7 @@ class Attendance {
           map['comments']?.map((x) => Comment.fromMap(x)) ?? []),
       excusedAbsense: map['excusedAbsense'] ?? false,
       unexcusedAbsense: map['unexcusedAbsense'] ?? false,
+      participated: map['participated'] ?? false,
     );
   }
 

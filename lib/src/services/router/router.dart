@@ -12,6 +12,7 @@ import 'package:lhs_fencing/src/views/admin/drills/add_drills_page.dart';
 import 'package:lhs_fencing/src/views/admin/drills/edit_drills_page.dart';
 import 'package:lhs_fencing/src/views/admin/equipment/equipment_list_page.dart';
 import 'package:lhs_fencing/src/views/admin/events/event_list.dart';
+import 'package:lhs_fencing/src/views/admin/lineup/lineup_page.dart';
 import 'package:lhs_fencing/src/views/admin/practices/add_practices_page.dart';
 import 'package:lhs_fencing/src/views/admin/practices/edit_practice.dart';
 import 'package:lhs_fencing/src/views/admin/drills/drills_list_page.dart';
@@ -52,6 +53,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: EditFencerStatusRoute.page, path: "/editFencerStatus"),
     AutoRoute(page: EventsListRoute.page, path: "/eventList"),
     AutoRoute(page: EquipmentListRoute.page, path: "/equipmentList"),
+    AutoRoute(page: LineupRoute.page, path: "/lineup"),
     AutoRoute(
       page: AttendanceRoute.page,
       path: "/attendance/:practiceID",

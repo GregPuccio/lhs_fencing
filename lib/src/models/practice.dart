@@ -102,6 +102,7 @@ Coach ${coach.firstName}
   Practice copyWith({
     String? id,
     String? location,
+    DateTime? atGymTime,
     DateTime? busTime,
     DateTime? startTime,
     DateTime? endTime,
@@ -113,6 +114,7 @@ Coach ${coach.firstName}
     return Practice(
       id: id ?? this.id,
       location: location ?? this.location,
+      atGymTime: atGymTime ?? this.atGymTime,
       busTime: busTime ?? this.busTime,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
@@ -127,6 +129,7 @@ Coach ${coach.firstName}
     return {
       'id': id,
       'location': location,
+      'atGymTime': atGymTime?.millisecondsSinceEpoch,
       'busTime': busTime?.millisecondsSinceEpoch,
       'startTime': startTime.millisecondsSinceEpoch,
       'endTime': endTime.millisecondsSinceEpoch,
@@ -141,6 +144,9 @@ Coach ${coach.firstName}
     return Practice(
       id: map['id'] ?? '',
       location: map['location'] ?? '',
+      atGymTime: map['atGymTime'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['atGymTime'])
+          : null,
       busTime: map['busTime'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['busTime'])
           : null,
@@ -155,6 +161,20 @@ Coach ${coach.firstName}
           map['busCoaches']?.map((x) => UserData.fromMap(x)) ?? []),
     );
   }
+
+  Practice.clone(Practice practice)
+      : this(
+          id: practice.id,
+          location: practice.location,
+          atGymTime: practice.atGymTime,
+          busTime: practice.busTime,
+          startTime: practice.startTime,
+          endTime: practice.endTime,
+          type: practice.type,
+          team: practice.team,
+          activities: practice.activities,
+          busCoaches: practice.busCoaches,
+        );
 
   String toJson() => json.encode(toMap());
 

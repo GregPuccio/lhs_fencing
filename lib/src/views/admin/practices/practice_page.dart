@@ -268,17 +268,19 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                     }
                   }
                   UserData fencer = fencerLists[index][i];
-                  int attIndex =
-                      attendances.indexWhere((a) => a.userData.id == fencer.id);
-                  Attendance? attendance;
-                  if (attIndex != -1) {
-                    attendance = attendances[attIndex];
-                  }
+
+                  Attendance attendance = attendances.firstWhere(
+                    (element) =>
+                        element.id == practice.id &&
+                        element.userData.id == fencer.id,
+                    orElse: () => Attendance.create(practice, fencer),
+                  );
+
                   return ListTile(
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (attendance != null) AttendanceStatusBar(attendance),
+                        AttendanceStatusBar(attendance),
                         Row(
                           children: [
                             Text(fencer.fullName),
@@ -298,8 +300,7 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                         attendance: attendance,
                       ),
                     ),
-                    subtitle:
-                        attendance != null ? AttendanceInfo(attendance) : null,
+                    subtitle: AttendanceInfo(attendance),
                     trailing: const Icon(Icons.edit),
                   );
                 },

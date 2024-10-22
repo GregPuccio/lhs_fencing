@@ -25,7 +25,7 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
 
   @override
   void initState() {
-    practice = widget.practice;
+    practice = Practice.clone(widget.practice);
     super.initState();
   }
 
@@ -248,6 +248,8 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
 
                 DateTime date =
                     DateTime(practice.startTime.year, practice.startTime.month);
+
+                /// [index] is used to check if the month already exists
                 int index =
                     months.indexWhere((m) => m.month.isAtSameMomentAs(date));
                 if (index == -1) {
@@ -267,10 +269,32 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
                     );
                   }
                 }
-                await FirestoreService.instance.updateData(
-                  path: FirestorePath.practice(months[index].id),
-                  data: months[index].toMap(),
-                );
+
+                /// if this practice is no longer in the same month we must
+                /// delete it from the old month
+                if (widget.practice.startTime.month !=
+                    practice.startTime.month) {
+                  DateTime date = DateTime(widget.practice.startTime.year,
+                      widget.practice.startTime.month);
+                  int index =
+                      months.indexWhere((m) => m.month.isAtSameMomentAs(date));
+                  months[index].practices.remove(widget.practice);
+                  await FirestoreService.instance.updateData(
+                    path: FirestorePath.practice(months[index].id),
+                    data: months[index].toMap(),
+                  );
+                }
+                if (index == -1) {
+                  await FirestoreService.instance.addData(
+                    path: FirestorePath.practices(),
+                    data: months.last.toMap(),
+                  );
+                } else {
+                  await FirestoreService.instance.updateData(
+                    path: FirestorePath.practice(months[index].id),
+                    data: months[index].toMap(),
+                  );
+                }
                 if (context.mounted) {
                   context.maybePop();
                 }

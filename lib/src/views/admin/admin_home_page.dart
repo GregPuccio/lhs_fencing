@@ -135,6 +135,30 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
               ),
             ],
           ),
+          SizedBox(
+            height: MediaQuery.of(context).size.width / 4 - 25,
+            width: MediaQuery.of(context).size.width / 4 - 10,
+            child: Card(
+              child: InkWell(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.list,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    const SizedBox(height: 8),
+                    const Text("Lineup"),
+                  ],
+                ),
+
+                // subtitle:
+                //     const Text("View fencers and their participation info"),
+                // trailing: const Icon(Icons.arrow_forward),
+                onTap: () => context.router.push(const LineupRoute()),
+              ),
+            ),
+          ),
           // const Divider(),
           // ListTile(
           //   leading: const Icon(Icons.event),

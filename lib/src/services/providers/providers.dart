@@ -1,8 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lhs_fencing/src/constants/date_utils.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/bout_month.dart';
 import 'package:lhs_fencing/src/models/drill_season.dart';
+import 'package:lhs_fencing/src/models/lineup.dart';
+import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
@@ -88,6 +91,24 @@ final practicesProvider = StreamProvider((ref) {
   );
 });
 
+final currentPracticesProvider = Provider((ref) {
+  final practices = ref.watch(practicesProvider).whenData((practiceMonths) {
+    List<Practice> practices = [];
+    for (var month in practiceMonths) {
+      practices.addAll(
+        month.practices
+            .where((e) =>
+                e.startTime.isToday &&
+                e.endTime
+                    .isAfter(DateTime.now().subtract(const Duration(hours: 2))))
+            .toList(),
+      );
+    }
+    return practices;
+  });
+  return practices;
+});
+
 final attendancesProvider = StreamProvider((ref) {
   final auth = ref.watch(authStateChangesProvider);
   final database = ref.watch(databaseProvider);
@@ -129,4 +150,13 @@ final thisSeasonUserBoutsProvider = StreamProvider((ref) {
       builder: (map, docID) => BoutMonth.fromMap(map!).copyWith(id: docID),
       queryBuilder: (query) =>
           query.where("fencerID", isEqualTo: auth.value!.uid));
+});
+
+final lineupsProvider = StreamProvider((ref) {
+  final database = ref.watch(databaseProvider);
+  return database.collectionGroupStream(
+    groupTerm: lineupSeason24,
+    builder: (map, docID) => Lineup.fromMap(map!).copyWith(id: docID),
+    sort: (lhs, rhs) => lhs.createdAt.compareTo(rhs.createdAt),
+  );
 });
