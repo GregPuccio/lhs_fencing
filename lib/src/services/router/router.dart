@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/bout.dart';
 import 'package:lhs_fencing/src/models/drill.dart';
@@ -12,6 +13,7 @@ import 'package:lhs_fencing/src/views/admin/drills/add_drills_page.dart';
 import 'package:lhs_fencing/src/views/admin/drills/edit_drills_page.dart';
 import 'package:lhs_fencing/src/views/admin/equipment/equipment_list_page.dart';
 import 'package:lhs_fencing/src/views/admin/events/event_list.dart';
+import 'package:lhs_fencing/src/views/admin/lineup/create_lineup_page.dart';
 import 'package:lhs_fencing/src/views/admin/lineup/lineup_page.dart';
 import 'package:lhs_fencing/src/views/admin/practices/add_practices_page.dart';
 import 'package:lhs_fencing/src/views/admin/practices/edit_practice.dart';
@@ -54,6 +56,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: EventsListRoute.page, path: "/eventList"),
     AutoRoute(page: EquipmentListRoute.page, path: "/equipmentList"),
     AutoRoute(page: LineupRoute.page, path: "/lineup"),
+    AutoRoute(page: CreateLineupRoute.page, path: "/createLineup"),
     AutoRoute(
       page: AttendanceRoute.page,
       path: "/attendance/:practiceID",

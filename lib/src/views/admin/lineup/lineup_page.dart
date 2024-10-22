@@ -8,6 +8,8 @@ import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/lineup.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
+import 'package:lhs_fencing/src/services/router/router.dart';
+import 'package:lhs_fencing/src/views/admin/lineup/create_lineup_page.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 
@@ -52,7 +54,12 @@ class _LineupPageState extends ConsumerState<LineupPage> {
             title: const Text("Current Lineup"),
             actions: [
               IconButton(
-                onPressed: () async {},
+                onPressed: () => context.router.push(
+                  CreateLineupRoute(
+                    teamFilter: teamFilter,
+                    weaponFilter: weaponFilter,
+                  ),
+                ),
                 icon: const Icon(Icons.add),
               ),
             ],

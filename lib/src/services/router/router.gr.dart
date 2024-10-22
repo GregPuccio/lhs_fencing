@@ -223,6 +223,59 @@ class BoutHistoryRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [CreateLineupPage]
+class CreateLineupRoute extends PageRouteInfo<CreateLineupRouteArgs> {
+  CreateLineupRoute({
+    Team? teamFilter,
+    Weapon? weaponFilter,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CreateLineupRoute.name,
+          args: CreateLineupRouteArgs(
+            teamFilter: teamFilter,
+            weaponFilter: weaponFilter,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CreateLineupRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<CreateLineupRouteArgs>(
+          orElse: () => const CreateLineupRouteArgs());
+      return CreateLineupPage(
+        teamFilter: args.teamFilter,
+        weaponFilter: args.weaponFilter,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class CreateLineupRouteArgs {
+  const CreateLineupRouteArgs({
+    this.teamFilter,
+    this.weaponFilter,
+    this.key,
+  });
+
+  final Team? teamFilter;
+
+  final Weapon? weaponFilter;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'CreateLineupRouteArgs{teamFilter: $teamFilter, weaponFilter: $weaponFilter, key: $key}';
+  }
+}
+
+/// generated route for
 /// [DrillsListPage]
 class DrillsListRoute extends PageRouteInfo<void> {
   const DrillsListRoute({List<PageRouteInfo>? children})
