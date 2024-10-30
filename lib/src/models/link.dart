@@ -39,6 +39,19 @@ class Link {
 
 List<Link> usefulLinks = [
   Link(
+    image: "assets/LivingstonLogo.png",
+    title: "Livingston Fencing Google Site",
+    subtitle: "Google Site for Livingston Fencing announcements.",
+    onTap: () {
+      launchUrl(
+        Uri.https(
+          "sites.google.com",
+          "/livingston.org/fencing/home",
+        ),
+      );
+    },
+  ),
+  Link(
     image: "assets/NJHSSportsLogo.png",
     title: "NJ High School Sports - Girls",
     subtitle:

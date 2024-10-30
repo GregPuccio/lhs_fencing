@@ -70,7 +70,7 @@ class _LineupPageState extends ConsumerState<LineupPage> {
       // look at fencers one by one starting at the top and moving them to the bottom
       // if they have fenced and are not a starter in one of the top 2 spots
       List<UserData> fencerAdjustmentList =
-          fencersToShow.where((f) => !fencersNotInLineup.contains(f)).toList();
+          currentLineup?.fencers.toList() ?? [];
       for (int i = 0; i < fencerAdjustmentList.length; i++) {
         UserData fencer = fencerAdjustmentList[i];
         // print(!(currentLineup?.starters.contains(fencer) ?? false));
@@ -94,6 +94,7 @@ class _LineupPageState extends ConsumerState<LineupPage> {
               adjustAmount += (practice.type == TypePractice.practice ? 1 : 3);
             }
             // then check if they did attend, did they participate in the meet?
+            /// todo fix this for
             else if (attendance.participated &&
                 !(currentLineup?.starters.contains(fencer) ?? false)) {
               adjustAmount += (((currentLineup?.fencers.length ?? 0) -
