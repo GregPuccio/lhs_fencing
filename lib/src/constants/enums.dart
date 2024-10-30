@@ -109,13 +109,13 @@ enum TypePractice {
 
   bool get adjustsLineup {
     switch (this) {
-      case TypePractice.practice:
       case TypePractice.tournament:
       case TypePractice.fundraiser:
       case TypePractice.quad:
       case TypePractice.spectatingHome:
       case TypePractice.spectatingAway:
         return false;
+      case TypePractice.practice:
       case TypePractice.meet:
       case TypePractice.awayMeet:
         return true;

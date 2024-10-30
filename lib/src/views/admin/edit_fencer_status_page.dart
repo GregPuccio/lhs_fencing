@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/comment.dart';
@@ -328,7 +329,9 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                   children: [
                     Flexible(
                       child: CheckboxListTile(
-                        enabled: widget.practice.type.adjustsLineup,
+                        enabled:
+                            widget.practice.type == TypePractice.awayMeet ||
+                                widget.practice.type == TypePractice.meet,
                         title: const Text("Subbed In"),
                         value: widget.attendance.participated,
                         onChanged: (value) => setState(() {

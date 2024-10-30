@@ -228,6 +228,7 @@ class CreateLineupRoute extends PageRouteInfo<CreateLineupRouteArgs> {
   CreateLineupRoute({
     Team? teamFilter,
     Weapon? weaponFilter,
+    required Map<String, int> adjustAmounts,
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
@@ -235,6 +236,7 @@ class CreateLineupRoute extends PageRouteInfo<CreateLineupRouteArgs> {
           args: CreateLineupRouteArgs(
             teamFilter: teamFilter,
             weaponFilter: weaponFilter,
+            adjustAmounts: adjustAmounts,
             key: key,
           ),
           initialChildren: children,
@@ -245,11 +247,11 @@ class CreateLineupRoute extends PageRouteInfo<CreateLineupRouteArgs> {
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<CreateLineupRouteArgs>(
-          orElse: () => const CreateLineupRouteArgs());
+      final args = data.argsAs<CreateLineupRouteArgs>();
       return CreateLineupPage(
         teamFilter: args.teamFilter,
         weaponFilter: args.weaponFilter,
+        adjustAmounts: args.adjustAmounts,
         key: args.key,
       );
     },
@@ -260,6 +262,7 @@ class CreateLineupRouteArgs {
   const CreateLineupRouteArgs({
     this.teamFilter,
     this.weaponFilter,
+    required this.adjustAmounts,
     this.key,
   });
 
@@ -267,11 +270,13 @@ class CreateLineupRouteArgs {
 
   final Weapon? weaponFilter;
 
+  final Map<String, int> adjustAmounts;
+
   final Key? key;
 
   @override
   String toString() {
-    return 'CreateLineupRouteArgs{teamFilter: $teamFilter, weaponFilter: $weaponFilter, key: $key}';
+    return 'CreateLineupRouteArgs{teamFilter: $teamFilter, weaponFilter: $weaponFilter, adjustAmounts: $adjustAmounts, key: $key}';
   }
 }
 
