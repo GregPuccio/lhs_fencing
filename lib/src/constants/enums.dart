@@ -77,6 +77,27 @@ enum TypePractice {
     }
   }
 
+  String get abbrev {
+    switch (this) {
+      case TypePractice.practice:
+        return "P";
+      case TypePractice.meet:
+        return "DM H";
+      case TypePractice.awayMeet:
+        return "DM A";
+      case TypePractice.spectatingHome:
+        return "S H";
+      case TypePractice.spectatingAway:
+        return "S A";
+      case TypePractice.quad:
+        return "Q";
+      case TypePractice.tournament:
+        return "T";
+      case TypePractice.fundraiser:
+        return "F";
+    }
+  }
+
   bool get usesBus {
     switch (this) {
       case TypePractice.practice:

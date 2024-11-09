@@ -1,26 +1,31 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/lineup.dart';
+import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 @RoutePage()
 class CreateLineupPage extends ConsumerStatefulWidget {
-  final Team? teamFilter;
-  final Weapon? weaponFilter;
+  final Team team;
+  final Weapon weapon;
   final Map<String, int> adjustAmounts;
+  final List<Practice> unaccountedPractices;
   const CreateLineupPage(
-      {this.teamFilter,
-      this.weaponFilter,
+      {required this.team,
+      required this.weapon,
       required this.adjustAmounts,
+      required this.unaccountedPractices,
       super.key});
 
   @override
@@ -33,22 +38,19 @@ class _CreateLineupPageState extends ConsumerState<CreateLineupPage> {
   late List<UserData> fencers;
   late List<UserData> fencersToShow;
   List<UserData> starters = [];
-  Team? teamFilter;
-  Weapon? weaponFilter;
+  late Team team;
+  late Weapon weapon;
   bool loadFencers = true;
+  Lineup? currentLineup;
 
   @override
   void initState() {
-    teamFilter = widget.teamFilter;
-    weaponFilter = widget.weaponFilter;
+    team = widget.team;
+    weapon = widget.weapon;
     super.initState();
   }
 
-  void updateFencers() {
-    fencersToShow = fencers
-        .where((f) => f.weapon == weaponFilter && f.team == teamFilter)
-        .toList();
-  }
+  void updateFencers() {}
 
   @override
   Widget build(BuildContext context) {
@@ -60,176 +62,127 @@ class _CreateLineupPageState extends ConsumerState<CreateLineupPage> {
 
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Create Lineup"),
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(25),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 4.0, left: 15),
-                  child: SizedBox(
-                    height: 30,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        if (teamFilter == null)
-                          PopupMenuButton<Team>(
-                            initialValue: teamFilter,
-                            offset: const Offset(0, 30),
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            itemBuilder: (context) =>
-                                List<PopupMenuItem<Team>>.generate(
-                              Team.values.length - 1,
-                              (index) => PopupMenuItem(
-                                value: Team.values[index],
-                                child: Text(Team.values[index].type),
-                              ),
-                            ).toList(),
-                            icon: const Row(
-                              children: [
-                                Text("Team"),
-                                Icon(Icons.arrow_drop_down),
-                              ],
-                            ),
-                            onSelected: (Team value) => setState(() {
-                              teamFilter = value;
-                            }),
+          title: const Text("Create New Lineup"),
+        ),
+        body: ReorderableListView.builder(
+          header: Column(
+            children: [
+              Row(
+                children: [
+                  Flexible(
+                      child: ListTile(
+                    leading: const Icon(Symbols.swords),
+                    subtitle: const Text("Weapon"),
+                    title: Text(weapon.type),
+                  )),
+                  Flexible(
+                      child: ListTile(
+                    leading: const Icon(Symbols.diversity_3),
+                    subtitle: const Text("Team"),
+                    title: Text(team.type),
+                  )),
+                ],
+              ),
+              const Divider(),
+              Row(
+                children: [
+                  Flexible(
+                      child: ListTile(
+                    // leading: const Icon(Symbols.swords),
+                    title: const Text("Starting Lineup:"),
+                    subtitle: Text(currentLineup != null
+                        ? DateFormat("EEE, MM/dd @ hh:mm aa")
+                            .format(currentLineup!.createdAt)
+                        : "None found"),
+                  )),
+                  Flexible(
+                    child: ListTile(
+                      title: const Text("Attendances Used:"),
+                      subtitle: Text(widget.unaccountedPractices
+                          .map(
+                            (p) =>
+                                "${p.type.abbrev} ${DateFormat("MM/dd").format(p.startTime)}",
                           )
-                        else
-                          Card(
-                            color:
-                                Theme.of(context).colorScheme.primaryContainer,
-                            child: IconButton(
-                              iconSize: 16,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              onPressed: () => setState(() {
-                                teamFilter = null;
-                              }),
-                              icon: Row(children: [
-                                Text(teamFilter!.type),
-                                const SizedBox(width: 4),
-                                const Icon(Icons.cancel)
-                              ]),
-                            ),
-                          ),
-                        if (weaponFilter == null)
-                          PopupMenuButton<Weapon>(
-                            initialValue: weaponFilter,
-                            offset: const Offset(0, 30),
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            itemBuilder: (context) =>
-                                List<PopupMenuItem<Weapon>>.generate(
-                              Weapon.values.length,
-                              (index) => PopupMenuItem(
-                                value: Weapon.values[index],
-                                child: Text(Weapon.values[index].type),
-                              ),
-                            ).toList(),
-                            icon: const Row(
-                              children: [
-                                Text("Weapon"),
-                                Icon(Icons.arrow_drop_down),
-                              ],
-                            ),
-                            onSelected: (Weapon value) => setState(() {
-                              weaponFilter = value;
-                              updateFencers();
-                            }),
-                          )
-                        else
-                          Card(
-                            color:
-                                Theme.of(context).colorScheme.primaryContainer,
-                            child: IconButton(
-                              iconSize: 16,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              onPressed: () => setState(() {
-                                weaponFilter = null;
-                                updateFencers();
-                              }),
-                              icon: Row(children: [
-                                Text(weaponFilter!.type),
-                                const SizedBox(width: 4),
-                                const Icon(Icons.cancel)
-                              ]),
-                            ),
-                          ),
-                      ],
+                          .join(", ")),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        body: teamFilter == null || weaponFilter == null
-            ? const ListTile(
-                title: Text("Select your filters!"),
-                subtitle: Text(
-                    "Team and weapon filters must be selected to create a lineup"),
-              )
-            : ReorderableListView.builder(
-                onReorder: (oldIndex, newIndex) {
-                  setState(() {
-                    if (oldIndex < newIndex) {
-                      newIndex -= 1;
-                    }
-                    final UserData item = fencersToShow.removeAt(oldIndex);
-                    fencersToShow.insert(newIndex, item);
-                  });
-                },
-                itemCount: fencersToShow.length,
-                itemBuilder: (context, index) {
-                  UserData fencer = fencersToShow[index];
-                  return CheckboxListTile(
-                    enabled:
-                        starters.contains(fencer) ? true : starters.length < 2,
-                    selected: starters.contains(fencer),
-                    secondary: CircleAvatar(
-                      child: Text("${index + 1}"),
-                    ),
-                    key: ValueKey(fencer),
-                    title: Text(fencer.fullName),
-                    subtitle: Text(
-                        "Rating: ${fencer.rating.isEmpty ? "U" : fencer.rating}"),
-                    value: starters.contains(fencer),
-                    onChanged: (value) {
-                      setState(() {
-                        if (value == true) {
-                          starters.add(fencer);
-                        } else {
-                          starters.remove(fencer);
-                        }
-                      });
-                    },
-                  );
-                },
+                ],
               ),
+              const Divider(),
+            ],
+          ),
+          onReorder: (oldIndex, newIndex) {
+            setState(() {
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+              final UserData item = fencersToShow.removeAt(oldIndex);
+              fencersToShow.insert(newIndex, item);
+            });
+          },
+          itemCount: fencersToShow.length,
+          itemBuilder: (context, index) {
+            UserData fencer = fencersToShow[index];
+            int adjustAmount =
+                widget.adjustAmounts.putIfAbsent(fencer.id, () => 0);
+            return CheckboxListTile(
+              enabled: starters.contains(fencer) ? true : starters.length < 2,
+              selected: starters.contains(fencer),
+              secondary: CircleAvatar(
+                child: Text("${index + 1}"),
+              ),
+              key: ValueKey(fencer),
+              title: Row(
+                children: [
+                  Text(fencer.fullName),
+                  const SizedBox(width: 8),
+                  if (adjustAmount > 0) ...[
+                    Text(
+                      "Dropped $adjustAmount Position${adjustAmount > 1 ? "s" : ""}",
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                    ),
+                  ],
+                ],
+              ),
+              subtitle: Text(
+                  "Rating: ${fencer.rating.isEmpty ? "U" : fencer.rating}"),
+              value: starters.contains(fencer),
+              onChanged: (value) {
+                setState(() {
+                  if (value == true) {
+                    starters.add(fencer);
+                  } else {
+                    starters.remove(fencer);
+                  }
+                });
+              },
+            );
+          },
+        ),
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
           child: TextButton.icon(
-            onPressed: teamFilter == null || weaponFilter == null
-                ? null
-                : () async {
-                    await FirestoreService.instance.addData(
-                      path: FirestorePath.lineups(),
-                      data: Lineup(
-                              id: "",
-                              fencers: fencersToShow,
-                              starters: starters,
-                              createdAt: DateTime.now(),
-                              practicesAdded: [],
-                              weapon: weaponFilter!,
-                              team: teamFilter!)
-                          .toMap(),
-                    );
-                    if (context.mounted) {
-                      await context.maybePop();
-                    }
-                  },
+            onPressed: () async {
+              await FirestoreService.instance.addData(
+                path: FirestorePath.lineups(),
+                data: Lineup(
+                        id: "",
+                        fencers: fencersToShow,
+                        starters: starters,
+                        createdAt: DateTime.now(),
+                        practicesAdded: widget.unaccountedPractices
+                            .map((p) => p.id)
+                            .toList(),
+                        weapon: weapon,
+                        team: team)
+                    .toMap(),
+              );
+              if (context.mounted) {
+                await context.maybePop();
+              }
+            },
             label: const Text("Create This Lineup"),
             icon: const Icon(Icons.save),
           ),
@@ -237,22 +190,44 @@ class _CreateLineupPageState extends ConsumerState<CreateLineupPage> {
       );
     }
 
-    Widget whenFencersData(List<UserData> data) {
+    Widget whenLineupsData(List<Lineup> data) {
+      lineups = data;
       if (loadFencers) {
-        fencers = data.toList();
-        updateFencers();
+        fencers = ref.read(activeFencersProvider);
+
+        List<Lineup> filteredLineups =
+            lineups.where((l) => l.team == team && l.weapon == weapon).toList();
+        currentLineup = filteredLineups.isEmpty ? null : filteredLineups.last;
+
+        fencersToShow =
+            fencers.where((f) => f.weapon == weapon && f.team == team).toList();
+        List<UserData> fencersNotInLineup = fencersToShow
+            .where((f) => !(currentLineup?.fencers.contains(f) ?? false))
+            .toList();
+
+        fencersToShow = (currentLineup?.fencers ?? []) + fencersNotInLineup;
+
+        List<UserData> adjustedFencers = fencersToShow.reversed.toList();
+
+        for (int i = 0; i < adjustedFencers.length; i++) {
+          UserData fencer = adjustedFencers[i];
+          int adjustAmount =
+              widget.adjustAmounts.putIfAbsent(fencer.id, () => 0);
+
+          if (i - adjustAmount >= 0) {
+            adjustedFencers.removeAt(i);
+            adjustedFencers.insert(i - adjustAmount, fencer);
+          } else {
+            adjustedFencers.removeAt(i);
+            adjustedFencers.insert(0, fencer);
+          }
+        }
+        fencersToShow = adjustedFencers.reversed.toList();
+
         loadFencers = false;
       }
       return ref.watch(allAttendancesProvider).when(
           data: whenData,
-          error: (error, stackTrace) => const ErrorPage(),
-          loading: () => const LoadingPage());
-    }
-
-    Widget whenLineupsData(List<Lineup> data) {
-      lineups = data;
-      return ref.watch(fencersProvider).when(
-          data: whenFencersData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage());
     }

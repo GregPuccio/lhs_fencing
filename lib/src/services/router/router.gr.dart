@@ -226,17 +226,19 @@ class BoutHistoryRoute extends PageRouteInfo<void> {
 /// [CreateLineupPage]
 class CreateLineupRoute extends PageRouteInfo<CreateLineupRouteArgs> {
   CreateLineupRoute({
-    Team? teamFilter,
-    Weapon? weaponFilter,
+    required Team team,
+    required Weapon weapon,
     required Map<String, int> adjustAmounts,
+    required List<Practice> unaccountedPractices,
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
           CreateLineupRoute.name,
           args: CreateLineupRouteArgs(
-            teamFilter: teamFilter,
-            weaponFilter: weaponFilter,
+            team: team,
+            weapon: weapon,
             adjustAmounts: adjustAmounts,
+            unaccountedPractices: unaccountedPractices,
             key: key,
           ),
           initialChildren: children,
@@ -249,9 +251,10 @@ class CreateLineupRoute extends PageRouteInfo<CreateLineupRouteArgs> {
     builder: (data) {
       final args = data.argsAs<CreateLineupRouteArgs>();
       return CreateLineupPage(
-        teamFilter: args.teamFilter,
-        weaponFilter: args.weaponFilter,
+        team: args.team,
+        weapon: args.weapon,
         adjustAmounts: args.adjustAmounts,
+        unaccountedPractices: args.unaccountedPractices,
         key: args.key,
       );
     },
@@ -260,23 +263,26 @@ class CreateLineupRoute extends PageRouteInfo<CreateLineupRouteArgs> {
 
 class CreateLineupRouteArgs {
   const CreateLineupRouteArgs({
-    this.teamFilter,
-    this.weaponFilter,
+    required this.team,
+    required this.weapon,
     required this.adjustAmounts,
+    required this.unaccountedPractices,
     this.key,
   });
 
-  final Team? teamFilter;
+  final Team team;
 
-  final Weapon? weaponFilter;
+  final Weapon weapon;
 
   final Map<String, int> adjustAmounts;
+
+  final List<Practice> unaccountedPractices;
 
   final Key? key;
 
   @override
   String toString() {
-    return 'CreateLineupRouteArgs{teamFilter: $teamFilter, weaponFilter: $weaponFilter, adjustAmounts: $adjustAmounts, key: $key}';
+    return 'CreateLineupRouteArgs{team: $team, weapon: $weapon, adjustAmounts: $adjustAmounts, unaccountedPractices: $unaccountedPractices, key: $key}';
   }
 }
 

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -121,10 +119,27 @@ class _LineupPageState extends ConsumerState<LineupPage> {
       }
 
       if (adjustAmounts.isNotEmpty) {
-        int reduceAmount = adjustAmounts.values.reduce(min);
+        int reduceAmount = adjustAmounts.values.last;
+        // this is used to ensure the bottom fencer is still moved down the correct amount
+        // by subtracting the same amount from the fencers above until a [0] is found
         if (reduceAmount >= 0) {
           for (int i = 0; i < adjustAmounts.length; i++) {
-            adjustAmounts.updateAll((key, value) => value -= reduceAmount);
+            if (adjustAmounts.values.toList().reversed.toList()[i] != 0) {
+              adjustAmounts.update(
+                  adjustAmounts.keys.toList().reversed.toList()[i],
+                  (value) => value - reduceAmount);
+            } else {
+              break;
+            }
+          }
+        }
+        // This is used to ensure that there will never be adjustments greater
+        // than the amount of spaces available under the current active fencers.
+        // This does not take into account new fencers who are just joining the lineup.
+        for (int i = 0; i < adjustAmounts.length; i++) {
+          if (adjustAmounts.values.toList()[i] > adjustAmounts.length - i - 1) {
+            adjustAmounts.update(adjustAmounts.keys.toList()[i],
+                (value) => adjustAmounts.length - i - 1);
           }
         }
       }
@@ -135,8 +150,9 @@ class _LineupPageState extends ConsumerState<LineupPage> {
                 onPressed: () => context.router.push(
                   CreateLineupRoute(
                     adjustAmounts: adjustAmounts,
-                    teamFilter: teamFilter,
-                    weaponFilter: weaponFilter,
+                    unaccountedPractices: unaccountedPractices,
+                    team: teamFilter!,
+                    weapon: weaponFilter!,
                   ),
                 ),
                 label: Text(
@@ -270,8 +286,9 @@ class _LineupPageState extends ConsumerState<LineupPage> {
                         onTap: () => context.router.push(
                           CreateLineupRoute(
                             adjustAmounts: adjustAmounts,
-                            teamFilter: teamFilter,
-                            weaponFilter: weaponFilter,
+                            unaccountedPractices: unaccountedPractices,
+                            team: teamFilter!,
+                            weapon: weaponFilter!,
                           ),
                         ),
                       );
@@ -357,18 +374,11 @@ class _LineupPageState extends ConsumerState<LineupPage> {
           loading: () => const LoadingPage());
     }
 
-    Widget whenFencersData(List<UserData> data) {
-      fencers = data;
-      return ref.watch(practicesProvider).when(
-          data: whenPracticesData,
-          error: (error, stackTrace) => const ErrorPage(),
-          loading: () => const LoadingPage());
-    }
-
     Widget whenLineupsData(List<Lineup> data) {
       lineups = data;
-      return ref.watch(fencersProvider).when(
-          data: whenFencersData,
+      fencers = ref.watch(activeFencersProvider);
+      return ref.watch(practicesProvider).when(
+          data: whenPracticesData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage());
     }

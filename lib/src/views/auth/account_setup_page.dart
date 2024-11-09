@@ -202,8 +202,8 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   ],
                   const SizedBox(height: 8),
                   const Divider(),
-                  if (user.email!.contains("lps") &&
-                      widget.userData == null) ...[
+                  if (user.email!.contains("lps") ||
+                      (widget.userData?.email.contains("lps") ?? false)) ...[
                     ListTile(
                       title: const Text("School Year"),
                       trailing: DropdownButton(

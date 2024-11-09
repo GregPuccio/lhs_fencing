@@ -83,6 +83,11 @@ final fencersProvider = StreamProvider<List<UserData>>((ref) {
   );
 });
 
+final activeFencersProvider = Provider<List<UserData>>((ref) {
+  final fencers = ref.watch(fencersProvider).asData!.value;
+  return fencers.where((f) => f.active).toList();
+});
+
 final practicesProvider = StreamProvider((ref) {
   final database = ref.watch(databaseProvider);
   return database.collectionStream(
