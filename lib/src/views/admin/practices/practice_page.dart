@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
+import 'package:lhs_fencing/src/models/bout.dart';
+import 'package:lhs_fencing/src/models/bout_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
@@ -114,6 +116,7 @@ class _PracticePageState extends ConsumerState<PracticePage> {
             filteredFencers, attendances, PracticeShowState.noReason),
       ];
       UserData me = ref.watch(userDataProvider).value!;
+      List<BoutMonth> months = ref.watch(thisSeasonBoutsProvider).value ?? [];
       bool isTakingBus = practice.busCoaches.any((coach) => coach.id == me.id);
       return DefaultTabController(
         length: PracticeShowState.values.length,
@@ -239,7 +242,7 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                                           scheme: "mailto",
                                           path: coach.email,
                                           query: practice.emailMessage(
-                                              fencerLists, tod, coach));
+                                              fencerLists[index], tod, coach));
                                       try {
                                         launchUrl(url).then((value) =>
                                             context.mounted
@@ -268,6 +271,18 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                     }
                   }
                   UserData fencer = fencerLists[index][i];
+                  List<Bout> bouts = [];
+                  for (var month in months) {
+                    if (month.fencerID == fencer.id) {
+                      bouts.addAll(month.bouts);
+                    }
+                  }
+                  bouts.retainWhere((b) =>
+                      DateTime(b.date.year, b.date.month, b.date.day)
+                          .isAtSameMomentAs(DateTime(
+                              practice.startTime.year,
+                              practice.startTime.month,
+                              practice.startTime.day)));
 
                   Attendance attendance = attendances.firstWhere(
                     (element) =>
@@ -276,7 +291,14 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                     orElse: () => Attendance.create(practice, fencer),
                   );
 
+                  bool didBout = bouts.length >= 3;
+
                   return ListTile(
+                    textColor: index == 1
+                        ? !didBout
+                            ? Theme.of(context).colorScheme.error
+                            : Theme.of(context).colorScheme.primary
+                        : null,
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

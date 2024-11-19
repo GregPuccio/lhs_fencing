@@ -39,9 +39,8 @@ class Practice {
     return DateFormat("MM/dd").format(startTime);
   }
 
-  String emailMessage(
-      List<List<UserData>> fencerLists, String tod, UserData coach) {
-    return """bcc=${List.generate(fencerLists.last.length, (index) => fencerLists.last[index].email).join(",")}&subject=Livingston Fencing Attendance $emailString
+  String emailMessage(List<UserData> fencerList, String tod, UserData coach) {
+    return """bcc=${List.generate(fencerList.length, (index) => fencerList[index].email).join(",")}&subject=Livingston Fencing Attendance $emailString
 &body=Good $tod students,
 
 Our records are showing that you did not attend the ${type.type} on $emailString.
