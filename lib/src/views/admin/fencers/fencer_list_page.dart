@@ -13,7 +13,7 @@ import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
-import 'package:lhs_fencing/src/views/admin/fencer_details_page.dart';
+import 'package:lhs_fencing/src/views/admin/fencers/fencer_details_page.dart';
 import 'package:lhs_fencing/src/views/auth/account_setup_page.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/indicator.dart';

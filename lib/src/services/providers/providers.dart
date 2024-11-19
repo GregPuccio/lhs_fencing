@@ -5,6 +5,7 @@ import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/bout_month.dart';
 import 'package:lhs_fencing/src/models/drill_season.dart';
 import 'package:lhs_fencing/src/models/lineup.dart';
+import 'package:lhs_fencing/src/models/pool.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
@@ -155,6 +156,14 @@ final thisSeasonUserBoutsProvider = StreamProvider((ref) {
       builder: (map, docID) => BoutMonth.fromMap(map!).copyWith(id: docID),
       queryBuilder: (query) =>
           query.where("fencerID", isEqualTo: auth.value!.uid));
+});
+
+final poolsProvider = StreamProvider((ref) {
+  final database = ref.watch(databaseProvider);
+  return database.collectionStream(
+    path: FirestorePath.pools(),
+    builder: (map, docID) => Pool.fromMap(map!).copyWith(id: docID),
+  );
 });
 
 final lineupsProvider = StreamProvider((ref) {

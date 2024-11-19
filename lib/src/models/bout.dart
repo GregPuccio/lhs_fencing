@@ -158,3 +158,19 @@ class Bout implements Comparable<Bout> {
     }
   }
 }
+
+List<Bout> createPoolBouts(List<UserData> fencers) {
+  List<Bout> boutList = [];
+  for (var i = 0; i < fencers.length; i++) {
+    for (var j = i + 1; j < fencers.length; j++) {
+      boutList.add(
+        Bout.create(
+          fencer: fencers[i],
+          opponent: fencers[j],
+        ),
+      );
+    }
+  }
+
+  return boutList;
+}

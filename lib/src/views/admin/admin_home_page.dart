@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/views/admin/widgets/admin_upcoming_events.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class AdminHomePage extends ConsumerStatefulWidget {
   final void Function(int) updateIndexFn;
@@ -49,10 +50,6 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
                         const Text("Fencers"),
                       ],
                     ),
-
-                    // subtitle:
-                    //     const Text("View fencers and their participation info"),
-                    // trailing: const Icon(Icons.arrow_forward),
                     onTap: () => context.router.push(const FencerListRoute()),
                   ),
                 ),
@@ -77,9 +74,6 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
                         ),
                       ],
                     ),
-                    // subtitle: const Text(
-                    //     "View and edit the equipment fencers have borrowed"),
-                    // trailing: const Icon(Icons.arrow_forward),
                     onTap: () =>
                         context.router.push(const EquipmentListRoute()),
                   ),
@@ -94,17 +88,13 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          Icons.list_alt,
+                          Symbols.swords,
                           color: Theme.of(context).primaryColor,
                         ),
                         const SizedBox(height: 8),
                         const Text("Bouts"),
                       ],
                     ),
-
-                    // subtitle:
-                    //     const Text("View fencers and their participation info"),
-                    // trailing: const Icon(Icons.arrow_forward),
                     onTap: () => context.router.push(const BoutHistoryRoute()),
                   ),
                 ),
@@ -126,51 +116,57 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
                         const Text("Drills"),
                       ],
                     ),
-                    // subtitle: const Text(
-                    //     "View and edit the equipment fencers have borrowed"),
-                    // trailing: const Icon(Icons.arrow_forward),
                     onTap: () => context.router.push(const DrillsListRoute()),
                   ),
                 ),
               ),
             ],
           ),
-          SizedBox(
-            height: MediaQuery.of(context).size.width / 4 - 25,
-            width: MediaQuery.of(context).size.width / 4 - 10,
-            child: Card(
-              child: InkWell(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.list,
-                      color: Theme.of(context).primaryColor,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.width / 4 - 25,
+                width: MediaQuery.of(context).size.width / 2 - 10,
+                child: Card(
+                  child: InkWell(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.list,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        const SizedBox(height: 8),
+                        const Text("Lineup"),
+                      ],
                     ),
-                    const SizedBox(height: 8),
-                    const Text("Lineup"),
-                  ],
+                    onTap: () => context.router.push(const LineupRoute()),
+                  ),
                 ),
-
-                // subtitle:
-                //     const Text("View fencers and their participation info"),
-                // trailing: const Icon(Icons.arrow_forward),
-                onTap: () => context.router.push(const LineupRoute()),
               ),
-            ),
+              SizedBox(
+                height: MediaQuery.of(context).size.width / 4 - 25,
+                width: MediaQuery.of(context).size.width / 2 - 10,
+                child: Card(
+                  child: InkWell(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.grid_4x4,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        const SizedBox(height: 8),
+                        const Text("Round Robin"),
+                      ],
+                    ),
+                    onTap: () => context.router.push(const PoolListRoute()),
+                  ),
+                ),
+              ),
+            ],
           ),
-          // const Divider(),
-          // ListTile(
-          //   leading: const Icon(Icons.event),
-          //   title: const Text("Meets and Tournaments List"),
-          //   subtitle: const Text("View all upcoming meets and tournaments"),
-          //   trailing: const Icon(Icons.arrow_forward),
-          //   onTap: () => context.router.push(EventsListRoute()),
-          // ),
-          // ListTile(
-          //   title: const Text("Tap Here"),
-          //   onTap: () => getCurrentBoysStats(context),
-          // ),
           const Divider(),
           AdminUpcomingEvents(updateIndexFn: widget.updateIndexFn),
         ],

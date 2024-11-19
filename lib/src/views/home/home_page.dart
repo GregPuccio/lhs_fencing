@@ -10,7 +10,7 @@ import 'package:lhs_fencing/src/models/practice.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
-import 'package:lhs_fencing/src/views/admin/fencer_details_page.dart';
+import 'package:lhs_fencing/src/views/admin/fencers/fencer_details_page.dart';
 import 'package:lhs_fencing/src/views/home/widgets/no_events_found.dart';
 import 'package:lhs_fencing/src/views/home/widgets/todays_attendance.dart';
 import 'package:lhs_fencing/src/views/home/widgets/upcoming_events.dart';

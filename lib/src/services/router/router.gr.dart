@@ -287,6 +287,25 @@ class CreateLineupRouteArgs {
 }
 
 /// generated route for
+/// [CreatePoolPage]
+class CreatePoolRoute extends PageRouteInfo<void> {
+  const CreatePoolRoute({List<PageRouteInfo>? children})
+      : super(
+          CreatePoolRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'CreatePoolRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const CreatePoolPage();
+    },
+  );
+}
+
+/// generated route for
 /// [DrillsListPage]
 class DrillsListRoute extends PageRouteInfo<void> {
   const DrillsListRoute({List<PageRouteInfo>? children})
@@ -456,6 +475,52 @@ class EditFencerStatusRouteArgs {
 }
 
 /// generated route for
+/// [EditPoolPage]
+class EditPoolRoute extends PageRouteInfo<EditPoolRouteArgs> {
+  EditPoolRoute({
+    required String poolID,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          EditPoolRoute.name,
+          args: EditPoolRouteArgs(
+            poolID: poolID,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'EditPoolRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<EditPoolRouteArgs>();
+      return EditPoolPage(
+        poolID: args.poolID,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class EditPoolRouteArgs {
+  const EditPoolRouteArgs({
+    required this.poolID,
+    this.key,
+  });
+
+  final String poolID;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'EditPoolRouteArgs{poolID: $poolID, key: $key}';
+  }
+}
+
+/// generated route for
 /// [EditPracticePage]
 class EditPracticeRoute extends PageRouteInfo<EditPracticeRouteArgs> {
   EditPracticeRoute({
@@ -619,6 +684,25 @@ class LineupRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const LineupPage();
+    },
+  );
+}
+
+/// generated route for
+/// [PoolListPage]
+class PoolListRoute extends PageRouteInfo<void> {
+  const PoolListRoute({List<PageRouteInfo>? children})
+      : super(
+          PoolListRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'PoolListRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const PoolListPage();
     },
   );
 }

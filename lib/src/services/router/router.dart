@@ -15,12 +15,15 @@ import 'package:lhs_fencing/src/views/admin/equipment/equipment_list_page.dart';
 import 'package:lhs_fencing/src/views/admin/events/event_list.dart';
 import 'package:lhs_fencing/src/views/admin/lineup/create_lineup_page.dart';
 import 'package:lhs_fencing/src/views/admin/lineup/lineup_page.dart';
+import 'package:lhs_fencing/src/views/admin/pools/create_pool.dart';
+import 'package:lhs_fencing/src/views/admin/pools/edit_pool.dart';
+import 'package:lhs_fencing/src/views/admin/pools/pool_list.dart';
 import 'package:lhs_fencing/src/views/admin/practices/add_practices_page.dart';
 import 'package:lhs_fencing/src/views/admin/practices/edit_practice.dart';
 import 'package:lhs_fencing/src/views/admin/drills/drills_list_page.dart';
-import 'package:lhs_fencing/src/views/admin/edit_fencer_status_page.dart';
-import 'package:lhs_fencing/src/views/admin/fencer_details_page.dart';
-import 'package:lhs_fencing/src/views/admin/fencer_list_page.dart';
+import 'package:lhs_fencing/src/views/admin/fencers/edit_fencer_status_page.dart';
+import 'package:lhs_fencing/src/views/admin/fencers/fencer_details_page.dart';
+import 'package:lhs_fencing/src/views/admin/fencers/fencer_list_page.dart';
 import 'package:lhs_fencing/src/views/admin/practices/practice_page.dart';
 import 'package:lhs_fencing/src/views/auth_wrapper.dart';
 import 'package:lhs_fencing/src/views/home/attendance_page.dart';
@@ -48,6 +51,9 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: DrillsListRoute.page, path: "/drillsList"),
     AutoRoute(page: BoutHistoryRoute.page, path: "/boutHistory"),
     AutoRoute(page: AddBoutRoute.page, path: "/addBout"),
+    AutoRoute(page: PoolListRoute.page, path: "/poolList"),
+    AutoRoute(page: EditPoolRoute.page, path: "/editPool"),
+    AutoRoute(page: CreatePoolRoute.page, path: "/createBout"),
     AutoRoute(page: EditBoutRoute.page, path: "/editBout"),
     AutoRoute(page: AddDrillsRoute.page, path: "/addDrills"),
     AutoRoute(page: EditDrillsRoute.page, path: "/editDrills"),

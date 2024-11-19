@@ -250,6 +250,10 @@ enum Weapon {
     }
   }
 
+  static List<Weapon> get weapons {
+    return [saber, foil, epee];
+  }
+
   String toMap() => name;
   static Weapon fromMap(String map) =>
       values.byName(map.isEmpty ? "foil" : map);
