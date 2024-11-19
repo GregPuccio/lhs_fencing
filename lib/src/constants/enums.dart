@@ -250,6 +250,21 @@ enum Weapon {
     }
   }
 
+  String get drillType {
+    switch (this) {
+      case saber:
+        return "Saber";
+      case foil:
+        return "Foil";
+      case epee:
+        return "Epee";
+      case unsure:
+        return "Any Weapon";
+      case manager:
+        return "DO NOT USE";
+    }
+  }
+
   static List<Weapon> get weapons {
     return [saber, foil, epee];
   }

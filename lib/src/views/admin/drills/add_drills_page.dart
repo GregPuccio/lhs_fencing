@@ -7,6 +7,7 @@ import 'package:lhs_fencing/src/models/drill_season.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 @RoutePage()
 class AddDrillsPage extends ConsumerStatefulWidget {
@@ -34,6 +35,51 @@ class _AddDrillsPageState extends ConsumerState<AddDrillsPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            Row(
+              children: [
+                Flexible(
+                  child: ListTile(
+                    leading: const Icon(Icons.fitness_center),
+                    title: DropdownButton<TypeDrill>(
+                        value: drill.type,
+                        items: List.generate(
+                          TypeDrill.values.length,
+                          (index) => DropdownMenuItem(
+                            value: TypeDrill.values[index],
+                            child: Text(TypeDrill.values[index].type),
+                          ),
+                        ),
+                        onChanged: (value) {
+                          if (value == null) return;
+                          setState(() {
+                            drill.type = value;
+                          });
+                        }),
+                  ),
+                ),
+                Flexible(
+                  child: ListTile(
+                    leading: const Icon(Symbols.swords),
+                    title: DropdownButton<Weapon>(
+                        value: drill.weapon,
+                        items: List.generate(
+                          Weapon.values.length - 1,
+                          (index) => DropdownMenuItem(
+                            value: Weapon.values[index],
+                            child: Text(Weapon.values[index].drillType),
+                          ),
+                        ),
+                        onChanged: (value) {
+                          if (value == null) return;
+                          setState(() {
+                            drill.weapon = value;
+                          });
+                        }),
+                  ),
+                ),
+              ],
+            ),
+            const Divider(),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
@@ -58,25 +104,6 @@ class _AddDrillsPageState extends ConsumerState<AddDrillsPage> {
                 onChanged: (value) => drill.description = value,
                 maxLines: 3,
               ),
-            ),
-            const Divider(),
-            ListTile(
-              title: const Text("Type"),
-              trailing: DropdownButton<TypeDrill>(
-                  value: drill.type,
-                  items: List.generate(
-                    TypeDrill.values.length,
-                    (index) => DropdownMenuItem(
-                      value: TypeDrill.values[index],
-                      child: Text(TypeDrill.values[index].type),
-                    ),
-                  ),
-                  onChanged: (value) {
-                    if (value == null) return;
-                    setState(() {
-                      drill.type = value;
-                    });
-                  }),
             ),
             const Divider(),
             OutlinedButton.icon(

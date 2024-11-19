@@ -1,13 +1,16 @@
 import 'dart:convert';
 
-import 'package:lhs_fencing/src/constants/enums.dart';
+import 'package:flutter/widgets.dart';
 import 'package:uuid/uuid.dart';
+
+import 'package:lhs_fencing/src/constants/enums.dart';
 
 class Drill {
   String id;
   String name;
   String description;
   TypeDrill type;
+  Weapon weapon;
   DateTime? lastUsed;
   DateTime created;
   int timesUsed;
@@ -16,6 +19,7 @@ class Drill {
     required this.name,
     required this.description,
     required this.type,
+    required this.weapon,
     this.lastUsed,
     required this.created,
     required this.timesUsed,
@@ -29,6 +33,7 @@ class Drill {
       type: TypeDrill.footwork,
       created: DateTime.now(),
       timesUsed: 0,
+      weapon: Weapon.unsure,
     );
   }
 
@@ -37,7 +42,8 @@ class Drill {
     String? name,
     String? description,
     TypeDrill? type,
-    DateTime? lastUsed,
+    Weapon? weapon,
+    ValueGetter<DateTime?>? lastUsed,
     DateTime? created,
     int? timesUsed,
   }) {
@@ -46,7 +52,8 @@ class Drill {
       name: name ?? this.name,
       description: description ?? this.description,
       type: type ?? this.type,
-      lastUsed: lastUsed ?? this.lastUsed,
+      weapon: weapon ?? this.weapon,
+      lastUsed: lastUsed != null ? lastUsed() : this.lastUsed,
       created: created ?? this.created,
       timesUsed: timesUsed ?? this.timesUsed,
     );
@@ -58,6 +65,7 @@ class Drill {
       'name': name,
       'description': description,
       'type': type.toMap(),
+      'weapon': weapon.toMap(),
       'lastUsed': lastUsed?.millisecondsSinceEpoch,
       'created': created.millisecondsSinceEpoch,
       'timesUsed': timesUsed,
@@ -70,6 +78,7 @@ class Drill {
       name: map['name'] ?? '',
       description: map['description'] ?? '',
       type: TypeDrill.fromMap(map['type']),
+      weapon: Weapon.fromMap(map['weapon'] ?? 'unsure'),
       lastUsed: map['lastUsed'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['lastUsed'])
           : null,
@@ -84,7 +93,7 @@ class Drill {
 
   @override
   String toString() {
-    return 'Drill(id: $id, name: $name, description: $description, type: $type, lastUsed: $lastUsed, created: $created, timesUsed: $timesUsed)';
+    return 'Drill(id: $id, name: $name, description: $description, type: $type, weapon: $weapon, lastUsed: $lastUsed, created: $created, timesUsed: $timesUsed)';
   }
 
   @override
@@ -96,6 +105,7 @@ class Drill {
         other.name == name &&
         other.description == description &&
         other.type == type &&
+        other.weapon == weapon &&
         other.lastUsed == lastUsed &&
         other.created == created &&
         other.timesUsed == timesUsed;
@@ -107,6 +117,7 @@ class Drill {
         name.hashCode ^
         description.hashCode ^
         type.hashCode ^
+        weapon.hashCode ^
         lastUsed.hashCode ^
         created.hashCode ^
         timesUsed.hashCode;

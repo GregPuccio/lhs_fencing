@@ -124,8 +124,18 @@ class _DrillsListPageState extends ConsumerState<DrillsListPage> {
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (index == 0)
-                            TextBadge(text: "${drill.type.type} Drill"),
+                          Row(
+                            children: [
+                              if (index == 0) ...[
+                                TextBadge(text: "${drill.type.type} Drill"),
+                                const SizedBox(width: 8),
+                              ],
+                              TextBadge(
+                                text: drill.weapon.drillType,
+                                weapon: drill.weapon,
+                              ),
+                            ],
+                          ),
                           Text(drill.name),
                         ],
                       ),
