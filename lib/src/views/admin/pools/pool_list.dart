@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
+import 'package:lhs_fencing/src/models/bout_month.dart';
 import 'package:lhs_fencing/src/models/pool.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
@@ -20,12 +21,12 @@ class PoolListPage extends ConsumerStatefulWidget {
 class _PoolListPageState extends ConsumerState<PoolListPage> {
   Team? teamFilter;
   Weapon? weaponFilter;
+  late List<Pool> pools;
+  late List<Pool> filteredPools;
 
   @override
   Widget build(BuildContext context) {
-    Widget whenData(List<Pool> pools) {
-      List<Pool> filteredPools = pools.toList();
-
+    Widget whenData(List<BoutMonth> boutMonths) {
       if (teamFilter != null) {
         filteredPools.retainWhere((pool) => pool.team == teamFilter);
       }
@@ -36,7 +37,7 @@ class _PoolListPageState extends ConsumerState<PoolListPage> {
       return Scaffold(
           floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.add),
-            onPressed: () => context.pushRoute(CreatePoolRoute()),
+            onPressed: () => context.pushRoute(const CreatePoolRoute()),
           ),
           appBar: AppBar(
             title: Row(
@@ -160,7 +161,7 @@ class _PoolListPageState extends ConsumerState<PoolListPage> {
                 leading: const Icon(Icons.grid_4x4),
                 title: Text(
                     "${pool.fencers.length} Fencer Pool | ${pool.team.type} | ${pool.weapon.type}"),
-                subtitle: Text("${pool.bouts.length / 2} bouts"),
+                subtitle: Text("${pool.boutIDs.length} bouts"),
                 onTap: () => context.router.push(
                   EditPoolRoute(poolID: pool.id),
                 ),
@@ -170,8 +171,18 @@ class _PoolListPageState extends ConsumerState<PoolListPage> {
           ));
     }
 
+    Widget whenPoolData(List<Pool> data) {
+      pools = data;
+      filteredPools = pools.toList();
+      return ref.watch(thisSeasonBoutsProvider).when(
+            data: whenData,
+            error: (error, stackTrace) => const ErrorPage(),
+            loading: () => const LoadingPage(),
+          );
+    }
+
     return ref.watch(poolsProvider).when(
-          data: whenData,
+          data: whenPoolData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage(),
         );

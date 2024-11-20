@@ -2,19 +2,23 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
+import 'package:lhs_fencing/src/models/bout.dart';
+import 'package:lhs_fencing/src/models/bout_month.dart';
+import 'package:lhs_fencing/src/models/pool.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
+import 'package:lhs_fencing/src/services/firestore/functions/bout_functions.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 @RoutePage()
-class CreatePoolPage extends StatefulWidget {
+class CreatePoolPage extends ConsumerStatefulWidget {
   const CreatePoolPage({super.key});
 
   @override
-  CreatePoolPageState createState() => CreatePoolPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => CreatePoolPageState();
 }
 
-class CreatePoolPageState extends State<CreatePoolPage> {
+class CreatePoolPageState extends ConsumerState<CreatePoolPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
@@ -68,11 +72,6 @@ class CreatePoolPageState extends State<CreatePoolPage> {
     }
   }
 
-  void _onSavePool() {
-    debugPrint(
-        "Pool saved: Weapon=$_selectedWeapon, Team=$_selectedTeam, Fencers=$_selectedFencers");
-  }
-
   @override
   Widget build(BuildContext context) {
     final isLastPage = _currentPage == 1;
@@ -112,7 +111,6 @@ class CreatePoolPageState extends State<CreatePoolPage> {
             selectedWeapon: _selectedWeapon,
             selectedTeam: _selectedTeam,
             selectedFencers: _selectedFencers,
-            onSave: _onSavePool,
           ),
         ],
       ),
@@ -138,10 +136,25 @@ class CreatePoolPageState extends State<CreatePoolPage> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (isLastPage) {
-                          _showSaveConfirmation(context, () {
-                            // Trigger save logic here
-                            Navigator.of(context)
-                                .pop(); // Return to the previous page
+                          // TODO add a way to toggle a showing that the pool is being built
+                          List<BoutMonth> months =
+                              ref.read(thisSeasonBoutsProvider).value!;
+                          _showSaveConfirmation(context, () async {
+                            (Pool, List<List<Bout>>) data = Pool.create(
+                              _selectedWeapon,
+                              _selectedTeam,
+                              _selectedFencers,
+                            );
+                            for (var i = 0; i < data.$2.length; i++) {
+                              List<Bout> bouts = data.$2[i];
+                              await addBoutPair(months, bouts);
+                            }
+                            await addPool(data.$1);
+                            // TODO turn off the toggle and wait a second before closing then replace with the new page
+                            // Return to the previous page
+                            if (context.mounted) {
+                              context.maybePop();
+                            }
                           });
                         } else {
                           _onNextPage();
@@ -356,14 +369,12 @@ class FinalPoolSummaryStep extends StatelessWidget {
   final Weapon selectedWeapon;
   final Team selectedTeam;
   final List<UserData> selectedFencers;
-  final VoidCallback onSave;
 
   const FinalPoolSummaryStep({
     super.key,
     required this.selectedWeapon,
     required this.selectedTeam,
     required this.selectedFencers,
-    required this.onSave,
   });
 
   @override
@@ -398,9 +409,9 @@ class FinalPoolSummaryStep extends StatelessWidget {
             ],
           ),
           const Divider(),
-          const Text(
-            "Selected Fencers:",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            "${selectedFencers.length} Selected Fencers:",
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Expanded(

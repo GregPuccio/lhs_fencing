@@ -1,30 +1,34 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:lhs_fencing/src/constants/date_utils.dart';
+import 'package:uuid/uuid.dart';
 
+import 'package:lhs_fencing/src/constants/date_utils.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/bout.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
-import 'package:uuid/uuid.dart';
 
 class Pool {
   String id;
   Weapon weapon;
   Team team;
   DateTime date;
-  List<Bout> bouts;
+  List<String> boutIDs;
   List<UserData> fencers;
 
-  static Pool create(Weapon weapon, Team team, List<UserData> fencers) {
-    List<Bout> bouts = createPoolBouts(fencers);
-    return Pool(
-      id: const Uuid().v4(),
-      weapon: weapon,
-      team: team,
-      date: DateTime(0).today,
-      bouts: bouts,
-      fencers: fencers,
+  static (Pool, List<List<Bout>>) create(
+      Weapon weapon, Team team, List<UserData> fencers) {
+    List<List<Bout>> bouts = createPoolBouts(fencers);
+    return (
+      Pool(
+        id: const Uuid().v4(),
+        weapon: weapon,
+        team: team,
+        date: DateTime(0).today,
+        boutIDs: bouts.map((b) => b.first.id).toList(),
+        fencers: fencers,
+      ),
+      bouts,
     );
   }
 
@@ -33,7 +37,7 @@ class Pool {
     required this.weapon,
     required this.team,
     required this.date,
-    required this.bouts,
+    required this.boutIDs,
     required this.fencers,
   });
 
@@ -42,7 +46,7 @@ class Pool {
     Weapon? weapon,
     Team? team,
     DateTime? date,
-    List<Bout>? bouts,
+    List<String>? boutIDs,
     List<UserData>? fencers,
   }) {
     return Pool(
@@ -50,7 +54,7 @@ class Pool {
       weapon: weapon ?? this.weapon,
       team: team ?? this.team,
       date: date ?? this.date,
-      bouts: bouts ?? this.bouts,
+      boutIDs: boutIDs ?? this.boutIDs,
       fencers: fencers ?? this.fencers,
     );
   }
@@ -61,7 +65,7 @@ class Pool {
       'weapon': weapon.toMap(),
       'team': team.toMap(),
       'date': date.millisecondsSinceEpoch,
-      'bouts': bouts.map((x) => x.toMap()).toList(),
+      'boutIDs': boutIDs,
       'fencers': fencers.map((x) => x.toMap()).toList(),
     };
   }
@@ -72,7 +76,7 @@ class Pool {
       weapon: Weapon.fromMap(map['weapon']),
       team: Team.fromMap(map['team']),
       date: DateTime.fromMillisecondsSinceEpoch(map['date']),
-      bouts: List<Bout>.from(map['bouts']?.map((x) => Bout.fromMap(x))),
+      boutIDs: List<String>.from(map['boutIDs']),
       fencers:
           List<UserData>.from(map['fencers']?.map((x) => UserData.fromMap(x))),
     );
@@ -84,7 +88,7 @@ class Pool {
 
   @override
   String toString() {
-    return 'Pool(id: $id, weapon: $weapon, team: $team, date: $date, bouts: $bouts, fencers: $fencers)';
+    return 'Pool(id: $id, weapon: $weapon, team: $team, date: $date, boutIDs: $boutIDs, fencers: $fencers)';
   }
 
   @override
@@ -96,7 +100,7 @@ class Pool {
         other.weapon == weapon &&
         other.team == team &&
         other.date == date &&
-        listEquals(other.bouts, bouts) &&
+        listEquals(other.boutIDs, boutIDs) &&
         listEquals(other.fencers, fencers);
   }
 
@@ -106,7 +110,7 @@ class Pool {
         weapon.hashCode ^
         team.hashCode ^
         date.hashCode ^
-        bouts.hashCode ^
+        boutIDs.hashCode ^
         fencers.hashCode;
   }
 }

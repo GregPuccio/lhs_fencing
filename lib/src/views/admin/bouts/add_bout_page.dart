@@ -8,8 +8,7 @@ import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/bout.dart';
 import 'package:lhs_fencing/src/models/bout_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
-import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
-import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
+import 'package:lhs_fencing/src/services/firestore/functions/bout_functions.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
@@ -302,72 +301,12 @@ class _AddBoutPageState extends ConsumerState<AddBoutPage> {
                       // update bouts with [partnerID]
                       bout1.partnerID = bout2.id;
                       bout2.partnerID = bout1.id;
-                      //upload [fencer] bout
-                      int index = months.indexWhere((m) =>
-                          m.fencerID == fencer!.id &&
-                          m.id ==
-                              bout1.date.monthOnly.millisecondsSinceEpoch
-                                  .toString());
-                      if (index == -1) {
-                        months.add(BoutMonth(
-                            id: bout1.date.monthOnly.millisecondsSinceEpoch
-                                .toString(),
-                            fencerID: fencer!.id,
-                            bouts: [bout1]));
-                        index = months.indexWhere((m) =>
-                            m.fencerID == fencer!.id &&
-                            m.id ==
-                                bout1.date.monthOnly.millisecondsSinceEpoch
-                                    .toString());
-                        await FirestoreService.instance.setData(
-                          path: FirestorePath.currentSeasonBoutMonth(
-                              fencer!.id, months[index].id),
-                          data: months[index].toMap(),
-                        );
-                      } else {
-                        months[index].bouts.add(bout1);
-                        await FirestoreService.instance.updateData(
-                          path: FirestorePath.currentSeasonBoutMonth(
-                              fencer!.id, months[index].id),
-                          data: months[index].toMap(),
-                        );
-                      }
-                      // upload [opponent] bout
-                      index = months.indexWhere((m) =>
-                          m.fencerID == opponent!.id &&
-                          m.id ==
-                              bout1.date.monthOnly.millisecondsSinceEpoch
-                                  .toString());
-                      if (index == -1) {
-                        months.add(BoutMonth(
-                            id: bout2.date.monthOnly.millisecondsSinceEpoch
-                                .toString(),
-                            fencerID: opponent!.id,
-                            bouts: [bout2]));
-                        index = months.indexWhere((m) =>
-                            m.fencerID == opponent!.id &&
-                            m.id ==
-                                bout1.date.monthOnly.millisecondsSinceEpoch
-                                    .toString());
-                        await FirestoreService.instance
-                            .setData(
-                              path: FirestorePath.currentSeasonBoutMonth(
-                                  opponent!.id, months[index].id),
-                              data: months[index].toMap(),
-                            )
-                            .then((value) =>
-                                context.mounted ? context.maybePop() : 0);
-                      } else {
-                        months[index].bouts.add(bout2);
-                        await FirestoreService.instance
-                            .updateData(
-                              path: FirestorePath.currentSeasonBoutMonth(
-                                  opponent!.id, months[index].id),
-                              data: months[index].toMap(),
-                            )
-                            .then((value) =>
-                                context.mounted ? context.maybePop() : 0);
-                      }
+                      // upload bout pair to database
+                      await addBoutPair(months, [bout1, bout2]).then((value) {
+                        if (context.mounted) {
+                          context.maybePop();
+                        }
+                      });
                     }
                   : null,
               icon: const Text("Add Bout"),

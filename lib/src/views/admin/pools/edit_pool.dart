@@ -2,12 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
+import 'package:lhs_fencing/src/models/bout.dart';
+import 'package:lhs_fencing/src/models/bout_month.dart';
 import 'package:lhs_fencing/src/models/pool.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/views/auth/account_setup_page.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
-import 'package:lhs_fencing/src/widgets/text_badge.dart';
 
 @RoutePage()
 class EditPoolPage extends ConsumerStatefulWidget {
@@ -19,20 +20,12 @@ class EditPoolPage extends ConsumerStatefulWidget {
 }
 
 class _EditPoolPageState extends ConsumerState<EditPoolPage> {
-  Team? teamFilter;
-  Weapon? weaponFilter;
+  late List<Bout> bouts;
 
   @override
   Widget build(BuildContext context) {
     Widget whenData(List<Pool> pools) {
-      List<Pool> filteredPools = pools.toList();
-
-      if (teamFilter != null) {
-        filteredPools.retainWhere((pool) => pool.team == teamFilter);
-      }
-      if (weaponFilter != null) {
-        filteredPools.retainWhere((pool) => pool.weapon == weaponFilter);
-      }
+      Pool pool = pools.firstWhere((p) => p.id == widget.poolID);
 
       return Scaffold(
           floatingActionButton: FloatingActionButton(
@@ -44,136 +37,40 @@ class _EditPoolPageState extends ConsumerState<EditPoolPage> {
             ),
           ),
           appBar: AppBar(
-            title: Row(
-              children: [
-                const Text("Pool List"),
-                const SizedBox(width: 8),
-                TextBadge(text: "${filteredPools.length}/${pools.length}"),
-              ],
-            ),
-            bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(25),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 4.0, left: 15),
-                      child: SizedBox(
-                        height: 30,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            if (teamFilter == null)
-                              PopupMenuButton<Team>(
-                                initialValue: teamFilter,
-                                offset: const Offset(0, 30),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                itemBuilder: (context) =>
-                                    List<PopupMenuItem<Team>>.generate(
-                                  Team.values.length - 1,
-                                  (index) => PopupMenuItem(
-                                    value: Team.values[index],
-                                    child: Text(Team.values[index].type),
-                                  ),
-                                ).toList(),
-                                icon: const Row(
-                                  children: [
-                                    Text("Team"),
-                                    Icon(Icons.arrow_drop_down),
-                                  ],
-                                ),
-                                onSelected: (Team value) => setState(() {
-                                  teamFilter = value;
-                                }),
-                              )
-                            else
-                              Card(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primaryContainer,
-                                child: IconButton(
-                                  iconSize: 16,
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 8),
-                                  onPressed: () => setState(() {
-                                    teamFilter = null;
-                                  }),
-                                  icon: Row(children: [
-                                    Text(teamFilter!.type),
-                                    const SizedBox(width: 4),
-                                    const Icon(Icons.cancel)
-                                  ]),
-                                ),
-                              ),
-                            if (weaponFilter == null)
-                              PopupMenuButton<Weapon>(
-                                initialValue: weaponFilter,
-                                offset: const Offset(0, 30),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                itemBuilder: (context) =>
-                                    List<PopupMenuItem<Weapon>>.generate(
-                                  Weapon.values.length,
-                                  (index) => PopupMenuItem(
-                                    value: Weapon.values[index],
-                                    child: Text(Weapon.values[index].type),
-                                  ),
-                                ).toList(),
-                                icon: const Row(
-                                  children: [
-                                    Text("Weapon"),
-                                    Icon(Icons.arrow_drop_down),
-                                  ],
-                                ),
-                                onSelected: (Weapon value) => setState(() {
-                                  weaponFilter = value;
-                                }),
-                              )
-                            else
-                              Card(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primaryContainer,
-                                child: IconButton(
-                                  iconSize: 16,
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 8),
-                                  onPressed: () => setState(() {
-                                    weaponFilter = null;
-                                  }),
-                                  icon: Row(children: [
-                                    Text(weaponFilter!.type),
-                                    const SizedBox(width: 4),
-                                    const Icon(Icons.cancel)
-                                  ]),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                )),
+            title: const Text("Pool"),
           ),
           body: ListView.separated(
             padding: const EdgeInsets.only(bottom: 60),
-            itemCount: filteredPools.length,
+            itemCount: pool.boutIDs.length,
             itemBuilder: (context, index) {
-              Pool pool = filteredPools[index];
+              Bout bout = bouts.firstWhere((b) => b.id == pool.boutIDs[index]);
               return ListTile(
-                leading: const Icon(Icons.grid_4x4),
+                leading: CircleAvatar(
+                  child: Text("${index + 1}"),
+                ),
                 title: Text(
-                    "${pool.fencers.length} Fencer Pool | ${pool.team.type} | ${pool.weapon.type}"),
-                subtitle: Text("${pool.bouts.length / 2} bouts"),
+                    "${bout.fencer.fullShortenedName} vs ${bout.opponent.fullShortenedName}"),
+                subtitle: Text("${bout.original}"),
               );
             },
             separatorBuilder: (context, index) => const Divider(),
           ));
     }
 
-    return ref.watch(poolsProvider).when(
-          data: whenData,
+    Widget whenBoutData(List<BoutMonth> boutMonths) {
+      bouts = [];
+      for (var month in boutMonths) {
+        bouts.addAll(month.bouts);
+      }
+      return ref.watch(poolsProvider).when(
+            data: whenData,
+            error: (error, stackTrace) => const ErrorPage(),
+            loading: () => const LoadingPage(),
+          );
+    }
+
+    return ref.watch(thisSeasonBoutsProvider).when(
+          data: whenBoutData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage(),
         );
