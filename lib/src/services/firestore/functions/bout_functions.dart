@@ -83,3 +83,57 @@ Future addPool(Pool pool) async {
     data: pool.toMap(),
   );
 }
+
+Future<void> deletePool({
+  required Pool pool,
+  required List<BoutMonth> boutMonths,
+}) async {
+  try {
+    // Step 1: Collect all bout IDs to delete
+    List<String> boutIDsToDelete = [...pool.boutIDs, ...pool.opponentBoutIDs];
+
+    // Step 2: Delete associated bouts from BoutMonths
+    await _deleteBoutsFromBoutMonths(
+      boutIDs: boutIDsToDelete,
+      boutMonths: boutMonths,
+    );
+
+    // Step 3: Delete the pool
+    String poolPath = 'pools24/${pool.id}';
+    await FirestoreService.instance.deleteData(path: poolPath);
+  } catch (error) {
+    // catches error
+  }
+}
+
+/// Finds the BoutMonth containing the given bout ID.
+BoutMonth? _findBoutMonth(List<BoutMonth>? boutMonths, String boutID) {
+  if (boutMonths == null) return null;
+  for (var month in boutMonths) {
+    if (month.bouts.any((bout) => bout.id == boutID)) {
+      return month;
+    }
+  }
+  return null;
+}
+
+Future<void> _deleteBoutsFromBoutMonths({
+  required List<String> boutIDs,
+  required List<BoutMonth> boutMonths,
+}) async {
+  for (String boutID in boutIDs) {
+    BoutMonth? month = _findBoutMonth(boutMonths, boutID);
+    if (month != null) {
+      month.bouts.removeWhere((bout) => bout.id == boutID);
+      await _updateBoutMonth(month);
+    }
+  }
+}
+
+Future<void> _updateBoutMonth(BoutMonth boutMonth) async {
+  String path = 'users24/${boutMonth.fencerID}/bouts24/${boutMonth.id}';
+  await FirestoreService.instance.updateData(
+    path: path,
+    data: boutMonth.toMap(),
+  );
+}

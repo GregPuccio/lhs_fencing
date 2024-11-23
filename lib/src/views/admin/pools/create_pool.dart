@@ -8,6 +8,7 @@ import 'package:lhs_fencing/src/models/pool.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/firestore/functions/bout_functions.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
+import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 @RoutePage()
@@ -21,6 +22,7 @@ class CreatePoolPage extends ConsumerStatefulWidget {
 class CreatePoolPageState extends ConsumerState<CreatePoolPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+  bool _isProcessing = false; // Flag for processing state
 
   Weapon _selectedWeapon = Weapon.saber;
   Team _selectedTeam = Team.both;
@@ -45,7 +47,7 @@ class CreatePoolPageState extends ConsumerState<CreatePoolPage> {
   }
 
   Future<void> _showSaveConfirmation(
-      BuildContext context, VoidCallback onConfirm) async {
+      BuildContext context, Future<void> Function() onConfirm) async {
     final result = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -68,122 +70,171 @@ class CreatePoolPageState extends ConsumerState<CreatePoolPage> {
     );
 
     if (result == true) {
-      onConfirm();
+      setState(() {
+        _isProcessing = true;
+      });
+      await onConfirm();
+      setState(() {
+        _isProcessing = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final isLastPage = _currentPage == 1;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create A Pool'),
-      ),
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (int index) {
-          setState(() {
-            _currentPage = index;
-          });
-        },
-        children: [
-          CombinedPoolStep(
-            selectedWeapon: _selectedWeapon,
-            selectedTeam: _selectedTeam,
-            selectedFencers: _selectedFencers,
-            onWeaponChanged: (weapon) {
-              setState(() {
-                _selectedWeapon = weapon;
-              });
-            },
-            onTeamChanged: (team) {
-              setState(() {
-                _selectedTeam = team;
-              });
-            },
-            onFencersSelected: (fencers) {
-              setState(() {
-                _selectedFencers = fencers;
-              });
-            },
-          ),
-          FinalPoolSummaryStep(
-            selectedWeapon: _selectedWeapon,
-            selectedTeam: _selectedTeam,
-            selectedFencers: _selectedFencers,
-          ),
-        ],
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Back button (disabled on the first page)
-                  Flexible(
-                    child: ElevatedButton(
-                      onPressed: _currentPage > 0 ? _onPreviousPage : null,
-                      child: const Text('Back'),
-                    ),
-                  ),
 
-                  // Next button (disabled on the last page)
-                  Flexible(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (isLastPage) {
-                          // TODO add a way to toggle a showing that the pool is being built
-                          List<BoutMonth> months =
-                              ref.read(thisSeasonBoutsProvider).value!;
-                          _showSaveConfirmation(context, () async {
-                            (Pool, List<List<Bout>>) data = Pool.create(
-                              _selectedWeapon,
-                              _selectedTeam,
-                              _selectedFencers,
-                            );
-                            for (var i = 0; i < data.$2.length; i++) {
-                              List<Bout> bouts = data.$2[i];
-                              await addBoutPair(months, bouts);
-                            }
-                            await addPool(data.$1);
-                            // TODO turn off the toggle and wait a second before closing then replace with the new page
-                            // Return to the previous page
-                            if (context.mounted) {
-                              context.maybePop();
-                            }
-                          });
-                        } else {
-                          _onNextPage();
-                        }
-                      },
-                      child: Text(isLastPage ? 'Create' : 'View Summary'),
+    return Material(
+      child: Stack(
+        children: [
+          Scaffold(
+            appBar: AppBar(
+              title: const Text('Create A Pool'),
+            ),
+            body: PageView(
+              controller: _pageController,
+              onPageChanged: (int index) {
+                setState(() {
+                  _currentPage = index;
+                });
+              },
+              children: [
+                CombinedPoolStep(
+                  selectedWeapon: _selectedWeapon,
+                  selectedTeam: _selectedTeam,
+                  selectedFencers: _selectedFencers,
+                  onWeaponChanged: (weapon) {
+                    setState(() {
+                      _selectedWeapon = weapon;
+                    });
+                  },
+                  onTeamChanged: (team) {
+                    setState(() {
+                      _selectedTeam = team;
+                    });
+                  },
+                  onFencersSelected: (fencers) {
+                    setState(() {
+                      _selectedFencers = fencers;
+                    });
+                  },
+                ),
+                FinalPoolSummaryStep(
+                  selectedWeapon: _selectedWeapon,
+                  selectedTeam: _selectedTeam,
+                  selectedFencers: _selectedFencers,
+                ),
+              ],
+            ),
+            bottomNavigationBar: BottomAppBar(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Back button (disabled on the first page or during processing)
+                        Flexible(
+                          child: ElevatedButton(
+                            onPressed: !_isProcessing && _currentPage > 0
+                                ? _onPreviousPage
+                                : null,
+                            child: const Text('Back'),
+                          ),
+                        ),
+
+                        // Next button (disabled during processing)
+                        Flexible(
+                          child: ElevatedButton(
+                            onPressed: !_isProcessing
+                                ? () async {
+                                    if (isLastPage) {
+                                      List<BoutMonth> months = ref
+                                          .read(thisSeasonBoutsProvider)
+                                          .value!;
+                                      await _showSaveConfirmation(context,
+                                          () async {
+                                        (Pool, List<List<Bout>>) data =
+                                            Pool.create(
+                                          _selectedWeapon,
+                                          _selectedTeam,
+                                          _selectedFencers,
+                                        );
+                                        for (var i = 0;
+                                            i < data.$2.length;
+                                            i++) {
+                                          List<Bout> bouts = data.$2[i];
+                                          await addBoutPair(months, bouts);
+                                        }
+                                        String? newPoolID =
+                                            (await addPool(data.$1)).id;
+
+                                        // Replace with new pool page
+                                        if (context.mounted &&
+                                            newPoolID != null) {
+                                          context.router.replace(
+                                            EditPoolRoute(poolID: newPoolID),
+                                          );
+                                        }
+                                      });
+                                    } else {
+                                      _onNextPage();
+                                    }
+                                  }
+                                : null,
+                            child: Text(isLastPage ? 'Create' : 'View Summary'),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(2, (index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                    width: 10,
-                    height: 10,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: _currentPage == index
-                          ? Theme.of(context).primaryColor
-                          : Colors.grey,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(2, (index) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _currentPage == index
+                                ? Theme.of(context).primaryColor
+                                : Colors.grey,
+                          ),
+                        );
+                      }),
                     ),
-                  );
-                }),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
-        ),
+          if (_isProcessing) ...[
+            const ModalBarrier(
+              color: Colors.black38,
+              dismissible: false,
+            ),
+            const Center(
+              child: Card(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 8),
+                      Text(
+                        "Please Wait - Pool Creation In Progress!",
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
