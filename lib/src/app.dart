@@ -10,9 +10,9 @@ import 'package:lhs_fencing/src/settings/theme_controller.dart';
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
   MyApp({
-    Key? key,
+    super.key,
     required this.themeController,
-  }) : super(key: key);
+  });
 
   final ThemeController themeController;
   final AppRouter _appRouter = AppRouter();
@@ -30,14 +30,10 @@ class MyApp extends StatelessWidget {
           child: MaterialApp.router(
             debugShowCheckedModeBanner: false,
             routerConfig: _appRouter.config(
-                deepLinkBuilder: (deepLink) {
-                  if (deepLink.path.startsWith('/attendance')) {
-                    return DeepLink.path(deepLink.path);
-                  } else {
-                    return DeepLink.defaultPath;
-                  }
-                },
-                rebuildStackOnDeepLink: true),
+              deepLinkBuilder: (deepLink) {
+                return DeepLink.defaultPath;
+              },
+            ),
             // routerDelegate: _appRouter.delegate(),
             // routeInformationParser: _appRouter.defaultRouteParser(),
             // Providing a restorationScopeId allows the Navigator built by the

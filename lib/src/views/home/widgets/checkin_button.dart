@@ -15,9 +15,9 @@ class CheckInButton extends ConsumerWidget {
   final Practice practice;
 
   const CheckInButton({
-    Key? key,
+    super.key,
     required this.practice,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

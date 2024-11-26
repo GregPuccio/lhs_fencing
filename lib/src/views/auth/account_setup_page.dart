@@ -18,8 +18,7 @@ import 'package:lhs_fencing/src/widgets/loading.dart';
 class AccountSetupPage extends ConsumerStatefulWidget {
   final User? user;
   final UserData? userData;
-  const AccountSetupPage({required this.user, this.userData, Key? key})
-      : super(key: key);
+  const AccountSetupPage({required this.user, this.userData, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AccountSetupState();

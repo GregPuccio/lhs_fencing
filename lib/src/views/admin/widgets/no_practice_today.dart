@@ -4,8 +4,8 @@ import 'package:lhs_fencing/src/services/router/router.dart';
 
 class NoPracticeToday extends StatelessWidget {
   const NoPracticeToday({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

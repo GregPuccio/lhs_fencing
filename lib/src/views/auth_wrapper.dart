@@ -16,7 +16,7 @@ import 'package:lhs_fencing/src/widgets/loading.dart';
 
 @RoutePage()
 class AuthWrapperPage extends ConsumerWidget {
-  const AuthWrapperPage({Key? key}) : super(key: key);
+  const AuthWrapperPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

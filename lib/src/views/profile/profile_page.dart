@@ -18,8 +18,7 @@ class ProfilePage extends ConsumerWidget {
       {required this.practices,
       required this.attendances,
       required this.userData,
-      Key? key})
-      : super(key: key);
+      super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -15,10 +15,10 @@ class CheckOutButton extends ConsumerWidget {
   final Practice practice;
 
   const CheckOutButton({
-    Key? key,
+    super.key,
     required this.attendance,
     required this.practice,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

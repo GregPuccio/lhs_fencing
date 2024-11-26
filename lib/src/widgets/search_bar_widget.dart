@@ -9,8 +9,8 @@ class SearchBarWidget extends ConsumerWidget implements PreferredSizeWidget {
   const SearchBarWidget(
     this.controller, {
     this.text = 'Search by name',
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

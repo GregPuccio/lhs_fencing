@@ -5,7 +5,7 @@ import 'package:lhs_fencing/google_keys.dart';
 import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({Key? key}) : super(key: key);
+  const AuthPage({super.key});
 
   @override
   State<AuthPage> createState() => _AuthPageState();
