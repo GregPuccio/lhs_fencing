@@ -39,12 +39,12 @@ class _EditPoolPageState extends ConsumerState<EditPoolPage> {
       // Delete the pool itself
       // Call your pool deletion function here
 
-      if (context.mounted) {
+      if (mounted) {
         context.maybePop(); // Close the page after completion
       }
     } catch (e) {
       // Handle error here
-      if (context.mounted) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error deleting pool: $e")),
         );
