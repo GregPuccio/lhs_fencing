@@ -12,12 +12,11 @@ class AttendanceInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(attendance.attendanceStatus),
-        Text(
-          attendance.comments.isEmpty
-              ? "Tap to add a comment"
-              : "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
+        if (attendance.comments.isNotEmpty)
+          Text(
+            "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
       ],
     );
   }
