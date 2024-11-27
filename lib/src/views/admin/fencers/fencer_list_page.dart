@@ -37,6 +37,7 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
   Weapon? weaponFilter;
   SchoolYear? yearFilter;
   bool? atPractice;
+  bool fencerSortByFirst = true;
 
   /// null is all fencers, true is active only, false is inactive only
   bool? activeFilter = true;
@@ -86,6 +87,11 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
       }
       if (activeFilter != null) {
         filteredFencers.retainWhere((fencer) => fencer.active == activeFilter);
+      }
+      if (fencerSortByFirst) {
+        filteredFencers.sort((a, b) => a.firstName.compareTo(b.firstName));
+      } else {
+        filteredFencers.sort((a, b) => a.lastName.compareTo(b.lastName));
       }
       List<Practice> currentPractices = practices
           .where((p) =>
@@ -145,7 +151,24 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SearchBarWidget(controller),
+                    Row(
+                      children: [
+                        Flexible(child: SearchBarWidget(controller)),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: IconButton(
+                              onPressed: () => setState(() {
+                                    fencerSortByFirst = !fencerSortByFirst;
+                                  }),
+                              icon: Column(
+                                children: [
+                                  Icon(Icons.sort),
+                                  Text(fencerSortByFirst ? "First" : "Last")
+                                ],
+                              )),
+                        )
+                      ],
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 4.0, left: 15),
                       child: SizedBox(

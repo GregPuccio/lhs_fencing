@@ -77,13 +77,17 @@ class _EditPoolPageState extends ConsumerState<EditPoolPage> {
     });
   }
 
-  Color _getScoreColor(int score, int opponentScore, bool isFencer) {
-    if (score > opponentScore) {
+  Color _getScoreColor(Bout bout, bool isFencer) {
+    if (bout.fencerWin && isFencer) {
       return Colors.green;
-    } else if (score < opponentScore) {
+    } else if (bout.opponentWin && !isFencer) {
+      return Colors.green;
+    } else if (bout.fencerWin && !isFencer) {
+      return Colors.red;
+    } else if (bout.opponentWin && isFencer) {
       return Colors.red;
     } else {
-      return Colors.orange;
+      return Colors.white; // No winner determined
     }
   }
 
@@ -207,6 +211,26 @@ class _EditPoolPageState extends ConsumerState<EditPoolPage> {
     );
   }
 
+  // Helper method to get icon for bout result
+  IconData _getBoutResultIcon(Bout bout) {
+    if (bout.fencerWin) {
+      return Icons.check_circle_outline;
+    } else if (bout.opponentWin) {
+      return Icons.cancel_outlined;
+    }
+    return Icons.remove_circle_outline;
+  }
+
+// Helper method to get color for bout result
+  Color _getBoutResultColor(Bout bout, BuildContext context) {
+    if (bout.fencerWin) {
+      return Colors.green;
+    } else if (bout.opponentWin) {
+      return Colors.red;
+    }
+    return Theme.of(context).disabledColor;
+  }
+
   Widget _buildStaticBoutTile(Bout bout, int index) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -221,10 +245,19 @@ class _EditPoolPageState extends ConsumerState<EditPoolPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child: Text(
-              bout.fencer.fullShortenedName,
-              style: Theme.of(context).textTheme.titleMedium,
-              overflow: TextOverflow.ellipsis,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  bout.fencer.fullShortenedName,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  'Rating: ${bout.fencer.rating.isEmpty ? "U" : bout.fencer.rating}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
             ),
           ),
           Padding(
@@ -232,8 +265,7 @@ class _EditPoolPageState extends ConsumerState<EditPoolPage> {
             child: Text(
               "${bout.fencerScore}",
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: _getScoreColor(
-                        bout.fencerScore, bout.opponentScore, true),
+                    color: _getScoreColor(bout, true),
                   ),
             ),
           ),
@@ -246,28 +278,45 @@ class _EditPoolPageState extends ConsumerState<EditPoolPage> {
             child: Text(
               "${bout.opponentScore}",
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: _getScoreColor(
-                        bout.opponentScore, bout.fencerScore, false),
+                    color: _getScoreColor(bout, false),
                   ),
             ),
           ),
           Expanded(
-            child: Text(
-              bout.opponent.fullShortenedName,
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.end,
-              overflow: TextOverflow.ellipsis,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  bout.opponent.fullShortenedName,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.end,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  'Rating: ${bout.opponent.rating.isEmpty ? "U" : bout.opponent.rating}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
             ),
           ),
         ],
       ),
-      trailing: IconButton(
-        icon: const Icon(Icons.edit, color: Colors.blue),
-        onPressed: () {
-          setState(() {
-            _editingBouts.add(bout.id);
-          });
-        },
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            _getBoutResultIcon(bout),
+            color: _getBoutResultColor(bout, context),
+          ),
+          IconButton(
+            icon: const Icon(Icons.edit, color: Colors.blue),
+            onPressed: () {
+              setState(() {
+                _editingBouts.add(bout.id);
+              });
+            },
+          ),
+        ],
       ),
     );
   }
@@ -277,6 +326,9 @@ class _EditPoolPageState extends ConsumerState<EditPoolPage> {
         TextEditingController(text: bout.fencerScore.toString());
     final opponentController =
         TextEditingController(text: bout.opponentScore.toString());
+
+    bool isScoreTied = int.tryParse(fencerController.text) ==
+        int.tryParse(opponentController.text);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -293,10 +345,19 @@ class _EditPoolPageState extends ConsumerState<EditPoolPage> {
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: Text(
-                  bout.fencer.fullShortenedName,
-                  style: Theme.of(context).textTheme.titleMedium,
-                  overflow: TextOverflow.ellipsis,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      bout.fencer.fullShortenedName,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      'Rating: ${bout.fencer.rating}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
                 ),
               ),
               SizedBox(
@@ -332,61 +393,55 @@ class _EditPoolPageState extends ConsumerState<EditPoolPage> {
                 ),
               ),
               Expanded(
-                child: Text(
-                  bout.opponent.fullShortenedName,
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.end,
-                  overflow: TextOverflow.ellipsis,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      bout.opponent.fullShortenedName,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      textAlign: TextAlign.end,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      'Rating: ${bout.opponent.rating}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          // When scores are equal, show winner selection
-          if (int.tryParse(fencerController.text) ==
-              int.tryParse(opponentController.text))
+          if (isScoreTied)
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              padding: const EdgeInsets.only(top: 16.0),
+              child: ToggleButtons(
+                isSelected: [false, false],
+                onPressed: (int index) {
+                  int fencerScore = int.tryParse(fencerController.text) ?? 0;
+                  int opponentScore =
+                      int.tryParse(opponentController.text) ?? 0;
+                  _updateBout(
+                    bout,
+                    fencerScore,
+                    opponentScore,
+                    fencerWins: index == 0,
+                  );
+                },
+                color: Colors.grey,
+                selectedColor: Colors.white,
+                fillColor: Colors.green,
                 children: [
-                  Text(
-                    "Select Winner:",
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  const SizedBox(width: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      int fencerScore =
-                          int.tryParse(fencerController.text) ?? 0;
-                      int opponentScore =
-                          int.tryParse(opponentController.text) ?? 0;
-                      _updateBout(bout, fencerScore, opponentScore,
-                          fencerWins: true);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(bout.fencer.fullShortenedName),
                   ),
-                  const SizedBox(width: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      int fencerScore =
-                          int.tryParse(fencerController.text) ?? 0;
-                      int opponentScore =
-                          int.tryParse(opponentController.text) ?? 0;
-                      _updateBout(bout, fencerScore, opponentScore,
-                          fencerWins: false);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(bout.opponent.fullShortenedName),
                   ),
                 ],
               ),
             ),
-          // Existing buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
