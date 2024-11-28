@@ -15,6 +15,8 @@ class Bout implements Comparable<Bout> {
   bool opponentWin;
   DateTime date;
   bool original;
+  bool poolBout;
+
   Bout({
     required this.id,
     required this.partnerID,
@@ -26,6 +28,7 @@ class Bout implements Comparable<Bout> {
     required this.opponentWin,
     required this.date,
     required this.original,
+    required this.poolBout,
   });
 
   static Bout create({
@@ -37,6 +40,7 @@ class Bout implements Comparable<Bout> {
     bool opponentWin = false,
     DateTime? date,
     bool original = false,
+    bool poolBout = false,
   }) {
     return Bout(
       id: const Uuid().v4(),
@@ -49,6 +53,7 @@ class Bout implements Comparable<Bout> {
       opponentWin: opponentWin,
       date: date ?? DateTime.now(),
       original: original,
+      poolBout: poolBout,
     );
   }
 
@@ -63,6 +68,7 @@ class Bout implements Comparable<Bout> {
     bool? opponentWin,
     DateTime? date,
     bool? original,
+    bool? poolBout,
   }) {
     return Bout(
       id: id ?? this.id,
@@ -75,6 +81,7 @@ class Bout implements Comparable<Bout> {
       opponentWin: opponentWin ?? this.opponentWin,
       date: date ?? this.date,
       original: original ?? this.original,
+      poolBout: poolBout ?? this.poolBout,
     );
   }
 
@@ -90,6 +97,7 @@ class Bout implements Comparable<Bout> {
       'opponentWin': opponentWin,
       'date': date.millisecondsSinceEpoch,
       'original': original,
+      'poolBout': poolBout,
     };
   }
 
@@ -105,6 +113,7 @@ class Bout implements Comparable<Bout> {
       opponentWin: map['opponentWin'] ?? false,
       date: DateTime.fromMillisecondsSinceEpoch(map['date']),
       original: map['original'] ?? false,
+      poolBout: map['poolBout'] ?? false,
     );
   }
 
@@ -114,7 +123,7 @@ class Bout implements Comparable<Bout> {
 
   @override
   String toString() {
-    return 'Bout(id: $id, partnerID: $partnerID, fencer: $fencer, opponent: $opponent, fencerScore: $fencerScore, opponentScore: $opponentScore, fencerWin: $fencerWin, opponentWin: $opponentWin, date: $date, original: $original)';
+    return 'Bout(id: $id, partnerID: $partnerID, fencer: $fencer, opponent: $opponent, fencerScore: $fencerScore, opponentScore: $opponentScore, fencerWin: $fencerWin, opponentWin: $opponentWin, date: $date, original: $original, poolBout: $poolBout)';
   }
 
   @override
@@ -131,7 +140,8 @@ class Bout implements Comparable<Bout> {
         other.fencerWin == fencerWin &&
         other.opponentWin == opponentWin &&
         other.date == date &&
-        other.original == original;
+        other.original == original &&
+        other.poolBout == poolBout;
   }
 
   @override
@@ -145,7 +155,8 @@ class Bout implements Comparable<Bout> {
         fencerWin.hashCode ^
         opponentWin.hashCode ^
         date.hashCode ^
-        original.hashCode;
+        original.hashCode ^
+        poolBout.hashCode;
   }
 
   @override
@@ -167,10 +178,12 @@ List<List<Bout>> createPoolBouts(List<UserData> fencers) {
         fencer: fencers[i],
         opponent: fencers[j],
         original: true,
+        poolBout: true,
       );
       Bout opponentBout = Bout.create(
         fencer: fencers[j],
         opponent: fencers[i],
+        poolBout: true,
       );
       fencerBout.partnerID = opponentBout.id;
       opponentBout.partnerID = fencerBout.id;

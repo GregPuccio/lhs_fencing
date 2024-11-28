@@ -16,6 +16,7 @@ class Pool {
   List<String> boutIDs;
   List<String> opponentBoutIDs;
   List<UserData> fencers;
+  List<String> fencerIDs;
 
   Pool({
     required this.id,
@@ -25,6 +26,7 @@ class Pool {
     required this.boutIDs,
     required this.opponentBoutIDs,
     required this.fencers,
+    required this.fencerIDs,
   });
 
   static (Pool, List<List<Bout>>) create(
@@ -39,6 +41,7 @@ class Pool {
         boutIDs: bouts.map((b) => b.first.id).toList(),
         opponentBoutIDs: bouts.map((b) => b.last.id).toList(),
         fencers: fencers,
+        fencerIDs: fencers.map((f) => f.id).toList(),
       ),
       bouts,
     );
@@ -52,6 +55,7 @@ class Pool {
     List<String>? boutIDs,
     List<String>? opponentBoutIDs,
     List<UserData>? fencers,
+    List<String>? fencerIDs,
   }) {
     return Pool(
       id: id ?? this.id,
@@ -61,6 +65,7 @@ class Pool {
       boutIDs: boutIDs ?? this.boutIDs,
       opponentBoutIDs: opponentBoutIDs ?? this.opponentBoutIDs,
       fencers: fencers ?? this.fencers,
+      fencerIDs: fencerIDs ?? this.fencerIDs,
     );
   }
 
@@ -73,6 +78,7 @@ class Pool {
       'boutIDs': boutIDs,
       'opponentBoutIDs': opponentBoutIDs,
       'fencers': fencers.map((x) => x.toMap()).toList(),
+      'fencerIDs': fencerIDs,
     };
   }
 
@@ -86,6 +92,7 @@ class Pool {
       opponentBoutIDs: List<String>.from(map['opponentBoutIDs'] ?? []),
       fencers:
           List<UserData>.from(map['fencers']?.map((x) => UserData.fromMap(x))),
+      fencerIDs: List<String>.from(map['fencerIDs']),
     );
   }
 
@@ -95,7 +102,7 @@ class Pool {
 
   @override
   String toString() {
-    return 'Pool(id: $id, weapon: $weapon, team: $team, date: $date, boutIDs: $boutIDs, opponentBoutIDs: $opponentBoutIDs, fencers: $fencers)';
+    return 'Pool(id: $id, weapon: $weapon, team: $team, date: $date, boutIDs: $boutIDs, opponentBoutIDs: $opponentBoutIDs, fencers: $fencers, fencerIDs: $fencerIDs)';
   }
 
   @override
@@ -109,7 +116,8 @@ class Pool {
         other.date == date &&
         listEquals(other.boutIDs, boutIDs) &&
         listEquals(other.opponentBoutIDs, opponentBoutIDs) &&
-        listEquals(other.fencers, fencers);
+        listEquals(other.fencers, fencers) &&
+        listEquals(other.fencerIDs, fencerIDs);
   }
 
   @override
@@ -120,6 +128,7 @@ class Pool {
         date.hashCode ^
         boutIDs.hashCode ^
         opponentBoutIDs.hashCode ^
-        fencers.hashCode;
+        fencers.hashCode ^
+        fencerIDs.hashCode;
   }
 }

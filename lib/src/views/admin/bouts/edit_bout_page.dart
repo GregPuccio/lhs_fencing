@@ -1,14 +1,13 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:lhs_fencing/src/constants/date_utils.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/bout.dart';
 import 'package:lhs_fencing/src/models/bout_month.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
+import 'package:lhs_fencing/src/services/firestore/functions/bout_functions.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 
 @RoutePage()
@@ -44,6 +43,7 @@ class _EditBoutPageState extends ConsumerState<EditBoutPage> {
         opponentWin: bout.fencerWin,
         date: bout.date,
         original: !bout.original,
+        poolBout: bout.poolBout,
       );
       if (bout.fencerScore > bout.opponentScore) {
         bout.fencerWin = partnerBout.opponentWin = true;
@@ -134,44 +134,12 @@ class _EditBoutPageState extends ConsumerState<EditBoutPage> {
                           actions: [
                             TextButton(
                               onPressed: () async {
-                                List<BoutMonth> seasons =
+                                List<BoutMonth> boutMonths =
                                     ref.read(thisSeasonBoutsProvider).value!;
 
-                                int index = seasons.indexWhere((m) =>
-                                    m.fencerID == bout.fencer.id &&
-                                    m.id ==
-                                        bout.date.monthOnly
-                                            .millisecondsSinceEpoch
-                                            .toString());
-                                await FirestoreService.instance.updateData(
-                                  path: FirestorePath.currentSeasonBoutMonth(
-                                      bout.fencer.id, seasons[index].id),
-                                  data: {
-                                    "bouts": FieldValue.arrayRemove(
-                                        [widget.bout.toMap()])
-                                  },
-                                );
-                                index = seasons.indexWhere((m) =>
-                                    m.fencerID == bout.opponent.id &&
-                                    m.id ==
-                                        bout.date.monthOnly
-                                            .millisecondsSinceEpoch
-                                            .toString());
-                                if (index != -1) {
-                                  seasons[index].bouts.removeWhere(
-                                      (b) => b.id == bout.partnerID);
-                                  await FirestoreService.instance
-                                      .updateData(
-                                    path: FirestorePath.currentSeasonBoutMonth(
-                                        bout.opponent.id, seasons[index].id),
-                                    data: seasons[index].toMap(),
-                                  )
-                                      .then((value) {
-                                    if (context.mounted) {
-                                      context.maybePop(true);
-                                    }
-                                  });
-                                } else if (context.mounted) {
+                                await deleteBoutPair(boutMonths, bout);
+
+                                if (context.mounted) {
                                   context.maybePop(true);
                                 }
                               },

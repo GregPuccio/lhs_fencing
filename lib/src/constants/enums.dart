@@ -222,6 +222,17 @@ enum Team {
     }
   }
 
+  String get capitalizedName {
+    switch (this) {
+      case boys:
+        return "Boys";
+      case girls:
+        return "Girls";
+      case both:
+        return "Both Teams";
+    }
+  }
+
   String toMap() => name;
   static Team fromMap(String map) => values.byName(map.isEmpty ? "both" : map);
 }

@@ -30,6 +30,7 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
   Weapon? weapon;
   DateTime? selectedDate;
   List<Bout> bouts = [];
+  bool showPoolBouts = false;
   late TextEditingController fencer1Controller;
   late TextEditingController fencer2Controller;
 
@@ -49,13 +50,16 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget whenData(List<BoutMonth> seasons) {
+    Widget whenData(List<BoutMonth> boutMonths) {
       bouts.clear();
       if (fencer != null ||
           opponent != null ||
           weapon != null ||
           selectedDate != null) {
-        bouts.addAll(seasons.map((s) => s.bouts).expand((x) => x));
+        bouts.addAll(boutMonths.map((s) => s.bouts).expand((x) => x));
+      }
+      if (!showPoolBouts) {
+        bouts.retainWhere((bout) => !bout.poolBout);
       }
       if (fencer != null) {
         bouts.retainWhere((bout) => bout.fencer.id == fencer!.id);
@@ -179,28 +183,46 @@ class _BoutHistoryPageState extends ConsumerState<BoutHistoryPage> {
                       ],
                     ),
                   ),
-                  ListTile(
-                    title: const Text("Weapon"),
-                    trailing: ToggleButtons(
-                      isSelected: List.generate(Weapon.values.length - 2,
-                          (index) => Weapon.values[index] == weapon),
-                      children: List.generate(
-                        Weapon.values.length - 2,
-                        (index) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(Weapon.values[index].type),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: ListTile(
+                          title: const Text("Weapon"),
+                          subtitle: Center(
+                            child: ToggleButtons(
+                              isSelected: List.generate(
+                                  Weapon.values.length - 2,
+                                  (index) => Weapon.values[index] == weapon),
+                              children: List.generate(
+                                Weapon.values.length - 2,
+                                (index) => Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(Weapon.values[index].type),
+                                ),
+                              ),
+                              onPressed: (index) {
+                                setState(() {
+                                  if (weapon == Weapon.values[index]) {
+                                    weapon = null;
+                                  } else {
+                                    weapon = Weapon.values[index];
+                                  }
+                                });
+                              },
+                            ),
+                          ),
                         ),
                       ),
-                      onPressed: (index) {
-                        setState(() {
-                          if (weapon == Weapon.values[index]) {
-                            weapon = null;
-                          } else {
-                            weapon = Weapon.values[index];
-                          }
-                        });
-                      },
-                    ),
+                      Flexible(
+                        child: SwitchListTile.adaptive(
+                          value: showPoolBouts,
+                          title: const Text("Show Pool Bouts?"),
+                          onChanged: (value) => setState(() {
+                            showPoolBouts = value;
+                          }),
+                        ),
+                      ),
+                    ],
                   ),
                   ListTile(
                     title: Text(
