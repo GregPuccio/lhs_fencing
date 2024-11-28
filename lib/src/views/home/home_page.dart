@@ -16,6 +16,7 @@ import 'package:lhs_fencing/src/views/home/widgets/todays_attendance.dart';
 import 'package:lhs_fencing/src/views/home/widgets/upcoming_events.dart';
 import 'package:lhs_fencing/src/widgets/indicator.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   final Attendance? todaysAttendance;
@@ -162,20 +163,77 @@ class _HomePageState extends ConsumerState<HomePage> {
         ],
         if (ref.watch(userDataProvider).value!.weapon == Weapon.manager) ...[
           ListTile(
-            leading: const Icon(Icons.list),
-            title: const Text("Bout List"),
-            subtitle: const Text("View, add or edit bout records for fencers"),
-            trailing: const Icon(Icons.arrow_forward),
-            onTap: () => context.router.push(const BoutHistoryRoute()),
+            title: Text("Manager Functions:"),
           ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.accessibility_new),
-            title: const Text("Borrowed Equipment List"),
-            subtitle:
-                const Text("View and edit the equipment fencers have borrowed"),
-            trailing: const Icon(Icons.arrow_forward),
-            onTap: () => context.router.push(const EquipmentListRoute()),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.width / 4 - 25,
+                width: MediaQuery.of(context).size.width / 3 - 10,
+                child: Card(
+                  child: InkWell(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Symbols.swords,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        const SizedBox(height: 8),
+                        const Text("Bout Scores"),
+                      ],
+                    ),
+                    onTap: () => context.router.push(const BoutHistoryRoute()),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.width / 4 - 25,
+                width: MediaQuery.of(context).size.width / 3 - 10,
+                child: Card(
+                  child: InkWell(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.grid_4x4,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        const SizedBox(height: 8),
+                        const Text("Round Robins"),
+                      ],
+                    ),
+                    onTap: () => context.router.push(const PoolListRoute()),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.width / 4 - 25,
+                width: MediaQuery.of(context).size.width / 3 - 10,
+                child: Card(
+                  child: InkWell(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.accessibility_new,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          "Borrowed Gear",
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                    onTap: () =>
+                        context.router.push(const EquipmentListRoute()),
+                  ),
+                ),
+              ),
+            ],
           ),
           const Divider(),
         ],

@@ -72,6 +72,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
       } else {
         UserData? lastYearUser =
             ref.watch(lastSeasonUserDataProvider).asData?.value;
+        bool adminEditor = ref.watch(userDataProvider).value?.admin ?? false;
         return WillPopScope(
           onWillPop: () async {
             if (widget.userData == userData || widget.user == null) {
@@ -188,7 +189,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                     }),
                   ),
                   const SizedBox(height: 8),
-                  if (ref.watch(userDataProvider).value?.admin == true) ...[
+                  if (adminEditor) ...[
                     const Divider(),
                     CheckboxListTile.adaptive(
                         title: const Text("Active"),
@@ -198,11 +199,11 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                             userData.active = value ?? false;
                           });
                         }),
+                    const SizedBox(height: 8),
                   ],
-                  const SizedBox(height: 8),
-                  const Divider(),
                   if (user.email!.contains("lps") ||
                       (widget.userData?.email.contains("lps") ?? false)) ...[
+                    const Divider(),
                     ListTile(
                       title: const Text("School Year"),
                       trailing: DropdownButton(
@@ -249,12 +250,22 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                       children: [
                         ToggleButtons(
                           isSelected: List.generate(
-                              Weapon.values.length,
+                              Weapon.values.length -
+                                  (adminEditor ||
+                                          widget.userData?.weapon ==
+                                              Weapon.manager
+                                      ? 0
+                                      : 1),
                               (index) =>
                                   userData.weapon.type ==
                                   Weapon.values[index].type),
                           children: List.generate(
-                            Weapon.values.length,
+                            Weapon.values.length -
+                                (adminEditor ||
+                                        widget.userData?.weapon ==
+                                            Weapon.manager
+                                    ? 0
+                                    : 1),
                             (index) => Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(Weapon.values[index].type),
@@ -542,7 +553,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                     label: Text(
                         "${widget.userData == null ? "Save" : "Update"} My Information"),
                   ),
-                  // if (ref.watch(userDataProvider).value?.admin == true) ...[
+                  // if (adminEditor) ...[
                   //   const Divider(),
                   //   ListTile(
                   //     title: const Text("No Longer On Our Team?"),

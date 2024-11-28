@@ -35,10 +35,14 @@ class _PoolListPageState extends ConsumerState<PoolListPage> {
       }
 
       return Scaffold(
-          floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () => context.pushRoute(const CreatePoolRoute()),
-          ),
+          floatingActionButton:
+              ref.watch(userDataProvider).asData?.value?.admin == true
+                  ? FloatingActionButton(
+                      child: const Icon(Icons.add),
+                      onPressed: () =>
+                          context.pushRoute(const CreatePoolRoute()),
+                    )
+                  : null,
           appBar: AppBar(
             title: Row(
               children: [
