@@ -472,10 +472,9 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                   const SizedBox(height: 32),
                   OutlinedButton.icon(
                     onPressed: () {
-                      if (user.email != null // &&
-                          // (user.email!.contains("livingston") ||
-                          //     user.email!.contains("lps"))
-                          ) {
+                      if (user.email != null &&
+                          (user.email!.contains("livingston") ||
+                              user.email!.contains("lps"))) {
                         userData.clubDays
                             .sort((a, b) => a.weekday.compareTo(b.weekday));
                         if (lastYearUser != null) {
