@@ -222,6 +222,17 @@ enum Team {
     }
   }
 
+  String get shortName {
+    switch (this) {
+      case boys:
+        return "Boys";
+      case girls:
+        return "Girls";
+      case both:
+        return "Both";
+    }
+  }
+
   String get capitalizedName {
     switch (this) {
       case boys:

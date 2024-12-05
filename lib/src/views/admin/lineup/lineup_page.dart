@@ -92,7 +92,6 @@ class _LineupPageState extends ConsumerState<LineupPage> {
               adjustAmount += (practice.type == TypePractice.practice ? 1 : 3);
             }
             // then check if they did attend, did they participate in the meet?
-            /// todo fix this for
             else if (attendance.participated &&
                 !(currentLineup?.starters.contains(fencer) ?? false)) {
               adjustAmount += (((currentLineup?.fencers.length ?? 0) -
@@ -119,27 +118,14 @@ class _LineupPageState extends ConsumerState<LineupPage> {
       }
 
       if (adjustAmounts.isNotEmpty) {
-        int reduceAmount = adjustAmounts.values.last;
-        // this is used to ensure the bottom fencer is still moved down the correct amount
-        // by subtracting the same amount from the fencers above until a [0] is found
-        if (reduceAmount >= 0) {
-          for (int i = 0; i < adjustAmounts.length; i++) {
-            if (adjustAmounts.values.toList().reversed.toList()[i] != 0) {
-              adjustAmounts.update(
-                  adjustAmounts.keys.toList().reversed.toList()[i],
-                  (value) => value - reduceAmount);
-            } else {
-              break;
-            }
-          }
-        }
-        // This is used to ensure that there will never be adjustments greater
-        // than the amount of spaces available under the current active fencers.
-        // This does not take into account new fencers who are just joining the lineup.
-        for (int i = 0; i < adjustAmounts.length; i++) {
-          if (adjustAmounts.values.toList()[i] > adjustAmounts.length - i - 1) {
-            adjustAmounts.update(adjustAmounts.keys.toList()[i],
-                (value) => adjustAmounts.length - i - 1);
+        for (int i = 0; i < fencerAdjustmentList.length; i++) {
+          UserData fencer = fencerAdjustmentList[i];
+          int adjustmentNumber = adjustAmounts.putIfAbsent(fencer.id, () => 0);
+          int numberOfFencersBelowWithoutAdjustments =
+              adjustAmounts.values.skip(i).where((val) => val == 0).length;
+          if (adjustmentNumber > numberOfFencersBelowWithoutAdjustments) {
+            adjustAmounts.update(
+                fencer.id, (value) => numberOfFencersBelowWithoutAdjustments);
           }
         }
       }

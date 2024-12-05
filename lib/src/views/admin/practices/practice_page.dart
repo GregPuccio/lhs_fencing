@@ -35,12 +35,17 @@ class PracticePage extends ConsumerStatefulWidget {
 
 class _PracticePageState extends ConsumerState<PracticePage> {
   late TextEditingController controller;
+  Team teamToShow = Team.both;
 
   @override
   void initState() {
     controller = TextEditingController();
     controller.addListener(() {
-      setState(() {});
+      setState(() {
+        if (teamToShow != Team.both && controller.text.isNotEmpty) {
+          teamToShow = Team.both;
+        }
+      });
     });
     super.initState();
   }
@@ -103,6 +108,9 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                   ),
             )
             .toList();
+      }
+      if (teamToShow != Team.both) {
+        filteredFencers.retainWhere((f) => f.team == teamToShow);
       }
       List<List<UserData>> fencerLists = [
         filteredFencers,
@@ -180,7 +188,49 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                   //     subtitle: Text("14-13 | Won @ 6 | 7-6-2"),
                   //   ),
                   // const Divider(),
-                  SearchBarWidget(controller),
+                  Row(
+                    children: [
+                      Flexible(child: SearchBarWidget(controller)),
+                      if (practice.team == Team.both)
+                        IconButton(
+                          onPressed: () async {
+                            Team? retVal = await showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return Scaffold(
+                                    appBar: AppBar(
+                                      title: Text("Selected Team"),
+                                    ),
+                                    body: Column(
+                                      children: Team.values.map((team) {
+                                        return RadioListTile.adaptive(
+                                            value: team,
+                                            groupValue: teamToShow,
+                                            title: Text(team.type),
+                                            onChanged: (value) async {
+                                              if (value != null) {
+                                                await context.maybePop(value);
+                                              }
+                                            });
+                                      }).toList(),
+                                    ),
+                                  );
+                                });
+                            if (retVal != null) {
+                              setState(() {
+                                teamToShow = retVal;
+                              });
+                            }
+                          },
+                          icon: Column(
+                            children: [
+                              const Icon(Icons.sort),
+                              Text(teamToShow.shortName)
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
                   TabBar(
                     isScrollable: true,
                     tabs: List.generate(

@@ -19,7 +19,9 @@ class EventsListPage extends ConsumerWidget {
     if (practiceMonths != null) {
       practices.clear();
       for (var month in practiceMonths) {
-        practices.addAll(month.practices);
+        List<Practice> monthPractices = month.practices.toList();
+        monthPractices.retainWhere((p) => p.type.hasScoring);
+        practices.addAll(monthPractices);
       }
       practices.sort((a, b) => -a.startTime.compareTo(b.startTime));
       return Scaffold(

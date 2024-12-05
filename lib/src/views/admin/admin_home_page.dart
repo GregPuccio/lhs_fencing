@@ -125,6 +125,26 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              // SizedBox(
+              //   height: MediaQuery.of(context).size.width / 4 - 25,
+              //   width: MediaQuery.of(context).size.width / 3 - 10,
+              //   child: Card(
+              //     child: InkWell(
+              //       child: Column(
+              //         mainAxisAlignment: MainAxisAlignment.center,
+              //         children: [
+              //           Icon(
+              //             Icons.event,
+              //             color: Theme.of(context).primaryColor,
+              //           ),
+              //           const SizedBox(height: 8),
+              //           const Text("Events"),
+              //         ],
+              //       ),
+              //       onTap: () => context.router.push(const EventsListRoute()),
+              //     ),
+              //   ),
+              // ),
               SizedBox(
                 height: MediaQuery.of(context).size.width / 4 - 25,
                 width: MediaQuery.of(context).size.width / 2 - 10,
