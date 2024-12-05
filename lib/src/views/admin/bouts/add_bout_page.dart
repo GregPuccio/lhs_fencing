@@ -53,7 +53,7 @@ class _AddBoutPageState extends ConsumerState<AddBoutPage> {
     } else {
       weapon = opponent?.weapon;
     }
-    selectedDate = widget.selectedDate;
+    selectedDate = widget.selectedDate ?? DateTime(2024).today;
     fencer1Controller = TextEditingController(text: fencer?.fullName);
     fencer2Controller = TextEditingController(text: opponent?.fullName);
     super.initState();
