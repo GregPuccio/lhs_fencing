@@ -18,6 +18,7 @@ import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 import 'package:lhs_fencing/src/widgets/search_bar_widget.dart';
 import 'package:lhs_fencing/src/widgets/text_badge.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../services/firestore/firestore_service.dart';
@@ -36,6 +37,7 @@ class PracticePage extends ConsumerStatefulWidget {
 class _PracticePageState extends ConsumerState<PracticePage> {
   late TextEditingController controller;
   Team teamToShow = Team.both;
+  Weapon weaponToShow = Weapon.unsure;
 
   @override
   void initState() {
@@ -44,6 +46,9 @@ class _PracticePageState extends ConsumerState<PracticePage> {
       setState(() {
         if (teamToShow != Team.both && controller.text.isNotEmpty) {
           teamToShow = Team.both;
+        }
+        if (weaponToShow != Weapon.unsure && controller.text.isNotEmpty) {
+          weaponToShow = Weapon.unsure;
         }
       });
     });
@@ -111,6 +116,9 @@ class _PracticePageState extends ConsumerState<PracticePage> {
       }
       if (teamToShow != Team.both) {
         filteredFencers.retainWhere((f) => f.team == teamToShow);
+      }
+      if (weaponToShow != Weapon.unsure) {
+        filteredFencers.retainWhere((f) => f.weapon == weaponToShow);
       }
       List<List<UserData>> fencerLists = [
         filteredFencers,
@@ -192,21 +200,67 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                     children: [
                       Flexible(child: SearchBarWidget(controller)),
                       if (practice.team == Team.both)
-                        IconButton(
+                        SizedBox(
+                          width: 75,
+                          child: IconButton(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            onPressed: () async {
+                              Team? retVal = await showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return Scaffold(
+                                      appBar: AppBar(
+                                        title: Text("Selected Team"),
+                                      ),
+                                      body: Column(
+                                        children: Team.values.map((team) {
+                                          return RadioListTile.adaptive(
+                                              value: team,
+                                              groupValue: teamToShow,
+                                              title: Text(team.type),
+                                              onChanged: (value) async {
+                                                if (value != null) {
+                                                  await context.maybePop(value);
+                                                }
+                                              });
+                                        }).toList(),
+                                      ),
+                                    );
+                                  });
+                              if (retVal != null) {
+                                setState(() {
+                                  teamToShow = retVal;
+                                });
+                              }
+                            },
+                            icon: Column(
+                              children: [
+                                const Icon(Icons.people),
+                                Text(teamToShow.shortName)
+                              ],
+                            ),
+                          ),
+                        ),
+                      SizedBox(
+                        width: 75,
+                        child: IconButton(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
                           onPressed: () async {
-                            Team? retVal = await showModalBottomSheet(
+                            Weapon? retVal = await showModalBottomSheet(
                                 context: context,
                                 builder: (context) {
                                   return Scaffold(
                                     appBar: AppBar(
-                                      title: Text("Selected Team"),
+                                      title: Text("Selected Weapon"),
                                     ),
                                     body: Column(
-                                      children: Team.values.map((team) {
+                                      children: List.generate(
+                                          Weapon.values.length - 1, (index) {
+                                        Weapon weapon = Weapon.values[index];
                                         return RadioListTile.adaptive(
-                                            value: team,
-                                            groupValue: teamToShow,
-                                            title: Text(team.type),
+                                            value: weapon,
+                                            groupValue: weaponToShow,
+                                            title: Text(weapon.shortName),
                                             onChanged: (value) async {
                                               if (value != null) {
                                                 await context.maybePop(value);
@@ -218,17 +272,18 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                                 });
                             if (retVal != null) {
                               setState(() {
-                                teamToShow = retVal;
+                                weaponToShow = retVal;
                               });
                             }
                           },
                           icon: Column(
                             children: [
-                              const Icon(Icons.sort),
-                              Text(teamToShow.shortName)
+                              const Icon(Symbols.swords),
+                              Text(weaponToShow.shortName)
                             ],
                           ),
                         ),
+                      ),
                     ],
                   ),
                   TabBar(
@@ -363,6 +418,9 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                             ],
                           ],
                         ),
+                        if (bouts.isNotEmpty && index == 1)
+                          Text(
+                              "Recorded: ${bouts.length} bout${bouts.length == 1 ? "" : "s"}"),
                       ],
                     ),
                     onTap: () => context.router.push(

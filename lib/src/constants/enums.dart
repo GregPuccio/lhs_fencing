@@ -272,6 +272,21 @@ enum Weapon {
     }
   }
 
+  String get shortName {
+    switch (this) {
+      case saber:
+        return "Saber";
+      case foil:
+        return "Foil";
+      case epee:
+        return "Epee";
+      case unsure:
+        return "All";
+      default:
+        return "";
+    }
+  }
+
   String get drillType {
     switch (this) {
       case saber:
