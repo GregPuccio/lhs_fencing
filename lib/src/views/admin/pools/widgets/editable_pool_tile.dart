@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lhs_fencing/src/models/bout.dart';
+import 'package:lhs_fencing/src/models/user_data.dart';
 
 class BoutTile extends StatefulWidget {
   final Bout bout;
@@ -8,6 +9,7 @@ class BoutTile extends StatefulWidget {
   final bool isEditing;
   final Function(Bout) onBoutUpdated;
   final Function(String) onEditToggle;
+  final UserData? fencer;
 
   const BoutTile({
     super.key,
@@ -16,6 +18,7 @@ class BoutTile extends StatefulWidget {
     this.isEditing = false,
     required this.onBoutUpdated,
     required this.onEditToggle,
+    this.fencer,
   });
 
   @override
@@ -127,7 +130,10 @@ class BoutTileState extends State<BoutTile> {
             children: [
               Text(
                 widget.bout.fencer.fullShortenedName,
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: widget.fencer == widget.bout.fencer
+                        ? Colors.orange
+                        : null),
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
@@ -165,7 +171,10 @@ class BoutTileState extends State<BoutTile> {
             children: [
               Text(
                 widget.bout.opponent.fullShortenedName,
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: widget.fencer == widget.bout.opponent
+                        ? Colors.orange
+                        : null),
                 textAlign: TextAlign.end,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -202,7 +211,10 @@ class BoutTileState extends State<BoutTile> {
             children: [
               Text(
                 widget.bout.fencer.fullShortenedName,
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: widget.fencer == widget.bout.fencer
+                        ? Colors.orange
+                        : null),
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
@@ -262,7 +274,10 @@ class BoutTileState extends State<BoutTile> {
             children: [
               Text(
                 widget.bout.opponent.fullShortenedName,
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: widget.fencer == widget.bout.opponent
+                        ? Colors.orange
+                        : null),
                 textAlign: TextAlign.end,
                 overflow: TextOverflow.ellipsis,
               ),

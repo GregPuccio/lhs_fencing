@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lhs_fencing/src/models/bout.dart';
 import 'package:lhs_fencing/src/models/bout_month.dart';
 import 'package:lhs_fencing/src/models/pool.dart';
+import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/firestore/functions/bout_functions.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/views/admin/pools/widgets/editable_pool_tile.dart';
@@ -24,6 +26,8 @@ class _EditPoolPageState extends ConsumerState<EditPoolPage> {
   late List<BoutMonth> boutMonths;
   bool _isProcessing = false;
   final Set<String> _editingBouts = {};
+  late TextEditingController fencer1Controller;
+  UserData? fencer;
 
   Future<void> _deletePoolAndBouts(Pool pool) async {
     setState(() {
@@ -83,6 +87,18 @@ class _EditPoolPageState extends ConsumerState<EditPoolPage> {
   }
 
   @override
+  void initState() {
+    fencer1Controller = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    fencer1Controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget whenData(List<Pool> pools) {
       int poolIndex = pools.indexWhere((p) => p.id == widget.poolID);
@@ -127,9 +143,51 @@ class _EditPoolPageState extends ConsumerState<EditPoolPage> {
                     },
             ),
           ],
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(50),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: TypeAheadField(
+                controller: fencer1Controller,
+                builder: (context, controller, node) => TextField(
+                  controller: controller,
+                  focusNode: node,
+                  decoration: InputDecoration(
+                    label: const Text("Fencer Search"),
+                    suffixIcon: fencer != null
+                        ? IconButton(
+                            onPressed: () => setState(() {
+                              fencer = null;
+                              fencer1Controller.clear();
+                            }),
+                            icon: const Icon(Icons.clear),
+                          )
+                        : null,
+                  ),
+                ),
+                suggestionsCallback: (pattern) {
+                  return pool.fencers
+                      .where((fencer) => fencer.fullName
+                          .toLowerCase()
+                          .contains(pattern.toLowerCase()))
+                      .toList();
+                },
+                itemBuilder: (context, fencer) => ListTile(
+                  title: Text(fencer.fullShortenedName),
+                  subtitle: Text("${fencer.team.type} | ${fencer.weapon.type}"),
+                ),
+                onSelected: (suggestion) {
+                  setState(() {
+                    fencer = suggestion;
+                    fencer1Controller.text = fencer!.fullName;
+                  });
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+              ),
+            ),
+          ),
         ),
         body: ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
           itemCount: pool.boutIDs.length,
           itemBuilder: (context, index) {
             int boutIndex =
@@ -140,14 +198,21 @@ class _EditPoolPageState extends ConsumerState<EditPoolPage> {
               );
             }
             Bout bout = bouts[boutIndex];
-            return BoutTile(
-              key: ValueKey(bout),
-              bout: bout,
-              index: index,
-              isEditing: _editingBouts.contains(bout.id),
-              onBoutUpdated: _updateBout,
-              onEditToggle: _toggleBoutEditing,
-            );
+            if (fencer == null ||
+                (fencer != null &&
+                    (bout.fencer == fencer || bout.opponent == fencer))) {
+              return BoutTile(
+                key: ValueKey(bout),
+                bout: bout,
+                fencer: fencer,
+                index: index,
+                isEditing: _editingBouts.contains(bout.id),
+                onBoutUpdated: _updateBout,
+                onEditToggle: _toggleBoutEditing,
+              );
+            } else {
+              return Container();
+            }
           },
         ),
       );
