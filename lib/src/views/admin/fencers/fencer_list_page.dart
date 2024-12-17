@@ -463,20 +463,23 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                 ),
               ];
 
+              List<Bout> fencerBouts =
+                  bouts.where((bout) => bout.fencer.id == fencer.id).toList();
+
               List<Bout> boutsWon = bouts
                   .where(
                       (bout) => bout.fencer.id == fencer.id && bout.fencerWin)
                   .toList();
               int fencerWin = boutsWon.length;
-              int touchesScored = boutsWon.fold(
+              int touchesScored = fencerBouts.fold(
                   0, (previousValue, bout) => previousValue + bout.fencerScore);
               List<Bout> boutsLost = bouts
                   .where(
                       (bout) => bout.fencer.id == fencer.id && bout.opponentWin)
                   .toList();
               int fencerLoss = boutsLost.length;
-              int touchesReceived = boutsLost.fold(
-                  0, (previousValue, bout) => previousValue + bout.fencerScore);
+              int touchesReceived = fencerBouts.fold(0,
+                  (previousValue, bout) => previousValue + bout.opponentScore);
               String percentWins = (fencerWin / (fencerWin + fencerLoss) * 100)
                   .toStringAsFixed(0);
 

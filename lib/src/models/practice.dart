@@ -89,12 +89,29 @@ Coach ${coach.firstName}
       case TypePractice.awayMeet:
       case TypePractice.tournament:
       case TypePractice.spectatingAway:
-        return DateTime.now().difference(atGymTime!).inMinutes < -30;
+        return DateTime.now().difference(busTime!).inMinutes < -30;
     }
   }
 
   bool get isTooLate => DateTime.now().difference(startTime).inMinutes > 60;
-  bool get canCheckIn => DateTime.now().difference(startTime).inMinutes >= -15;
+  bool get canCheckIn {
+    switch (type) {
+      case TypePractice.practice:
+      case TypePractice.quad:
+        return DateTime.now().difference(startTime).inMinutes >= -15;
+
+      case TypePractice.meet:
+      case TypePractice.fundraiser:
+      case TypePractice.spectatingHome:
+        return DateTime.now().difference(startTime).inMinutes >= -45;
+
+      case TypePractice.awayMeet:
+      case TypePractice.tournament:
+      case TypePractice.spectatingAway:
+        return DateTime.now().difference(busTime!).inMinutes >= -30;
+    }
+  }
+
   bool get isLate => DateTime.now().difference(startTime).inMinutes > 15;
   bool get practiceOver => DateTime.now().isAfter(endTime);
 
