@@ -37,7 +37,7 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
   Weapon? weaponFilter;
   SchoolYear? yearFilter;
   bool? atPractice;
-  bool fencerSortByFirst = true;
+  FencerSortType fencerSortType = FencerSortType.lastName;
 
   /// null is all fencers, true is active only, false is inactive only
   bool? activeFilter = true;
@@ -88,10 +88,28 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
       if (activeFilter != null) {
         filteredFencers.retainWhere((fencer) => fencer.active == activeFilter);
       }
-      if (fencerSortByFirst) {
-        filteredFencers.sort((a, b) => a.firstName.compareTo(b.firstName));
-      } else {
-        filteredFencers.sort((a, b) => a.lastName.compareTo(b.lastName));
+      // Apply sorting based on the selected sorting type
+      switch (fencerSortType) {
+        case FencerSortType.firstName:
+          filteredFencers.sort((a, b) => a.firstName.compareTo(b.firstName));
+          break;
+        case FencerSortType.lastName:
+          filteredFencers.sort((a, b) => a.lastName.compareTo(b.lastName));
+          break;
+        case FencerSortType.winRate:
+          filteredFencers.sort((a, b) {
+            double winRateA = calculateWinRate(a, bouts);
+            double winRateB = calculateWinRate(b, bouts);
+            return winRateB.compareTo(winRateA);
+          });
+          break;
+        case FencerSortType.boutsFenced:
+          filteredFencers.sort((a, b) {
+            int boutsA = calculateTotalBouts(a, bouts);
+            int boutsB = calculateTotalBouts(b, bouts);
+            return boutsB.compareTo(boutsA);
+          });
+          break;
       }
       List<Practice> currentPractices = practices
           .where((p) =>
@@ -156,16 +174,32 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                         Flexible(child: SearchBarWidget(controller)),
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
-                          child: IconButton(
-                              onPressed: () => setState(() {
-                                    fencerSortByFirst = !fencerSortByFirst;
-                                  }),
-                              icon: Column(
-                                children: [
-                                  Icon(Icons.sort),
-                                  Text(fencerSortByFirst ? "First" : "Last")
-                                ],
-                              )),
+                          child: PopupMenuButton<FencerSortType>(
+                            onSelected: (value) {
+                              setState(() {
+                                fencerSortType = value;
+                              });
+                            },
+                            itemBuilder: (context) => [
+                              const PopupMenuItem(
+                                value: FencerSortType.firstName,
+                                child: Text("Sort by First Name"),
+                              ),
+                              const PopupMenuItem(
+                                value: FencerSortType.lastName,
+                                child: Text("Sort by Last Name"),
+                              ),
+                              const PopupMenuItem(
+                                value: FencerSortType.winRate,
+                                child: Text("Sort by Win Rate"),
+                              ),
+                              const PopupMenuItem(
+                                value: FencerSortType.boutsFenced,
+                                child: Text("Sort by Bouts Fenced"),
+                              ),
+                            ],
+                            icon: const Icon(Icons.sort),
+                          ),
                         )
                       ],
                     ),
@@ -605,4 +639,16 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
           loading: () => const LoadingPage(),
         );
   }
+}
+
+// Helper functions
+double calculateWinRate(UserData fencer, List<Bout> bouts) {
+  final userBouts = bouts.where((bout) => bout.fencer.id == fencer.id).toList();
+  final wins = userBouts.where((bout) => bout.fencerWin).length;
+  final total = userBouts.length;
+  return total > 0 ? (wins / total) * 100 : 0.0;
+}
+
+int calculateTotalBouts(UserData fencer, List<Bout> bouts) {
+  return bouts.where((bout) => bout.fencer.id == fencer.id).length;
 }

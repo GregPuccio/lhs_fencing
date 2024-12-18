@@ -363,3 +363,10 @@ enum TypeDrill {
   static TypeDrill fromMap(String map) =>
       values.byName(map.isEmpty ? "freshman" : map);
 }
+
+enum FencerSortType {
+  firstName,
+  lastName,
+  winRate,
+  boutsFenced,
+}
