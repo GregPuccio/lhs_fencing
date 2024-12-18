@@ -429,7 +429,17 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                         attendance: attendance,
                       ),
                     ),
-                    subtitle: Text(attendance.status(practice)),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(attendance.status(practice)),
+                        if (attendance.comments.isNotEmpty)
+                          Text(
+                            "View ${attendance.comments.length} comment${attendance.comments.length == 1 ? "" : "s"}",
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                      ],
+                    ),
                     trailing: const Icon(Icons.edit),
                   );
                 },

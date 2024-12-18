@@ -5,16 +5,18 @@ import 'package:lhs_fencing/src/constants/date_utils.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/attendance_month.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
+import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
-import 'package:lhs_fencing/src/views/admin/widgets/practice_status.dart';
+import 'package:lhs_fencing/src/views/admin/widgets/admin_event_list_tile.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 import 'package:lhs_fencing/src/widgets/text_badge.dart';
 
 class AdminUpcomingEvents extends ConsumerStatefulWidget {
   final void Function(int) updateIndexFn;
+
   const AdminUpcomingEvents({
     super.key,
     required this.updateIndexFn,
@@ -26,30 +28,43 @@ class AdminUpcomingEvents extends ConsumerStatefulWidget {
 }
 
 class _AdminUpcomingEventsState extends ConsumerState<AdminUpcomingEvents> {
+  // Data lists to store attendance and fencer information.
+  List<Attendance> attendances = [];
+  List<UserData> fencers = [];
+
   @override
   Widget build(BuildContext context) {
-    List<Attendance> attendances = [];
-    List<UserData> fencers = [];
-    Widget whenData(practiceMonths) {
-      List<Practice> practices = [];
-      for (var month in practiceMonths) {
-        practices.addAll(month.practices);
-        practices.removeWhere((e) => e.endTime.isBefore(DateTime(0).today));
-      }
+    // Widget to handle data from practicesProvider.
+    Widget whenData(List<PracticeMonth> practiceMonths) {
+      // Gather practices from the fetched months and filter out past events.
+      List<Practice> practices =
+          practiceMonths.expand((month) => month.practices).toList();
+
+      practices.removeWhere((e) => e.endTime.isBefore(DateTime(0).today));
+
+      // Sort practices by start time.
       practices.sort((a, b) => a.startTime.compareTo(b.startTime));
+
+      // Identify currently ongoing practices.
       List<Practice> currentPractices = practices
           .where((e) =>
-              e.startTime.isToday &&
+              e.startTime
+                  .isBefore(DateTime.now().add(const Duration(hours: 6))) &&
               e.endTime
-                  .isAfter(DateTime.now().subtract(const Duration(hours: 2))))
+                  .isAfter(DateTime.now().subtract(const Duration(hours: 1))))
           .toList();
+
+      // Remove current practices from the general list to avoid duplication.
       practices.removeWhere((p) => currentPractices.any((c) => c.id == p.id));
+
+      // Calculate the number of tiles to display.
       int numTiles = (practices.length > 7 ? 7 : practices.length) +
           (currentPractices.isNotEmpty ? 1 : 0) +
-          1;
+          1; // +1 for the "View All Events" tile.
 
       return Column(
         children: List.generate(numTiles, (index) {
+          // Display ongoing practices in a separate card.
           if (currentPractices.isNotEmpty && index == 0) {
             return Card(
               color: Theme.of(context).colorScheme.primaryContainer,
@@ -57,71 +72,26 @@ class _AdminUpcomingEventsState extends ConsumerState<AdminUpcomingEvents> {
                 children: [
                   const SizedBox(height: 8),
                   Text(
-                    "Currently In Progress:",
+                    "In Progress Events:",
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  const Divider(),
                   Column(
-                    children: List.generate(
-                      currentPractices.length,
-                      (i) {
-                        Practice practice = currentPractices[i];
-                        List<Attendance> practiceAttendances = attendances
-                            .where((a) => a.id == practice.id)
-                            .toList();
-                        int comments = 0;
-                        for (var attendance in practiceAttendances) {
-                          comments += attendance.comments.length;
-                        }
-                        int presentFencers = fencers
-                            .where((fencer) => practiceAttendances.any(
-                                (attendance) =>
-                                    attendance.id == practice.id &&
-                                    attendance.userData.id == fencer.id &&
-                                    attendance.attended))
-                            .length;
-                        int absentFencers = fencers
-                            .where((fencer) => !practiceAttendances.any(
-                                (attendance) =>
-                                    attendance.id == practice.id &&
-                                    attendance.userData.id == fencer.id &&
-                                    attendance.attended))
-                            .length;
-                        return Column(
-                          children: [
-                            ListTile(
-                              title: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      TextBadge(text: practice.team.type),
-                                      const SizedBox(width: 8),
-                                      Text(practice.type.type),
-                                    ],
-                                  ),
-                                  Text(
-                                      "${practice.runTime}\n${practice.location}"),
-                                  PracticeInfo(practice, presentFencers,
-                                      absentFencers, comments),
-                                ],
-                              ),
-                              trailing: const Icon(Icons.arrow_forward),
-                              onTap: () => context.router.push(
-                                PracticeRoute(practiceID: practice.id),
-                              ),
-                            ),
-                            if (i != currentPractices.length - 1)
-                              const Divider(),
-                          ],
-                        );
-                      },
-                    ),
+                    children: List.generate(currentPractices.length, (i) {
+                      Practice practice = currentPractices[i];
+                      return Card(
+                        child: AdminEventListTile(
+                          attendances: attendances,
+                          practice: practice,
+                        ),
+                      );
+                    }),
                   ),
                 ],
               ),
             );
           }
+
+          // Display "View All Events" tile at the end.
           if (index == numTiles - 1) {
             return ListTile(
               leading: const Icon(Icons.calendar_month),
@@ -132,8 +102,17 @@ class _AdminUpcomingEventsState extends ConsumerState<AdminUpcomingEvents> {
             );
           }
 
+          // Display upcoming practices.
           Practice practice =
               practices[index + (currentPractices.isNotEmpty ? -1 : 0)];
+          // Filter the attendances relevant to the current practice
+          final attendanceList = attendances
+              .where((attendance) => attendance.id == practice.id)
+              .toList();
+
+          final int fencerComments =
+              attendanceList.expand((a) => a.comments).length;
+
           return Column(
             children: [
               ListTile(
@@ -146,7 +125,8 @@ class _AdminUpcomingEventsState extends ConsumerState<AdminUpcomingEvents> {
                     Text(practice.timeframe),
                   ],
                 ),
-                subtitle: Text("${practice.runTime}\n${practice.location}"),
+                subtitle: Text(
+                    "${practice.runTime}\n${practice.location}\n${fencerComments != 0 ? "Comments: $fencerComments" : ""}"),
                 trailing: const Icon(Icons.arrow_forward),
                 onTap: () => context.router.push(
                   PracticeRoute(practiceID: practice.id),
@@ -158,12 +138,10 @@ class _AdminUpcomingEventsState extends ConsumerState<AdminUpcomingEvents> {
       );
     }
 
+    // Process attendance data and forward it to whenData.
     Widget whenAttendanceData(List<AttendanceMonth> attendanceMonths) {
-      attendances.clear();
-      for (var month in attendanceMonths) {
-        attendances.addAll(month.attendances);
-      }
-
+      attendances =
+          attendanceMonths.expand((month) => month.attendances).toList();
       return ref.watch(practicesProvider).when(
             data: whenData,
             error: (error, stackTrace) => const ErrorPage(),
@@ -171,15 +149,17 @@ class _AdminUpcomingEventsState extends ConsumerState<AdminUpcomingEvents> {
           );
     }
 
+    // Process fencer data and forward it to whenAttendanceData.
     Widget whenFencerData(List<UserData> fencerList) {
-      fencers = fencerList.toList();
-      fencers.retainWhere((fencer) => fencer.active);
+      fencers = fencerList.where((fencer) => fencer.active).toList();
       return ref.watch(allAttendancesProvider).when(
-          data: whenAttendanceData,
-          error: (error, stackTrace) => const ErrorTile(),
-          loading: () => const LoadingTile());
+            data: whenAttendanceData,
+            error: (error, stackTrace) => const ErrorTile(),
+            loading: () => const LoadingTile(),
+          );
     }
 
+    // Watch fencersProvider and start the data processing pipeline.
     return ref.watch(fencersProvider).when(
           data: whenFencerData,
           error: (error, stackTrace) => const ErrorTile(),
