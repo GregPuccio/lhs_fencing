@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:uuid/uuid.dart';
 
@@ -201,22 +200,7 @@ class UserData with Compare<UserData> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is UserData &&
-        other.id == id &&
-        other.email == email &&
-        other.firstName == firstName &&
-        other.lastName == lastName &&
-        other.usaFencingID == usaFencingID &&
-        other.team == team &&
-        other.weapon == weapon &&
-        other.schoolYear == schoolYear &&
-        other.startDate == startDate &&
-        listEquals(other.clubDays, clubDays) &&
-        other.rating == rating &&
-        other.club == club &&
-        other.equipment == equipment &&
-        other.admin == admin &&
-        other.active == active;
+    return other is UserData && other.id == id;
   }
 
   @override

@@ -59,6 +59,10 @@ class _CreateLineupPageState extends ConsumerState<CreateLineupPage> {
       for (var attendanceMonth in attendanceMonths) {
         attendances.addAll(attendanceMonth.attendances);
       }
+      List<Attendance> unaccountedAttendances = attendances
+          .where(
+              (a) => !(currentLineup?.practicesAdded.contains(a.id) ?? false))
+          .toList();
 
       return Scaffold(
         appBar: AppBar(
@@ -125,6 +129,26 @@ class _CreateLineupPageState extends ConsumerState<CreateLineupPage> {
             UserData fencer = fencersToShow[index];
             int adjustAmount =
                 widget.adjustAmounts.putIfAbsent(fencer.id, () => 0);
+            List<Attendance> fencerAttendances = unaccountedAttendances
+                .where((a) =>
+                    a.userData.id == fencer.id &&
+                    widget.unaccountedPractices.any((p) => p.id == a.id))
+                .toList();
+            List<Attendance> unexcusedAbsences =
+                fencerAttendances.where((a) => a.unexcusedAbsense).toList();
+            int practicesMissed = unexcusedAbsences
+                .where((a) =>
+                    a.userData.id == fencer.id &&
+                    widget.unaccountedPractices
+                        .where((p) =>
+                            p.id == a.id && p.type == TypePractice.practice)
+                        .isNotEmpty)
+                .length;
+            int meetsMissed = unexcusedAbsences.length - practicesMissed;
+            int practicesArrivedLate =
+                fencerAttendances.where((a) => a.wasLate).length;
+            int practicesLeftEarly =
+                fencerAttendances.where((a) => a.leftEarly).length;
             return CheckboxListTile(
               enabled: starters.contains(fencer) ? true : starters.length < 2,
               selected: starters.contains(fencer),
@@ -136,6 +160,8 @@ class _CreateLineupPageState extends ConsumerState<CreateLineupPage> {
                 children: [
                   Text(fencer.fullName),
                   const SizedBox(width: 8),
+                  Text(fencer.rating.isEmpty ? "U" : fencer.rating),
+                  const SizedBox(width: 8),
                   if (adjustAmount > 0) ...[
                     Text(
                       "Dropped $adjustAmount Position${adjustAmount > 1 ? "s" : ""}",
@@ -146,8 +172,17 @@ class _CreateLineupPageState extends ConsumerState<CreateLineupPage> {
                   ],
                 ],
               ),
-              subtitle: Text(
-                  "Rating: ${fencer.rating.isEmpty ? "U" : fencer.rating}"),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Practices Missed: $practicesMissed"),
+                  Text("Meets Missed: $meetsMissed"),
+                  Text("Arrived Late: $practicesArrivedLate"),
+                  Text("Left Early: $practicesLeftEarly"),
+                  Text(
+                      "Fenced: ${fencerAttendances.any((a) => a.participated)}")
+                ],
+              ),
               value: starters.contains(fencer),
               onChanged: (value) {
                 setState(() {

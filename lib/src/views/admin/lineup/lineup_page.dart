@@ -40,6 +40,7 @@ class _LineupPageState extends ConsumerState<LineupPage> {
       List<Lineup> filteredLineups = lineups
           .where((l) => l.team == teamFilter && l.weapon == weaponFilter)
           .toList();
+      filteredLineups.sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
       Lineup? currentLineup =
           filteredLineups.isEmpty ? null : filteredLineups.last;
@@ -71,50 +72,35 @@ class _LineupPageState extends ConsumerState<LineupPage> {
           currentLineup?.fencers.toList() ?? [];
       for (int i = 0; i < fencerAdjustmentList.length; i++) {
         UserData fencer = fencerAdjustmentList[i];
-        // print(!(currentLineup?.starters.contains(fencer) ?? false));
-        // set initial change value to zero
-        int adjustAmount = 0;
-        bool halfAdjust = false;
         // inside of this collect attendances for this fencer specifically
         List<Attendance> fencerAttendances = unaccountedAttendances
             .where((a) => a.userData.id == fencer.id)
             .toList();
 
-        // go through practices one by one in here to determine value of events missed
-        // 3 points for meet, 1 point for practice, .5 for late arrive/early leave (round down)
+        List<Attendance> unexcusedAbsences =
+            fencerAttendances.where((a) => a.unexcusedAbsense).toList();
+        List<Attendance> practicesArrivedLate =
+            fencerAttendances.where((a) => a.wasLate).toList();
+        List<Attendance> practicesLeftEarly =
+            fencerAttendances.where((a) => a.leftEarly).toList();
+
+        double adjustmentAmount = 0;
         for (var practice in unaccountedPractices) {
-          // check if they have any attendance record at all
-          if (fencerAttendances.any((a) => a.id == practice.id)) {
-            Attendance attendance =
-                fencerAttendances.firstWhere((a) => a.id == practice.id);
-            // check if they didn't attend first even with an attendance record
-            if (!attendance.attended) {
-              adjustAmount += (practice.type == TypePractice.practice ? 1 : 3);
-            }
-            // then check if they did attend, did they participate in the meet?
-            else if (attendance.participated &&
-                !(currentLineup?.starters.contains(fencer) ?? false)) {
-              adjustAmount += (((currentLineup?.fencers.length ?? 0) -
-                  1 -
-                  (currentLineup?.fencers.indexOf(fencer) ?? 0)));
-            }
-            // also take into account if they arrived late or left early regardless of their participation
-            if (attendance.wasLate || attendance.leftEarly) {
-              if (halfAdjust) {
-                adjustAmount += 1;
-                halfAdjust = false;
-              } else {
-                halfAdjust = true;
-              }
+          if (unexcusedAbsences.any((a) => a.id == practice.id)) {
+            if (practice.type == TypePractice.practice) {
+              adjustmentAmount += 1;
+            } else {
+              adjustmentAmount += 3;
             }
           }
-          //  if there is no record then penalize 1 for practice or 3 for meet
-          else {
-            adjustAmount += (practice.type == TypePractice.practice ? 1 : 3);
+          if (practicesArrivedLate.any((a) => a.id == practice.id)) {
+            adjustmentAmount += 0.49;
+          }
+          if (practicesLeftEarly.any((a) => a.id == practice.id)) {
+            adjustmentAmount += 0.49;
           }
         }
-        // add adjustment amount to [adjustAmounts]
-        adjustAmounts.putIfAbsent(fencer.id, () => adjustAmount);
+        adjustAmounts.putIfAbsent(fencer.id, () => adjustmentAmount.round());
       }
 
       if (adjustAmounts.isNotEmpty) {
@@ -304,6 +290,30 @@ class _LineupPageState extends ConsumerState<LineupPage> {
                       int adjustAmount =
                           adjustAmounts.putIfAbsent(fencer.id, () => 0);
                       bool isStarter = currentLineup.starters.contains(fencer);
+                      List<Attendance> fencerAttendances =
+                          unaccountedAttendances
+                              .where((a) =>
+                                  a.userData.id == fencer.id &&
+                                  unaccountedPractices.any((p) => p.id == a.id))
+                              .toList();
+                      List<Attendance> unexcusedAbsences = fencerAttendances
+                          .where((a) => a.unexcusedAbsense)
+                          .toList();
+                      int practicesMissed = unexcusedAbsences
+                          .where((a) =>
+                              a.userData.id == fencer.id &&
+                              unaccountedPractices
+                                  .where((p) =>
+                                      p.id == a.id &&
+                                      p.type == TypePractice.practice)
+                                  .isNotEmpty)
+                          .length;
+                      int meetsMissed =
+                          unexcusedAbsences.length - practicesMissed;
+                      int practicesArrivedLate =
+                          fencerAttendances.where((a) => a.wasLate).length;
+                      int practicesLeftEarly =
+                          fencerAttendances.where((a) => a.leftEarly).length;
                       return ListTile(
                         key: ValueKey(fencer),
                         leading: CircleAvatar(
@@ -315,9 +325,11 @@ class _LineupPageState extends ConsumerState<LineupPage> {
                               : null,
                           child: Text("${index + 1}"),
                         ),
-                        title: Row(
+                        title: Wrap(
                           children: [
                             Text(fencer.fullName + (isStarter ? "*" : "")),
+                            const SizedBox(width: 8),
+                            Text(fencer.rating.isEmpty ? "U" : fencer.rating),
                             const SizedBox(width: 8),
                             if (adjustAmount > 0) ...[
                               Icon(
@@ -328,7 +340,7 @@ class _LineupPageState extends ConsumerState<LineupPage> {
                                 "$adjustAmount",
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodySmall
+                                    .bodyMedium
                                     ?.copyWith(
                                       color:
                                           Theme.of(context).colorScheme.error,
@@ -337,8 +349,17 @@ class _LineupPageState extends ConsumerState<LineupPage> {
                             ],
                           ],
                         ),
-                        subtitle: Text(
-                            "Rating: ${fencer.rating.isEmpty ? "U" : fencer.rating}"),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Practices Missed: $practicesMissed"),
+                            Text("Meets Missed: $meetsMissed"),
+                            Text("Arrived Late: $practicesArrivedLate"),
+                            Text("Left Early: $practicesLeftEarly"),
+                            Text(
+                                "Fenced: ${fencerAttendances.any((a) => a.participated)}")
+                          ],
+                        ),
                       );
                     }
                   }
