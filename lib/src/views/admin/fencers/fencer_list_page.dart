@@ -175,6 +175,7 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: PopupMenuButton<FencerSortType>(
+                            initialValue: fencerSortType,
                             onSelected: (value) {
                               setState(() {
                                 fencerSortType = value;
@@ -198,7 +199,12 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                                 child: Text("Sort by Bouts Fenced"),
                               ),
                             ],
-                            icon: const Icon(Icons.sort),
+                            icon: Column(
+                              children: [
+                                const Icon(Icons.sort),
+                                Text(fencerSortType.type)
+                              ],
+                            ),
                           ),
                         )
                       ],

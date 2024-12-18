@@ -368,5 +368,18 @@ enum FencerSortType {
   firstName,
   lastName,
   winRate,
-  boutsFenced,
+  boutsFenced;
+
+  String get type {
+    switch (this) {
+      case FencerSortType.firstName:
+        return "First";
+      case FencerSortType.lastName:
+        return "Last";
+      case FencerSortType.winRate:
+        return "Wins";
+      case FencerSortType.boutsFenced:
+        return "Bouts";
+    }
+  }
 }
