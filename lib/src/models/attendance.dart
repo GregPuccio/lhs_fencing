@@ -88,31 +88,21 @@ class Attendance {
     );
   }
 
-  bool get attended {
-    return checkIn != null;
-  }
+  bool get attended => checkIn != null;
 
-  bool get tooSoonForCheckIn =>
-      DateTime.now().difference(practiceStart).inMinutes < -15;
-  bool get isTooLate => DateTime.now().difference(practiceStart).inMinutes > 60;
-  bool get canCheckIn =>
-      DateTime.now().difference(practiceStart).inMinutes >= -15;
-  bool get isLate => DateTime.now().difference(practiceStart).inMinutes > 15;
-  bool get practiceOver => DateTime.now().isAfter(practiceEnd);
-
-  String get attendanceStatus {
+  String status(Practice practice) {
     String checkedIn =
         checkIn != null ? DateFormat('h:mm aa').format(checkIn!) : "";
 
     String checkedOut =
         checkOut != null ? " - ${DateFormat('h:mm aa').format(checkOut!)}" : "";
     String info =
-        "${practiceOver ? "Attended |" : "Checked In"} $checkedIn$checkedOut";
+        "${practice.isOver ? "Attended |" : "Checked In"} $checkedIn$checkedOut";
 
     String text = "Status: ";
     if (attended) {
       text += info;
-    } else if (practiceOver) {
+    } else if (practice.isOver) {
       if (excusedAbsense) {
         text += "Absent - Excused";
       } else if (unexcusedAbsense) {
@@ -121,16 +111,16 @@ class Attendance {
         text += "Uncategorized Attendance";
       }
     } else {
-      if (tooSoonForCheckIn) {
+      if (practice.tooSoonForCheckIn) {
         text += "Too Soon For Check In";
-      } else if (isTooLate) {
+      } else if (practice.isTooLate) {
         text += "Late Arrival - Check In With Coach";
-      } else if (canCheckIn) {
+      } else if (practice.canCheckIn) {
         if (excusedAbsense) {
           text += "Absent - Excused";
         } else if (unexcusedAbsense) {
           text += "Absent - Unexcused";
-        } else if (isLate) {
+        } else if (practice.isLate) {
           text += "Late Arrival - Can Check In";
         } else {
           text += "On Time - Can Check In";

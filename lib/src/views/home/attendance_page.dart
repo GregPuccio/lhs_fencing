@@ -9,8 +9,7 @@ import 'package:lhs_fencing/src/models/practice_month.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/firestore/functions/attendance_functions.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
-import 'package:lhs_fencing/src/views/home/widgets/checkin_button.dart';
-import 'package:lhs_fencing/src/views/home/widgets/checkout_button.dart';
+import 'package:lhs_fencing/src/views/home/widgets/attendance_tile.dart';
 import 'package:lhs_fencing/src/views/home/widgets/event_schedule.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
@@ -63,37 +62,27 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
       attendance.comments.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
       return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(150),
-          child: AppBar(
-            title: Text(practice.type.type),
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(1),
-              child: ListTile(
-                title: Text(attendance.attendanceStatus),
-                subtitle: Text("${practice.runTime}\n${practice.location}\n"),
-                trailing: attendance.checkOut != null
-                    ? null
-                    : attendance.attended
-                        ? CheckOutButton(
-                            attendance: attendance,
-                            practice: practice,
-                          )
-                        : CheckInButton(practice: practice),
-              ),
-            ),
-            actions: [
-              IconButton(
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    content: EventSchedule(practice: practice),
-                  ),
+        appBar: AppBar(
+          title: Text("Attendance Page"),
+          bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(100),
+              child: AttendanceTile(
+                practice: practice,
+                attendance: attendance,
+                showStatusChange: true,
+                canTap: false,
+              )),
+          actions: [
+            IconButton(
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  content: EventSchedule(practice: practice),
                 ),
-                icon: const Icon(Icons.calendar_view_day),
               ),
-            ],
-          ),
+              icon: const Icon(Icons.calendar_view_day),
+            ),
+          ],
         ),
         body: Column(
           children: [

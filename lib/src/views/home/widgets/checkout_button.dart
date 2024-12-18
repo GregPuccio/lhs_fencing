@@ -10,10 +10,19 @@ import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/firestore/functions/attendance_functions.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 
+/// A button that allows users to check out from a practice session
+///
+/// This widget handles different check-out scenarios:
+/// 1. Regular check-out at or near practice end time
+/// 2. Early check-out with a required reason
 class CheckOutButton extends ConsumerWidget {
+  /// The current attendance record
   final Attendance attendance;
+
+  /// The practice session details
   final Practice practice;
 
+  /// Constructor for the CheckOutButton
   const CheckOutButton({
     super.key,
     required this.attendance,
@@ -22,10 +31,16 @@ class CheckOutButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    /// Performs the check-out process
+    ///
+    /// [earlyLeaveReason] is an optional parameter for recording why
+    /// a user is leaving early
     Future<void> checkOut({String? earlyLeaveReason}) async {
+      // Retrieve current user data and attendance records
       UserData userData = ref.read(userDataProvider).value!;
       List<AttendanceMonth> months = ref.read(attendancesProvider).value!;
 
+      // Update the attendance record with check-out time and optional comment
       return await updateAttendance(
         userData.id,
         months,
@@ -39,82 +54,120 @@ class CheckOutButton extends ConsumerWidget {
       );
     }
 
-    DateTime now = DateTime.now();
-    final practiceEnd = attendance.practiceEnd;
+    // Only enable check-out button on the day of practice
     return ElevatedButton(
       onPressed: practice.endTime.isToday
           ? () {
-              DateTime now = DateTime.now();
-              final practiceEnd = attendance.practiceEnd;
-              // if we are too early to check in (more than 15 minutes before practice)
+              // Determine if the check-out is early (before 15 minutes before end time)
+              // Check if the current time is more than 15 minutes before the practice end time
+
+              // Get practice type for user-friendly messaging
               String practiceType = practice.type.type;
-              if (now.isBefore(
-                  practiceEnd.subtract(const Duration(minutes: 15)))) {
-                TextEditingController controller = TextEditingController();
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text("Leaving $practiceType Early"),
-                    content: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                              "Please note that you are leaving the $practiceType early and must provide a reason."),
-                          const SizedBox(height: 8),
-                          TextField(
-                            controller: controller,
-                            minLines: 3,
-                            maxLines: 5,
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => context.maybePop(),
-                        child: const Text("Cancel"),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          checkOut(
-                            earlyLeaveReason: controller.text.isNotEmpty
-                                ? "Left Early: ${controller.text}"
-                                : null,
-                          ).then((value) =>
-                              context.mounted ? context.router.maybePop() : 0);
-                        },
-                        child: const Text("Complete check out"),
-                      ),
-                    ],
-                  ),
+
+              if (practice.isLeavingEarly) {
+                // Show dialog for early checkout with reason input
+                _showEarlyCheckoutDialog(
+                  context,
+                  practiceType,
+                  checkOut,
                 );
               } else {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text("$practiceType Check Out"),
-                    content: const Text(
-                        "Thank you for letting us know when you leave! It makes it easier to keep track of everybody. See you next time."),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          context.router.maybePop();
-                        },
-                        child: const Text(
-                          "Bye!",
-                        ),
-                      ),
-                    ],
-                  ),
-                ).then((value) => checkOut());
+                // Show standard check-out confirmation dialog
+                _showStandardCheckoutDialog(
+                  context,
+                  practiceType,
+                  checkOut,
+                );
               }
             }
           : null,
-      child: Text(
-          now.isBefore(practiceEnd.subtract(const Duration(minutes: 15)))
-              ? "Leaving Early?"
-              : "Check Out"),
+      child: Text(practice.isLeavingEarly ? "Leaving Early?" : "Check Out"),
     );
+  }
+
+  /// Displays a dialog for early checkout with reason input
+  void _showEarlyCheckoutDialog(
+    BuildContext context,
+    String practiceType,
+    Future<void> Function({String? earlyLeaveReason}) checkOut,
+  ) {
+    // Controller for the reason text input
+    TextEditingController controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Leaving $practiceType Early"),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                  "Please note that you are leaving the $practiceType early and must provide a reason."),
+              const SizedBox(height: 8),
+              TextField(
+                controller: controller,
+                minLines: 3,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  hintText: "Reason for leaving early...",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          // Cancel button
+          TextButton(
+            onPressed: () => context.maybePop(),
+            child: const Text("Cancel"),
+          ),
+          // Confirm check-out button
+          TextButton(
+            onPressed: () {
+              checkOut(
+                earlyLeaveReason: controller.text.isNotEmpty
+                    ? "Left Early: ${controller.text}"
+                    : null,
+              ).then((value) {
+                if (context.mounted) {
+                  context.maybePop();
+                }
+              });
+            },
+            child: const Text("Complete check out"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Displays a standard check-out confirmation dialog
+  void _showStandardCheckoutDialog(
+    BuildContext context,
+    String practiceType,
+    Future<void> Function({String? earlyLeaveReason}) checkOut,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("$practiceType Check Out"),
+        content: const Text(
+            "Thank you for letting us know when you leave! It makes it easier to keep track of everybody. See you next time."),
+        actions: [
+          TextButton(
+            onPressed: () {
+              context.router.maybePop();
+            },
+            child: const Text(
+              "Bye!",
+            ),
+          ),
+        ],
+      ),
+    ).then((value) => checkOut());
   }
 }

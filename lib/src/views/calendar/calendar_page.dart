@@ -9,7 +9,7 @@ import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/views/admin/widgets/admin_event_list_tile.dart';
-import 'package:lhs_fencing/src/views/home/widgets/event_list_tile.dart';
+import 'package:lhs_fencing/src/views/home/widgets/attendance_tile.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage extends ConsumerStatefulWidget {
@@ -113,7 +113,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
               valueListenable: _selectedEvents,
               builder: (context, value, child) {
                 if (value.isNotEmpty) {
-                  return ListView.builder(
+                  return ListView.separated(
                     itemCount: value.length,
                     itemBuilder: (context, index) {
                       Practice practice = value[index];
@@ -127,12 +127,13 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                           (attendance) => attendance.id == practice.id,
                           orElse: () => Attendance.noUserCreate(practice),
                         );
-                        return EventListTile(
+                        return AttendanceTile(
                           practice: practice,
                           attendance: attendance,
                         );
                       }
                     },
+                    separatorBuilder: (context, index) => Divider(),
                   );
                 } else {
                   return const ListTile(

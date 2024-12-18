@@ -11,8 +11,8 @@ import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
 import 'package:lhs_fencing/src/views/admin/fencers/fencer_details_page.dart';
+import 'package:lhs_fencing/src/views/home/widgets/attendance_tile.dart';
 import 'package:lhs_fencing/src/views/home/widgets/no_events_found.dart';
-import 'package:lhs_fencing/src/views/home/widgets/todays_attendance.dart';
 import 'package:lhs_fencing/src/views/home/widgets/upcoming_events.dart';
 import 'package:lhs_fencing/src/widgets/indicator.dart';
 import 'package:lhs_fencing/src/widgets/welcome_header.dart';
@@ -321,9 +321,11 @@ class _HomePageState extends ConsumerState<HomePage> {
         const Divider(),
         if (widget.todaysAttendance != null &&
             widget.upcomingPractice != null) ...[
-          TodaysAttendance(
-            todaysAttendance: widget.todaysAttendance!,
+          AttendanceTile(
+            attendance: widget.todaysAttendance!,
             practice: widget.upcomingPractice!,
+            showStatusChange: true,
+            isTodaysPractice: true,
           ),
         ] else
           const NoEventsFound(),

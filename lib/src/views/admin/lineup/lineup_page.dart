@@ -353,7 +353,7 @@ class _LineupPageState extends ConsumerState<LineupPage> {
       for (var month in data) {
         practices.addAll(month.practices);
       }
-      practices = practices.where((p) => p.practiceOver).toList();
+      practices = practices.where((p) => p.isOver).toList();
       return ref.watch(allAttendancesProvider).when(
           data: whenData,
           error: (error, stackTrace) => const ErrorPage(),

@@ -12,7 +12,6 @@ import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/services/router/router.dart';
-import 'package:lhs_fencing/src/widgets/attendance_info.dart';
 import 'package:lhs_fencing/src/widgets/attendance_status_bar.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
@@ -430,7 +429,7 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                         attendance: attendance,
                       ),
                     ),
-                    subtitle: AttendanceInfo(attendance),
+                    subtitle: Text(attendance.status(practice)),
                     trailing: const Icon(Icons.edit),
                   );
                 },

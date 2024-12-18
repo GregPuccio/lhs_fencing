@@ -93,7 +93,6 @@ Coach ${coach.firstName}
     }
   }
 
-  bool get isTooLate => DateTime.now().difference(startTime).inMinutes > 60;
   bool get canCheckIn {
     switch (type) {
       case TypePractice.practice:
@@ -113,7 +112,9 @@ Coach ${coach.firstName}
   }
 
   bool get isLate => DateTime.now().difference(startTime).inMinutes > 15;
-  bool get practiceOver => DateTime.now().isAfter(endTime);
+  bool get isTooLate => DateTime.now().difference(startTime).inMinutes > 60;
+  bool get isOver => DateTime.now().isAfter(endTime);
+  bool get isLeavingEarly => DateTime.now().difference(endTime).inMinutes < -15;
 
   Practice copyWith({
     String? id,

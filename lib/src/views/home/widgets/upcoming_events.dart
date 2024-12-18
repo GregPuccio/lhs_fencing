@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lhs_fencing/src/models/attendance.dart';
 import 'package:lhs_fencing/src/models/practice.dart';
-import 'package:lhs_fencing/src/views/home/widgets/event_list_tile.dart';
+import 'package:lhs_fencing/src/views/home/widgets/attendance_tile.dart';
 
 class UpcomingEvents extends StatelessWidget {
   final List<Practice> practices;
@@ -41,7 +41,7 @@ class UpcomingEvents extends StatelessWidget {
         );
         return Column(
           children: [
-            EventListTile(practice: practice, attendance: attendance),
+            AttendanceTile(practice: practice, attendance: attendance),
             const Divider(),
           ],
         );
