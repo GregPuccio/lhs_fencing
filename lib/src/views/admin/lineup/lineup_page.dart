@@ -49,6 +49,11 @@ class _LineupPageState extends ConsumerState<LineupPage> {
           .where((f) => f.team == teamFilter && f.weapon == weaponFilter)
           .toList();
 
+      List<UserData> fencersNoLongerInWeapon = currentLineup?.fencers
+              .where((f) => !(fencersToShow.contains(f)))
+              .toList() ??
+          [];
+
       List<UserData> fencersNotInLineup = fencersToShow
           .where((f) => !(currentLineup?.fencers.contains(f) ?? false))
           .toList();
@@ -269,7 +274,7 @@ class _LineupPageState extends ConsumerState<LineupPage> {
                     index--;
 
                     if (currentLineup == null ||
-                        currentLineup.fencers.length <= index) {
+                        currentLineup.fencers.length < index) {
                       UserData fencer = fencersNotInLineup[
                           index - (currentLineup?.fencers.length ?? 0)];
                       return ListTile(
@@ -287,6 +292,8 @@ class _LineupPageState extends ConsumerState<LineupPage> {
                       );
                     } else {
                       UserData fencer = currentLineup.fencers[index];
+                      bool removeFencer =
+                          fencersNoLongerInWeapon.contains(fencer);
                       int adjustAmount =
                           adjustAmounts.putIfAbsent(fencer.id, () => 0);
                       bool isStarter = currentLineup.starters.contains(fencer);
@@ -327,6 +334,10 @@ class _LineupPageState extends ConsumerState<LineupPage> {
                         ),
                         title: Wrap(
                           children: [
+                            if (removeFencer) ...[
+                              Text("FENCER TO BE REMOVED"),
+                              const SizedBox(width: 8),
+                            ],
                             Text(fencer.fullName + (isStarter ? "*" : "")),
                             const SizedBox(width: 8),
                             Text(fencer.rating.isEmpty ? "U" : fencer.rating),

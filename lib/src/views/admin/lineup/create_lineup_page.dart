@@ -50,8 +50,6 @@ class _CreateLineupPageState extends ConsumerState<CreateLineupPage> {
     super.initState();
   }
 
-  void updateFencers() {}
-
   @override
   Widget build(BuildContext context) {
     Widget whenData(List<AttendanceMonth> attendanceMonths) {
@@ -92,7 +90,6 @@ class _CreateLineupPageState extends ConsumerState<CreateLineupPage> {
                 children: [
                   Flexible(
                       child: ListTile(
-                    // leading: const Icon(Symbols.swords),
                     title: const Text("Starting Lineup:"),
                     subtitle: Text(currentLineup != null
                         ? DateFormat("EEE, MM/dd @ hh:mm aa")
@@ -200,20 +197,17 @@ class _CreateLineupPageState extends ConsumerState<CreateLineupPage> {
           padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
           child: TextButton.icon(
             onPressed: () async {
-              await FirestoreService.instance.addData(
-                path: FirestorePath.lineups(),
-                data: Lineup(
-                        id: "",
-                        fencers: fencersToShow,
-                        starters: starters,
-                        createdAt: DateTime.now(),
-                        practicesAdded: widget.unaccountedPractices
-                            .map((p) => p.id)
-                            .toList(),
-                        weapon: weapon,
-                        team: team)
-                    .toMap(),
+              Lineup lineup = Lineup.create(
+                fencers: fencersToShow,
+                starters: starters,
+                practices: (currentLineup?.practicesAdded ?? []) +
+                    widget.unaccountedPractices.map((p) => p.id).toList(),
               );
+              await FirestoreService.instance.setData(
+                path: FirestorePath.lineup(lineup.id),
+                data: lineup.toMap(),
+              );
+
               if (context.mounted) {
                 await context.maybePop();
               }
@@ -240,6 +234,16 @@ class _CreateLineupPageState extends ConsumerState<CreateLineupPage> {
             .where((f) => !(currentLineup?.fencers.contains(f) ?? false))
             .toList();
 
+        List<UserData> fencersNoLongerInWeapon = currentLineup?.fencers
+                .where((f) => !(fencersToShow.contains(f)))
+                .toList() ??
+            [];
+        if (currentLineup != null) {
+          currentLineup!.fencers.removeWhere(
+              (f) => fencersNoLongerInWeapon.any((n) => n.id == f.id));
+          starters = currentLineup!.starters;
+        }
+
         fencersToShow = (currentLineup?.fencers ?? []) + fencersNotInLineup;
 
         List<UserData> adjustedFencers = fencersToShow.reversed.toList();
@@ -257,7 +261,7 @@ class _CreateLineupPageState extends ConsumerState<CreateLineupPage> {
             adjustedFencers.insert(0, fencer);
           }
         }
-        fencersToShow = adjustedFencers.reversed.toList();
+        fencersToShow = adjustedFencers.reversed.toSet().toList();
 
         loadFencers = false;
       }

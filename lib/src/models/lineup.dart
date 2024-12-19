@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
+import 'package:uuid/uuid.dart';
 
 class Lineup {
   /// identification to easily select this lineup
@@ -39,6 +40,22 @@ class Lineup {
     required this.weapon,
     required this.team,
   });
+
+  static Lineup create({
+    required List<UserData> fencers,
+    required List<UserData> starters,
+    required List<String> practices,
+  }) {
+    return Lineup(
+      id: Uuid().v4(),
+      fencers: fencers,
+      starters: starters,
+      createdAt: DateTime.now(),
+      practicesAdded: practices,
+      weapon: fencers.first.weapon,
+      team: fencers.first.team,
+    );
+  }
 
   Lineup copyWith({
     String? id,

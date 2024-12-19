@@ -108,6 +108,10 @@ class UserData with Compare<UserData> {
     return "${firstName.substring(0, 1).toUpperCase()}${lastName.substring(0, 1).toUpperCase()}";
   }
 
+  String get info {
+    return "${team.capitalizedName} ${weapon.type} ${rating.isNotEmpty ? rating : "U"}";
+  }
+
   UserData copyWith({
     String? id,
     String? email,
@@ -205,21 +209,7 @@ class UserData with Compare<UserData> {
 
   @override
   int get hashCode {
-    return id.hashCode ^
-        email.hashCode ^
-        firstName.hashCode ^
-        lastName.hashCode ^
-        usaFencingID.hashCode ^
-        team.hashCode ^
-        weapon.hashCode ^
-        schoolYear.hashCode ^
-        startDate.hashCode ^
-        clubDays.hashCode ^
-        rating.hashCode ^
-        club.hashCode ^
-        equipment.hashCode ^
-        admin.hashCode ^
-        active.hashCode;
+    return id.hashCode;
   }
 
   @override

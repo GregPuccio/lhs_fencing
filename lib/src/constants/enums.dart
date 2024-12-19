@@ -252,8 +252,8 @@ enum Weapon {
   saber,
   foil,
   epee,
-  unsure,
-  manager;
+  manager,
+  unsure;
 
   const Weapon();
 
@@ -280,6 +280,8 @@ enum Weapon {
         return "Foil";
       case epee:
         return "Epee";
+      case manager:
+        return "Manager";
       case unsure:
         return "All";
       default:

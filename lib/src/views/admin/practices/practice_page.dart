@@ -254,7 +254,7 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                                     ),
                                     body: Column(
                                       children: List.generate(
-                                          Weapon.values.length - 1, (index) {
+                                          Weapon.values.length, (index) {
                                         Weapon weapon = Weapon.values[index];
                                         return RadioListTile.adaptive(
                                             value: weapon,
@@ -432,6 +432,11 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(fencer.info +
+                            (fencer.clubDays.any((d) =>
+                                    d.weekday == practice.startTime.weekday)
+                                ? " | Normally At Club"
+                                : "")),
                         Text(attendance.status(practice)),
                         if (attendance.comments.isNotEmpty)
                           Text(

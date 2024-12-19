@@ -60,7 +60,9 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
     attendanceStatus = [
       widget.attendance.checkIn != null,
       widget.attendance.excusedAbsense,
-      widget.attendance.unexcusedAbsense,
+      if (widget.fencer.weapon != Weapon.manager ||
+          widget.practice.type.hasScoring)
+        widget.attendance.unexcusedAbsense,
     ];
     selectCheckOutTime = widget.attendance.checkOut != null;
     comments = widget.attendance.comments;
@@ -91,7 +93,10 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
     newAttendance = newAttendance.copyWith(
         comments: comments,
         excusedAbsense: attendanceStatus[1],
-        unexcusedAbsense: attendanceStatus[2]);
+        unexcusedAbsense: (widget.fencer.weapon != Weapon.manager ||
+                widget.practice.type.hasScoring)
+            ? attendanceStatus[2]
+            : false);
     newAttendance.checkIn = attendanceStatus[0] ? checkIn : null;
     newAttendance.checkOut = selectCheckOutTime ? checkOut : null;
 
@@ -270,7 +275,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
               ),
               ToggleButtons(
                 isSelected: attendanceStatus,
-                children: const [
+                children: [
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text("Present"),
@@ -279,14 +284,16 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                     padding: EdgeInsets.all(8.0),
                     child: Text("Absent: Excused"),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text("Absent: Unexcused"),
-                  )
+                  if (widget.fencer.weapon != Weapon.manager ||
+                      widget.practice.type.hasScoring)
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text("Absent: Unexcused"),
+                    )
                 ],
                 onPressed: (index) {
                   setState(() {
-                    for (int i = 0; i < 3; i++) {
+                    for (int i = 0; i < attendanceStatus.length; i++) {
                       if (i == index) {
                         attendanceStatus[i] = true;
                       } else {
