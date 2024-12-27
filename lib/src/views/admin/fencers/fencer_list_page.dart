@@ -20,6 +20,10 @@ import 'package:lhs_fencing/src/widgets/indicator.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 import 'package:lhs_fencing/src/widgets/search_bar_widget.dart';
 import 'package:lhs_fencing/src/widgets/text_badge.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:csv/csv.dart';
 
 @RoutePage()
 class FencerListPage extends ConsumerStatefulWidget {
@@ -144,26 +148,35 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                 TextBadge(text: "${filteredFencers.length}/${fencers.length}"),
               ],
             ),
-            // actions: [
-            //   IconButton(
-            //     icon: const Icon(Icons.bug_report),
-            //     onPressed: () {
-            //       for (var fencer in fencers) {
-            //         List<AttendanceMonth> months = attendanceMonths
-            //             .where((element) =>
-            //                 element.attendances.first.userData.id == fencer.id)
-            //             .toList();
-            //         for (int index = 0; index < months.length; index++) {
-            //           FirestoreService.instance.updateData(
-            //             path: FirestorePath.attendance(
-            //                 fencer.id, months[index].id),
-            //             data: months[index].toMap(),
-            //           );
-            //         }
-            //       }
-            //     },
-            //   )
-            // ],
+            actions: [
+              PopupMenuButton(
+                icon: Icon(Icons.share),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: Text("2023 Attendance Data"),
+                    onTap: () async {
+                      List<List<dynamic>> data2023 = [
+                        ['Name', 'Attendance', 'Date'], // Headers
+                        ['John Doe', 'Present', '2023-01-01'],
+                        // Add more rows...
+                      ];
+                      await exportToCSV(data2023, 'attendance_2023', context);
+                    },
+                  ),
+                  PopupMenuItem(
+                    child: Text("2024 Attendance Data"),
+                    onTap: () async {
+                      List<List<dynamic>> data2024 = [
+                        ['Name', 'Attendance', 'Date'], // Headers
+                        ['Jane Doe', 'Present', '2024-01-01'],
+                        // Add more rows...
+                      ];
+                      await exportToCSV(data2024, 'attendance_2023', context);
+                    },
+                  ),
+                ],
+              ),
+            ],
             bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(70),
                 child: Column(
@@ -657,4 +670,30 @@ double calculateWinRate(UserData fencer, List<Bout> bouts) {
 
 int calculateTotalBouts(UserData fencer, List<Bout> bouts) {
   return bouts.where((bout) => bout.fencer.id == fencer.id).length;
+}
+
+Future<void> exportToCSV(
+    List<List<dynamic>> data, String fileName, BuildContext context) async {
+  try {
+    // final status = await Permission.storage.request();
+    // if (status.isGranted) {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = '${directory.path}/$fileName.csv';
+
+    final csvData = const ListToCsvConverter().convert(data);
+    final file = File(path);
+    await file.writeAsString(csvData);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('CSV exported to: $path')),
+      );
+    }
+    // }
+  } catch (e) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to export CSV: $e')),
+      );
+    }
+  }
 }
