@@ -38,6 +38,7 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
   SchoolYear? yearFilter;
   bool? atPractice;
   FencerSortType fencerSortType = FencerSortType.lastName;
+  bool thisSeason = true;
 
   /// null is all fencers, true is active only, false is inactive only
   bool? activeFilter = true;
@@ -137,6 +138,26 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
             ),
           ),
           appBar: AppBar(
+            actions: [
+              PopupMenuButton(
+                initialValue: thisSeason,
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: true,
+                    child: Text("2024-25 Fencers"),
+                  ),
+                  const PopupMenuItem(
+                    value: false,
+                    child: Text("2023-24 Fencers"),
+                  ),
+                ],
+                onSelected: (value) {
+                  setState(() {
+                    thisSeason = value;
+                  });
+                },
+              ),
+            ],
             title: Row(
               children: [
                 const Text("Fencer List"),
@@ -576,7 +597,8 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                       ],
                     ),
                     onTap: () => context.router.push(
-                      FencerDetailsRoute(fencerID: fencer.id),
+                      FencerDetailsRoute(
+                          fencerID: fencer.id, thisSeason: thisSeason),
                     ),
                   ),
                 ],
@@ -592,7 +614,9 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
         practices.addAll(month.practices.where((practice) => practice.startTime
             .isBefore(DateTime.now().add(const Duration(hours: 1)))));
       }
-      return ref.watch(thisSeasonBoutsProvider).when(
+      return ref
+          .watch(thisSeason ? thisSeasonBoutsProvider : lastSeasonBoutsProvider)
+          .when(
             data: whenData,
             error: (error, stackTrace) => const ErrorPage(),
             loading: () => const LoadingPage(),
@@ -604,7 +628,11 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
       for (var month in attendanceMonths) {
         attendances.addAll(month.attendances);
       }
-      return ref.watch(practicesProvider).when(
+      return ref
+          .watch(thisSeason
+              ? thisSeasonPracticesProvider
+              : lastSeasonPracticesProvider)
+          .when(
             data: whenPracticeData,
             error: (error, stackTrace) => const ErrorPage(),
             loading: () => const LoadingPage(),
@@ -613,13 +641,21 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
 
     Widget whenFencerData(List<UserData> data) {
       fencers = data;
-      return ref.watch(allAttendancesProvider).when(
-          data: whenAttendanceData,
-          error: (error, stackTrace) => const ErrorPage(),
-          loading: () => const LoadingPage());
+      return ref
+          .watch(thisSeason
+              ? thisSeasonAttendancesProvider
+              : lastSeasonAttendancesProvider)
+          .when(
+              data: whenAttendanceData,
+              error: (error, stackTrace) => const ErrorPage(),
+              loading: () => const LoadingPage());
     }
 
-    return ref.watch(fencersProvider).when(
+    return ref
+        .watch(
+          thisSeason ? thisSeasonFencersProvider : lastSeasonFencersProvider,
+        )
+        .when(
           data: whenFencerData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage(),

@@ -384,7 +384,8 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                   practice.activities = Activities(practice).activities;
                   return practice;
                 });
-                List<PracticeMonth> months = ref.read(practicesProvider).value!;
+                List<PracticeMonth> months =
+                    ref.read(thisSeasonPracticesProvider).value!;
                 for (var day in days) {
                   if (daysOfWeek
                       .any((dow) => dow.weekday == day.startTime.weekday)) {
@@ -402,11 +403,11 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                 }
                 for (var month in months) {
                   if (month.id.isEmpty) {
-                    await FirestoreService.instance.addData(
-                        path: FirestorePath.practices(), data: month.toMap());
+                    await FirestoreService.instance
+                        .addData(path: practiceSeason24, data: month.toMap());
                   } else {
                     await FirestoreService.instance.updateData(
-                        path: FirestorePath.practice(month.id),
+                        path: FirestorePath.thisSeasonPractice(month.id),
                         data: month.toMap());
                   }
                 }

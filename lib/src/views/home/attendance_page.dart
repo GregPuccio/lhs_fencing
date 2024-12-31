@@ -168,13 +168,13 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
         practices.addAll(month.practices);
       }
       practice = practices.firstWhere((p) => p.id == widget.practiceID);
-      return ref.watch(attendancesProvider).when(
+      return ref.watch(fencerAttendancesProvider).when(
           data: whenData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage());
     }
 
-    return ref.watch(practicesProvider).when(
+    return ref.watch(thisSeasonPracticesProvider).when(
           data: whenPracticeData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage(),

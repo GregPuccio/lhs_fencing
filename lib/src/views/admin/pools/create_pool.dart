@@ -287,7 +287,7 @@ class CombinedPoolStepState extends ConsumerState<CombinedPoolStep> {
 
   @override
   Widget build(BuildContext context) {
-    final fencersAsyncValue = ref.watch(fencersProvider);
+    final fencersAsyncValue = ref.watch(thisSeasonFencersProvider);
 
     return fencersAsyncValue.when(
       data: (fencers) {

@@ -155,7 +155,7 @@ class CheckInButton extends ConsumerWidget {
     final userData = ref.read(userDataProvider).value!;
 
     // Retrieve attendance months from the provider
-    final months = ref.read(attendancesProvider).value!;
+    final months = ref.read(fencerAttendancesProvider).value!;
 
     // Add the attendance record to Firestore
     await addAttendance(

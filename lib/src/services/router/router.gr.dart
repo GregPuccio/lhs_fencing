@@ -608,12 +608,14 @@ class EventsListRoute extends PageRouteInfo<void> {
 /// [FencerDetailsPage]
 class FencerDetailsRoute extends PageRouteInfo<FencerDetailsRouteArgs> {
   FencerDetailsRoute({
+    required bool thisSeason,
     required String fencerID,
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
           FencerDetailsRoute.name,
           args: FencerDetailsRouteArgs(
+            thisSeason: thisSeason,
             fencerID: fencerID,
             key: key,
           ),
@@ -627,6 +629,7 @@ class FencerDetailsRoute extends PageRouteInfo<FencerDetailsRouteArgs> {
     builder: (data) {
       final args = data.argsAs<FencerDetailsRouteArgs>();
       return FencerDetailsPage(
+        thisSeason: args.thisSeason,
         fencerID: args.fencerID,
         key: args.key,
       );
@@ -636,9 +639,12 @@ class FencerDetailsRoute extends PageRouteInfo<FencerDetailsRouteArgs> {
 
 class FencerDetailsRouteArgs {
   const FencerDetailsRouteArgs({
+    required this.thisSeason,
     required this.fencerID,
     this.key,
   });
+
+  final bool thisSeason;
 
   final String fencerID;
 
@@ -646,7 +652,7 @@ class FencerDetailsRouteArgs {
 
   @override
   String toString() {
-    return 'FencerDetailsRouteArgs{fencerID: $fencerID, key: $key}';
+    return 'FencerDetailsRouteArgs{thisSeason: $thisSeason, fencerID: $fencerID, key: $key}';
   }
 }
 

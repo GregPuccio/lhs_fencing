@@ -172,7 +172,7 @@ class _DrillsListPageState extends ConsumerState<DrillsListPage> {
       for (var month in attendanceMonths) {
         attendances.addAll(month.attendances);
       }
-      return ref.watch(practicesProvider).when(
+      return ref.watch(thisSeasonPracticesProvider).when(
             data: whenData,
             error: (error, stackTrace) => const ErrorPage(),
             loading: () => const LoadingPage(),
@@ -184,7 +184,7 @@ class _DrillsListPageState extends ConsumerState<DrillsListPage> {
       for (var season in data) {
         drills.addAll(season.drills);
       }
-      return ref.watch(allAttendancesProvider).when(
+      return ref.watch(thisSeasonAttendancesProvider).when(
           data: whenAttendanceData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage());

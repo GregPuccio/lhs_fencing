@@ -31,7 +31,7 @@ class AdminEventListTile extends ConsumerWidget {
 
     // Calculate the total number of fencers
     final totalFencers = ref
-            .watch(fencersProvider)
+            .watch(thisSeasonFencersProvider)
             .asData
             ?.value
             .where((f) =>

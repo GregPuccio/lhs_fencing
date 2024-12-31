@@ -265,7 +265,7 @@ class _CreateLineupPageState extends ConsumerState<CreateLineupPage> {
 
         loadFencers = false;
       }
-      return ref.watch(allAttendancesProvider).when(
+      return ref.watch(thisSeasonAttendancesProvider).when(
           data: whenData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage());

@@ -72,7 +72,7 @@ final userDataProvider = StreamProvider<UserData?>((ref) {
   );
 });
 
-final fencersProvider = StreamProvider<List<UserData>>((ref) {
+final thisSeasonFencersProvider = StreamProvider<List<UserData>>((ref) {
   final database = ref.watch(databaseProvider);
   return database.collectionStream(
     path: FirestorePath.users(),
@@ -84,21 +84,42 @@ final fencersProvider = StreamProvider<List<UserData>>((ref) {
   );
 });
 
+final lastSeasonFencersProvider = StreamProvider<List<UserData>>((ref) {
+  final database = ref.watch(databaseProvider);
+  return database.collectionStream(
+    path: userSeason23,
+    queryBuilder: (query) => query.where("admin", isEqualTo: false),
+    sort: (lhs, rhs) => lhs.compareTo(rhs),
+    builder: (map, docID) {
+      return UserData.fromMap(map!).copyWith(id: docID);
+    },
+  );
+});
+
 final activeFencersProvider = Provider<List<UserData>>((ref) {
-  final fencers = ref.watch(fencersProvider).asData!.value;
+  final fencers = ref.watch(thisSeasonFencersProvider).asData!.value;
   return fencers.where((f) => f.active).toList();
 });
 
-final practicesProvider = StreamProvider((ref) {
+final thisSeasonPracticesProvider = StreamProvider((ref) {
   final database = ref.watch(databaseProvider);
   return database.collectionStream(
-    path: FirestorePath.practices(),
+    path: practiceSeason24,
+    builder: (map, docID) => PracticeMonth.fromMap(map!).copyWith(id: docID),
+  );
+});
+
+final lastSeasonPracticesProvider = StreamProvider((ref) {
+  final database = ref.watch(databaseProvider);
+  return database.collectionStream(
+    path: practiceSeason23,
     builder: (map, docID) => PracticeMonth.fromMap(map!).copyWith(id: docID),
   );
 });
 
 final currentPracticesProvider = Provider((ref) {
-  final practices = ref.watch(practicesProvider).whenData((practiceMonths) {
+  final practices =
+      ref.watch(thisSeasonPracticesProvider).whenData((practiceMonths) {
     List<Practice> practices = [];
     for (var month in practiceMonths) {
       practices.addAll(
@@ -115,7 +136,7 @@ final currentPracticesProvider = Provider((ref) {
   return practices;
 });
 
-final attendancesProvider = StreamProvider((ref) {
+final fencerAttendancesProvider = StreamProvider((ref) {
   final auth = ref.watch(authStateChangesProvider);
   final database = ref.watch(databaseProvider);
   return database.collectionStream(
@@ -124,10 +145,18 @@ final attendancesProvider = StreamProvider((ref) {
   );
 });
 
-final allAttendancesProvider = StreamProvider((ref) {
+final thisSeasonAttendancesProvider = StreamProvider((ref) {
   final database = ref.watch(databaseProvider);
   return database.collectionGroupStream(
-    groupTerm: attendanceCollection,
+    groupTerm: attendanceSeason24,
+    builder: (map, docID) => AttendanceMonth.fromMap(map!).copyWith(id: docID),
+  );
+});
+
+final lastSeasonAttendancesProvider = StreamProvider((ref) {
+  final database = ref.watch(databaseProvider);
+  return database.collectionGroupStream(
+    groupTerm: attendanceSeason23,
     builder: (map, docID) => AttendanceMonth.fromMap(map!).copyWith(id: docID),
   );
 });
@@ -144,6 +173,14 @@ final thisSeasonBoutsProvider = StreamProvider((ref) {
   final database = ref.watch(databaseProvider);
   return database.collectionGroupStream(
     groupTerm: boutsSeason24,
+    builder: (map, docID) => BoutMonth.fromMap(map!).copyWith(id: docID),
+  );
+});
+
+final lastSeasonBoutsProvider = StreamProvider((ref) {
+  final database = ref.watch(databaseProvider);
+  return database.collectionGroupStream(
+    groupTerm: boutsSeason23,
     builder: (map, docID) => BoutMonth.fromMap(map!).copyWith(id: docID),
   );
 });

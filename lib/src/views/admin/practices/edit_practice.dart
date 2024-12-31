@@ -114,12 +114,12 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
                           TextButton(
                             onPressed: () async {
                               List<PracticeMonth> practiceMonths =
-                                  ref.read(practicesProvider).value!;
+                                  ref.read(thisSeasonPracticesProvider).value!;
 
                               int index = practiceMonths.indexWhere((m) =>
                                   m.practices.any((p) => p.id == practice.id));
                               await FirestoreService.instance.updateData(
-                                path: FirestorePath.practice(
+                                path: FirestorePath.thisSeasonPractice(
                                     practiceMonths[index].id),
                                 data: {
                                   "practices": FieldValue.arrayRemove(
@@ -244,7 +244,8 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
             const Divider(),
             OutlinedButton.icon(
               onPressed: () async {
-                List<PracticeMonth> months = ref.read(practicesProvider).value!;
+                List<PracticeMonth> months =
+                    ref.read(thisSeasonPracticesProvider).value!;
 
                 DateTime date =
                     DateTime(practice.startTime.year, practice.startTime.month);
@@ -280,18 +281,18 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
                       months.indexWhere((m) => m.month.isAtSameMomentAs(date));
                   months[index].practices.remove(widget.practice);
                   await FirestoreService.instance.updateData(
-                    path: FirestorePath.practice(months[index].id),
+                    path: FirestorePath.thisSeasonPractice(months[index].id),
                     data: months[index].toMap(),
                   );
                 }
                 if (index == -1) {
                   await FirestoreService.instance.addData(
-                    path: FirestorePath.practices(),
+                    path: practiceSeason24,
                     data: months.last.toMap(),
                   );
                 } else {
                   await FirestoreService.instance.updateData(
-                    path: FirestorePath.practice(months[index].id),
+                    path: FirestorePath.thisSeasonPractice(months[index].id),
                     data: months[index].toMap(),
                   );
                 }

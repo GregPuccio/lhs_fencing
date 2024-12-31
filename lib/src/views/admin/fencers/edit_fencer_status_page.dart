@@ -70,7 +70,8 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
   }
 
   Future<void> saveStatus() async {
-    List<AttendanceMonth> months = ref.read(allAttendancesProvider).value!;
+    List<AttendanceMonth> months =
+        ref.read(thisSeasonAttendancesProvider).value!;
     List<AttendanceMonth> fencerMonths = months
         .where(
             (month) => month.attendances.first.userData.id == widget.fencer.id)
@@ -109,7 +110,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
 
   Future deleteAttendance() async {
     List<AttendanceMonth> months =
-        ref.read(allAttendancesProvider).asData!.value;
+        ref.read(thisSeasonAttendancesProvider).asData!.value;
     List<AttendanceMonth> fencerMonths = months
         .where(
             (month) => month.attendances.first.userData.id == widget.fencer.id)
@@ -396,7 +397,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
                                   ? null
                                   : () {
                                       List<AttendanceMonth> months = ref
-                                          .read(allAttendancesProvider)
+                                          .read(thisSeasonAttendancesProvider)
                                           .asData!
                                           .value;
                                       List<AttendanceMonth> fencerMonths =
@@ -445,7 +446,7 @@ class _EditFencerStatusPageState extends ConsumerState<EditFencerStatusPage> {
       );
     }
 
-    return ref.watch(allAttendancesProvider).when(
+    return ref.watch(thisSeasonAttendancesProvider).when(
         data: whenData,
         error: (error, stackTrace) => const ErrorPage(),
         loading: () => const LoadingPage());

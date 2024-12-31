@@ -317,7 +317,7 @@ class _AddBoutPageState extends ConsumerState<AddBoutPage> {
       );
     }
 
-    return ref.watch(fencersProvider).when(
+    return ref.watch(thisSeasonFencersProvider).when(
           data: whenFencerData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage(),

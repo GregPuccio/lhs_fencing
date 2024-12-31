@@ -38,7 +38,7 @@ class CheckOutButton extends ConsumerWidget {
     Future<void> checkOut({String? earlyLeaveReason}) async {
       // Retrieve current user data and attendance records
       UserData userData = ref.read(userDataProvider).value!;
-      List<AttendanceMonth> months = ref.read(attendancesProvider).value!;
+      List<AttendanceMonth> months = ref.read(fencerAttendancesProvider).value!;
 
       // Update the attendance record with check-out time and optional comment
       return await updateAttendance(

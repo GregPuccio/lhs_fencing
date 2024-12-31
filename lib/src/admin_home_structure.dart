@@ -134,7 +134,7 @@ class _HomeStructureState extends ConsumerState<AdminHomeStructure> {
         practices.addAll(month.practices);
       }
       practices.sort((a, b) => -a.startTime.compareTo(b.startTime));
-      return ref.watch(allAttendancesProvider).when(
+      return ref.watch(thisSeasonAttendancesProvider).when(
             data: whenAttendanceData,
             error: (error, stackTrace) => const ErrorPage(),
             loading: () => const LoadingPage(),
@@ -144,7 +144,7 @@ class _HomeStructureState extends ConsumerState<AdminHomeStructure> {
     Widget whenData(UserData? data) {
       if (data != null) {
         userData = data;
-        return ref.watch(practicesProvider).when(
+        return ref.watch(thisSeasonPracticesProvider).when(
               data: whenPracticeData,
               error: (error, stackTrace) => const ErrorPage(),
               loading: () => const LoadingPage(),

@@ -386,7 +386,7 @@ class _LineupPageState extends ConsumerState<LineupPage> {
         practices.addAll(month.practices);
       }
       practices = practices.where((p) => p.isOver).toList();
-      return ref.watch(allAttendancesProvider).when(
+      return ref.watch(thisSeasonAttendancesProvider).when(
           data: whenData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage());
@@ -395,7 +395,7 @@ class _LineupPageState extends ConsumerState<LineupPage> {
     Widget whenLineupsData(List<Lineup> data) {
       lineups = data;
       fencers = ref.watch(activeFencersProvider);
-      return ref.watch(practicesProvider).when(
+      return ref.watch(thisSeasonPracticesProvider).when(
           data: whenPracticesData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage());

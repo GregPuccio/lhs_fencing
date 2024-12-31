@@ -15,7 +15,7 @@ class EventsListPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     List<Practice> practices = [];
     List<PracticeMonth>? practiceMonths =
-        ref.watch(practicesProvider).asData?.value.toList();
+        ref.watch(thisSeasonPracticesProvider).asData?.value.toList();
     if (practiceMonths != null) {
       practices.clear();
       for (var month in practiceMonths) {

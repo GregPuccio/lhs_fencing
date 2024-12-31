@@ -18,7 +18,9 @@ import 'package:lhs_fencing/src/widgets/text_badge.dart';
 @RoutePage()
 class FencerDetailsPage extends ConsumerStatefulWidget {
   final String fencerID;
-  const FencerDetailsPage({required this.fencerID, super.key});
+  final bool thisSeason;
+  const FencerDetailsPage(
+      {required this.thisSeason, required this.fencerID, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -208,10 +210,14 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
 
     Widget whenFencerData(List<UserData> data) {
       fencer = data.firstWhere((fencer) => fencer.id == widget.fencerID);
-      return ref.watch(allAttendancesProvider).when(
-          data: whenData,
-          error: (error, stackTrace) => const ErrorPage(),
-          loading: () => const LoadingPage());
+      return ref
+          .watch(widget.thisSeason
+              ? thisSeasonAttendancesProvider
+              : lastSeasonAttendancesProvider)
+          .when(
+              data: whenData,
+              error: (error, stackTrace) => const ErrorPage(),
+              loading: () => const LoadingPage());
     }
 
     Widget whenPracticeData(List<PracticeMonth> data) {
@@ -219,14 +225,22 @@ class _FencerDetailsPageState extends ConsumerState<FencerDetailsPage> {
       for (var month in data) {
         practices.addAll(month.practices);
       }
-      return ref.watch(fencersProvider).when(
+      return ref
+          .watch(widget.thisSeason
+              ? thisSeasonFencersProvider
+              : lastSeasonFencersProvider)
+          .when(
             data: whenFencerData,
             error: (error, stackTrace) => const ErrorPage(),
             loading: () => const LoadingPage(),
           );
     }
 
-    return ref.watch(practicesProvider).when(
+    return ref
+        .watch(widget.thisSeason
+            ? thisSeasonPracticesProvider
+            : lastSeasonPracticesProvider)
+        .when(
           data: whenPracticeData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage(),

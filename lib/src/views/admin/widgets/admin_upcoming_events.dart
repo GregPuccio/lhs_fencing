@@ -142,7 +142,7 @@ class _AdminUpcomingEventsState extends ConsumerState<AdminUpcomingEvents> {
     Widget whenAttendanceData(List<AttendanceMonth> attendanceMonths) {
       attendances =
           attendanceMonths.expand((month) => month.attendances).toList();
-      return ref.watch(practicesProvider).when(
+      return ref.watch(thisSeasonPracticesProvider).when(
             data: whenData,
             error: (error, stackTrace) => const ErrorPage(),
             loading: () => const LoadingPage(),
@@ -152,7 +152,7 @@ class _AdminUpcomingEventsState extends ConsumerState<AdminUpcomingEvents> {
     // Process fencer data and forward it to whenAttendanceData.
     Widget whenFencerData(List<UserData> fencerList) {
       fencers = fencerList.where((fencer) => fencer.active).toList();
-      return ref.watch(allAttendancesProvider).when(
+      return ref.watch(thisSeasonAttendancesProvider).when(
             data: whenAttendanceData,
             error: (error, stackTrace) => const ErrorTile(),
             loading: () => const LoadingTile(),
@@ -160,7 +160,7 @@ class _AdminUpcomingEventsState extends ConsumerState<AdminUpcomingEvents> {
     }
 
     // Watch fencersProvider and start the data processing pipeline.
-    return ref.watch(fencersProvider).when(
+    return ref.watch(thisSeasonFencersProvider).when(
           data: whenFencerData,
           error: (error, stackTrace) => const ErrorTile(),
           loading: () => const LoadingTile(),

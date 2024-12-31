@@ -61,7 +61,7 @@ class _PracticePageState extends ConsumerState<PracticePage> {
   }
 
   Future updatePractice(Practice practice) async {
-    List<PracticeMonth> months = ref.read(practicesProvider).value!;
+    List<PracticeMonth> months = ref.read(thisSeasonPracticesProvider).value!;
 
     DateTime date = DateTime(practice.startTime.year, practice.startTime.month);
     int index = months.indexWhere((m) => m.month.isAtSameMomentAs(date));
@@ -81,7 +81,7 @@ class _PracticePageState extends ConsumerState<PracticePage> {
       }
     }
     await FirestoreService.instance.updateData(
-      path: FirestorePath.practice(months[index].id),
+      path: FirestorePath.thisSeasonPractice(months[index].id),
       data: months[index].toMap(),
     );
   }
@@ -465,7 +465,7 @@ class _PracticePageState extends ConsumerState<PracticePage> {
       });
       practice = month.practices
           .firstWhere((element) => element.id == widget.practiceID);
-      return ref.watch(allAttendancesProvider).when(
+      return ref.watch(thisSeasonAttendancesProvider).when(
           data: whenData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage());
@@ -473,13 +473,13 @@ class _PracticePageState extends ConsumerState<PracticePage> {
 
     Widget whenFencerData(List<UserData> data) {
       fencers = data.toList();
-      return ref.watch(practicesProvider).when(
+      return ref.watch(thisSeasonPracticesProvider).when(
           data: whenPracticeData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage());
     }
 
-    return ref.watch(fencersProvider).when(
+    return ref.watch(thisSeasonFencersProvider).when(
           data: whenFencerData,
           error: (error, stackTrace) => const ErrorPage(),
           loading: () => const LoadingPage(),

@@ -160,8 +160,11 @@ enum TypePractice {
   }
 
   String toMap() => name;
-  static TypePractice fromMap(String map) =>
-      values.byName(map.isEmpty ? "practice" : map);
+  static TypePractice fromMap(String map) => values.byName(map.isEmpty
+      ? "practice"
+      : map == "spectating"
+          ? "spectatingHome"
+          : map);
 }
 
 enum PracticeShowState {
