@@ -36,7 +36,7 @@ class PracticePage extends ConsumerStatefulWidget {
 class _PracticePageState extends ConsumerState<PracticePage> {
   late TextEditingController controller;
   Team teamToShow = Team.both;
-  Weapon weaponToShow = Weapon.unsure;
+  Weapon? weaponToShow = Weapon.unsure;
 
   @override
   void initState() {
@@ -116,7 +116,9 @@ class _PracticePageState extends ConsumerState<PracticePage> {
       if (teamToShow != Team.both) {
         filteredFencers.retainWhere((f) => f.team == teamToShow);
       }
-      if (weaponToShow != Weapon.unsure) {
+      if (weaponToShow == null) {
+        filteredFencers.retainWhere((f) => f.weapon != Weapon.manager);
+      } else if (weaponToShow != Weapon.unsure) {
         filteredFencers.retainWhere((f) => f.weapon == weaponToShow);
       }
       List<List<UserData>> fencerLists = [
@@ -202,7 +204,6 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                         SizedBox(
                           width: 75,
                           child: IconButton(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
                             onPressed: () async {
                               Team? retVal = await showModalBottomSheet(
                                   context: context,
@@ -243,9 +244,8 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                       SizedBox(
                         width: 75,
                         child: IconButton(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
                           onPressed: () async {
-                            Weapon? retVal = await showModalBottomSheet(
+                            dynamic retVal = await showModalBottomSheet(
                                 context: context,
                                 builder: (context) {
                                   return Scaffold(
@@ -254,31 +254,44 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                                     ),
                                     body: Column(
                                       children: List.generate(
-                                          Weapon.values.length, (index) {
-                                        Weapon weapon = Weapon.values[index];
-                                        return RadioListTile.adaptive(
-                                            value: weapon,
-                                            groupValue: weaponToShow,
-                                            title: Text(weapon.shortName),
-                                            onChanged: (value) async {
-                                              if (value != null) {
-                                                await context.maybePop(value);
-                                              }
-                                            });
+                                          Weapon.values.length + 1, (index) {
+                                        if (index == Weapon.values.length) {
+                                          return RadioListTile.adaptive(
+                                              value: null,
+                                              groupValue: weaponToShow,
+                                              title: const Text(
+                                                  "Fencers (Non Managers)"),
+                                              onChanged: (value) async {
+                                                await context.maybePop(true);
+                                              });
+                                        } else {
+                                          Weapon weapon = Weapon.values[index];
+                                          return RadioListTile.adaptive(
+                                              value: weapon,
+                                              groupValue: weaponToShow,
+                                              title: Text(weapon.shortName),
+                                              onChanged: (value) async {
+                                                if (value != null) {
+                                                  await context.maybePop(value);
+                                                }
+                                              });
+                                        }
                                       }).toList(),
                                     ),
                                   );
                                 });
                             if (retVal != null) {
                               setState(() {
-                                weaponToShow = retVal;
+                                retVal == true
+                                    ? weaponToShow = null
+                                    : weaponToShow = retVal;
                               });
                             }
                           },
                           icon: Column(
                             children: [
                               const Icon(Symbols.swords),
-                              Text(weaponToShow.shortName)
+                              Text(weaponToShow?.shortName ?? "Fencers")
                             ],
                           ),
                         ),

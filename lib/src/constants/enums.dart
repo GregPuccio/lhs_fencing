@@ -287,8 +287,6 @@ enum Weapon {
         return "Manager";
       case unsure:
         return "All";
-      default:
-        return "";
     }
   }
 
