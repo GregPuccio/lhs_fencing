@@ -185,6 +185,13 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
                     if (value == null) return;
                     setState(() {
                       practice.type = value;
+                      if (practice.type.usesBus) {
+                        practice.busTime = practice.startTime.subtract(
+                          const Duration(hours: 1, minutes: 30),
+                        );
+                      } else {
+                        practice.busTime = null;
+                      }
                     });
                   }),
             ),
