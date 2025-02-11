@@ -150,7 +150,7 @@ class _PracticePageState extends ConsumerState<PracticePage> {
             ],
             bottom: PreferredSize(
               preferredSize:
-                  Size.fromHeight(150 + (practice.type.usesBus ? 70 : 0)),
+                  Size.fromHeight(155 + (practice.type.usesBus ? 70 : 0)),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
