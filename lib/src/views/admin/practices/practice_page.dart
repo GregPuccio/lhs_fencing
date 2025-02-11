@@ -155,15 +155,17 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   ListTile(
-                    title: Wrap(
-                      alignment: WrapAlignment.center,
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextBadge(text: practice.team.type),
                         const SizedBox(width: 8),
                         Text(practice.type.type),
-                        const SizedBox(width: 4),
-                        const Text("|"),
-                        const SizedBox(width: 4),
+                      ],
+                    ),
+                    subtitle: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
                         Text(practice.startString),
                       ],
                     ),
