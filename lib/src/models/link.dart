@@ -60,7 +60,7 @@ List<Link> usefulLinks = [
       launchUrl(
         Uri.https(
           "highschoolsports.nj.com",
-          "/school/livingston-livingston/girlsfencing/season/2023-2024",
+          "/school/livingston-livingston/girlsfencing/season/2025-2026",
         ),
       );
     },
@@ -74,7 +74,7 @@ List<Link> usefulLinks = [
       launchUrl(
         Uri.https(
           "highschoolsports.nj.com",
-          "/school/livingston-livingston/boysfencing/season/2023-2024",
+          "/school/livingston-livingston/boysfencing/season/2025-2026",
         ),
       );
     },

@@ -3,16 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:lhs_fencing/src/constants/date_utils.dart';
 import 'package:lhs_fencing/src/constants/enums.dart';
 import 'package:lhs_fencing/src/models/user_data.dart';
 import 'package:lhs_fencing/src/services/auth/auth_service.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
 import 'package:lhs_fencing/src/services/firestore/firestore_service.dart';
-import 'package:lhs_fencing/src/services/firestore/functions/get_fencing_data.dart';
 import 'package:lhs_fencing/src/services/providers/providers.dart';
 import 'package:lhs_fencing/src/widgets/default_app_bar.dart';
 import 'package:lhs_fencing/src/widgets/error.dart';
-import 'package:lhs_fencing/src/widgets/image_assets.dart';
 import 'package:lhs_fencing/src/widgets/loading.dart';
 
 class AccountSetupPage extends ConsumerStatefulWidget {
@@ -125,8 +124,8 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                 padding: const EdgeInsets.all(16),
                 children: [
                   if (widget.userData == null && widget.user != null) ...[
-                    const Text(
-                      "Welcome to the 2024-25 Season!",
+                    Text(
+                      "Welcome to the ${DateTime.now().getCurrentSchoolYear()} Season!",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 25),
                     ),
@@ -201,10 +200,16 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                         }),
                     const SizedBox(height: 8),
                   ],
-                  if (user.email!.contains("lps") ||
+                  if (user.email!.contains("livingston")) ...[
+                    ListTile(
+                      title: const Text("Welcome back, Coach"),
+                      subtitle: Text(
+                          "Looking forward to working with you this season!\nYou guys are the best :)"),
+                    ),
+                  ] else if (user.email!.contains("lps") ||
                       (widget.user?.email?.contains("livingston") ??
                           false)) ...[
-                    const Divider(),
+                    // const Divider(),
                     ListTile(
                       title: const Text("School Year"),
                       trailing: DropdownButton(
@@ -291,98 +296,98 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                       userData.usaFencingID = value;
                     }),
                   ),
-                  const SizedBox(height: 8),
-                  ListTile(
-                    leading: usaFencingLogo,
-                    title: const Text("USA Fencing Member?"),
-                    subtitle: Text(
-                        "Tap here to pull your USA Fencing info.\nWe will search using your ${userData.usaFencingID.length == 9 ? "USA Fencing ID" : "first and last name, if you dont provide your ID,"} and selected weapon."),
-                    trailing: loadingData
-                        ? const CircularProgressIndicator.adaptive()
-                        : Icon(Icons.download,
-                            color: Theme.of(context).primaryColor),
-                    onTap: !loadingData
-                        ? () {
-                            if (userData.weapon == Weapon.unsure ||
-                                userData.weapon == Weapon.manager) {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                        title: const Text("Weapon Not Set"),
-                                        content: const Text(
-                                            "Please select a weapon from the buttons above.\nWithout your weapon information, we will not be able to retrieve your membership information correctly."),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context),
-                                            child: const Text("Close"),
-                                          )
-                                        ],
-                                      ));
-                              return;
-                            }
-                            setState(() {
-                              loadingData = true;
-                            });
+                  // const SizedBox(height: 8),
+                  // ListTile(
+                  //   leading: usaFencingLogo,
+                  //   title: const Text("USA Fencing Member?"),
+                  //   subtitle: Text(
+                  //       "Tap here to pull your USA Fencing info.\nWe will search using your ${userData.usaFencingID.length == 9 ? "USA Fencing ID" : "first and last name, if you dont provide your ID,"} and selected weapon."),
+                  //   trailing: loadingData
+                  //       ? const CircularProgressIndicator.adaptive()
+                  //       : Icon(Icons.download,
+                  //           color: Theme.of(context).primaryColor),
+                  //   onTap: !loadingData
+                  //       ? () {
+                  //           if (userData.weapon == Weapon.unsure ||
+                  //               userData.weapon == Weapon.manager) {
+                  //             showDialog(
+                  //                 context: context,
+                  //                 builder: (context) => AlertDialog(
+                  //                       title: const Text("Weapon Not Set"),
+                  //                       content: const Text(
+                  //                           "Please select a weapon from the buttons above.\nWithout your weapon information, we will not be able to retrieve your membership information correctly."),
+                  //                       actions: [
+                  //                         TextButton(
+                  //                           onPressed: () =>
+                  //                               Navigator.pop(context),
+                  //                           child: const Text("Close"),
+                  //                         )
+                  //                       ],
+                  //                     ));
+                  //             return;
+                  //           }
+                  //           setState(() {
+                  //             loadingData = true;
+                  //           });
 
-                            getFencingData(userData, context,
-                                    settingUp: widget.userData == null)
-                                .then((value) {
-                              if (value == null && context.mounted) {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                          title: const Text(
-                                              "No Membership Data Found"),
-                                          content: Text(
-                                              "${widget.userData == null ? "Make sure that your first and last names are the spelt the same way as your registered name on USA Fencing or try using your USA Fencing ID." : "Make sure you are using a valid USA Fencing ID"}\n\nIf you do not have USA Fencing Membership you can leave these fields blank."),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                              child: const Text("Close"),
-                                            )
-                                          ],
-                                        ));
-                                setState(() {
-                                  loadingData = false;
-                                });
-                              } else {
-                                if (userData.usaFencingID.isEmpty &&
-                                        value?.club != userData.club ||
-                                    value?.rating != userData.rating) {
-                                  if (context.mounted) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                              title: const Text(
-                                                  "Membership Data Found!"),
-                                              content: Text(
-                                                  "Member ID: ${value?.usaFencingID}\nClub: ${value?.club}\n${userData.weapon.type} Rating: ${value?.rating}\n\nIf this is not you, please enter and use your USA Fencing ID to update your data."),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(context),
-                                                  child: const Text("Close"),
-                                                )
-                                              ],
-                                            ));
-                                  }
-                                }
-                                setState(() {
-                                  usaFencingIDController.text = userData
-                                      .usaFencingID = value!.usaFencingID;
-                                  clubController.text =
-                                      userData.club = value.club;
-                                  ratingController.text =
-                                      userData.rating = value.rating;
-                                  loadingData = false;
-                                });
-                              }
-                            });
-                          }
-                        : null,
-                  ),
+                  //           getFencingData(userData, context,
+                  //                   settingUp: widget.userData == null)
+                  //               .then((value) {
+                  //             if (value == null && context.mounted) {
+                  //               showDialog(
+                  //                   context: context,
+                  //                   builder: (context) => AlertDialog(
+                  //                         title: const Text(
+                  //                             "No Membership Data Found"),
+                  //                         content: Text(
+                  //                             "${widget.userData == null ? "Make sure that your first and last names are the spelt the same way as your registered name on USA Fencing or try using your USA Fencing ID." : "Make sure you are using a valid USA Fencing ID"}\n\nIf you do not have USA Fencing Membership you can leave these fields blank."),
+                  //                         actions: [
+                  //                           TextButton(
+                  //                             onPressed: () =>
+                  //                                 Navigator.pop(context),
+                  //                             child: const Text("Close"),
+                  //                           )
+                  //                         ],
+                  //                       ));
+                  //               setState(() {
+                  //                 loadingData = false;
+                  //               });
+                  //             } else {
+                  //               if (userData.usaFencingID.isEmpty &&
+                  //                       value?.club != userData.club ||
+                  //                   value?.rating != userData.rating) {
+                  //                 if (context.mounted) {
+                  //                   showDialog(
+                  //                       context: context,
+                  //                       builder: (context) => AlertDialog(
+                  //                             title: const Text(
+                  //                                 "Membership Data Found!"),
+                  //                             content: Text(
+                  //                                 "Member ID: ${value?.usaFencingID}\nClub: ${value?.club}\n${userData.weapon.type} Rating: ${value?.rating}\n\nIf this is not you, please enter and use your USA Fencing ID to update your data."),
+                  //                             actions: [
+                  //                               TextButton(
+                  //                                 onPressed: () =>
+                  //                                     Navigator.pop(context),
+                  //                                 child: const Text("Close"),
+                  //                               )
+                  //                             ],
+                  //                           ));
+                  //                 }
+                  //               }
+                  //               setState(() {
+                  //                 usaFencingIDController.text = userData
+                  //                     .usaFencingID = value!.usaFencingID;
+                  //                 clubController.text =
+                  //                     userData.club = value.club;
+                  //                 ratingController.text =
+                  //                     userData.rating = value.rating;
+                  //                 loadingData = false;
+                  //               });
+                  //             }
+                  //           });
+                  //         }
+                  //       : null,
+                  // ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -478,6 +483,10 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                               user.email!.contains("lps"))) {
                         userData.clubDays
                             .sort((a, b) => a.weekday.compareTo(b.weekday));
+                        if (user.email!.contains("livingston")) {
+                          userData.admin = true;
+                          userData.team = Team.both;
+                        }
                         if (lastYearUser != null) {
                           userData.equipment = lastYearUser.equipment;
                         }

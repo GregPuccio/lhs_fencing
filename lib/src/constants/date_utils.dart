@@ -51,6 +51,21 @@ extension DateUtils on DateTime {
   DateTime get monthOnly {
     return DateTime(year, month);
   }
+
+  String getCurrentSchoolYear() {
+    final now = DateTime.now();
+    int startYear;
+
+    // If month is July (7) or later, school year begins this calendar year
+    if (now.month >= 7) {
+      startYear = now.year;
+    } else {
+      startYear = now.year - 1;
+    }
+
+    final endYear = startYear + 1;
+    return "$startYear-$endYear";
+  }
 }
 
 extension DateRangeUtils on DateTimeRange {
