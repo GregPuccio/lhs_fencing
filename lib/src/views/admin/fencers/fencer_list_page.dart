@@ -144,11 +144,11 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                 itemBuilder: (context) => [
                   const PopupMenuItem(
                     value: true,
-                    child: Text("2024-25 Fencers"),
+                    child: Text("2025-26 Fencers"),
                   ),
                   const PopupMenuItem(
                     value: false,
-                    child: Text("2023-24 Fencers"),
+                    child: Text("2024-25 Fencers"),
                   ),
                 ],
                 onSelected: (value) {
