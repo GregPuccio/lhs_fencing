@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 import 'package:lhs_fencing/src/models/practice.dart';
+import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
 
 class PracticeMonth {
   String id;
@@ -36,11 +37,14 @@ class PracticeMonth {
   }
 
   factory PracticeMonth.fromMap(Map<String, dynamic> map) {
+    print(FirestorePath.thisSeasonPractices());
     return PracticeMonth(
       id: map['id'] ?? '',
-      practices: List<Practice>.from(
-          map['practices']?.map((x) => Practice.fromMap(x))),
-      month: DateTime.fromMillisecondsSinceEpoch(map['month']),
+      practices: map['practices'] != null
+          ? List<Practice>.from(
+              map['practices'].map((x) => Practice.fromMap(x)))
+          : [],
+      month: DateTime.fromMillisecondsSinceEpoch(map['month'] ?? 0),
     );
   }
 

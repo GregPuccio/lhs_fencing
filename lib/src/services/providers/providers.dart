@@ -87,7 +87,7 @@ final thisSeasonFencersProvider = StreamProvider<List<UserData>>((ref) {
 final lastSeasonFencersProvider = StreamProvider<List<UserData>>((ref) {
   final database = ref.watch(databaseProvider);
   return database.collectionStream(
-    path: userSeason23,
+    path: FirestorePath.lastSeasonUsers(),
     queryBuilder: (query) => query.where("admin", isEqualTo: false),
     sort: (lhs, rhs) => lhs.compareTo(rhs),
     builder: (map, docID) {
@@ -104,7 +104,7 @@ final activeFencersProvider = Provider<List<UserData>>((ref) {
 final thisSeasonPracticesProvider = StreamProvider((ref) {
   final database = ref.watch(databaseProvider);
   return database.collectionStream(
-    path: practiceSeason24,
+    path: FirestorePath.thisSeasonPractices(),
     builder: (map, docID) => PracticeMonth.fromMap(map!).copyWith(id: docID),
   );
 });
@@ -112,7 +112,7 @@ final thisSeasonPracticesProvider = StreamProvider((ref) {
 final lastSeasonPracticesProvider = StreamProvider((ref) {
   final database = ref.watch(databaseProvider);
   return database.collectionStream(
-    path: practiceSeason23,
+    path: FirestorePath.lastSeasonPractices(),
     builder: (map, docID) => PracticeMonth.fromMap(map!).copyWith(id: docID),
   );
 });
@@ -148,7 +148,7 @@ final fencerAttendancesProvider = StreamProvider((ref) {
 final thisSeasonAttendancesProvider = StreamProvider((ref) {
   final database = ref.watch(databaseProvider);
   return database.collectionGroupStream(
-    groupTerm: attendanceSeason24,
+    groupTerm: FirestorePath.thisSeasonAttendances(),
     builder: (map, docID) => AttendanceMonth.fromMap(map!).copyWith(id: docID),
   );
 });
@@ -156,7 +156,7 @@ final thisSeasonAttendancesProvider = StreamProvider((ref) {
 final lastSeasonAttendancesProvider = StreamProvider((ref) {
   final database = ref.watch(databaseProvider);
   return database.collectionGroupStream(
-    groupTerm: attendanceSeason23,
+    groupTerm: FirestorePath.lastSeasonAttendances(),
     builder: (map, docID) => AttendanceMonth.fromMap(map!).copyWith(id: docID),
   );
 });
@@ -172,7 +172,7 @@ final drillsProvider = StreamProvider((ref) {
 final thisSeasonBoutsProvider = StreamProvider((ref) {
   final database = ref.watch(databaseProvider);
   return database.collectionGroupStream(
-    groupTerm: boutsSeason24,
+    groupTerm: FirestorePath.thisSeasonBouts(),
     builder: (map, docID) => BoutMonth.fromMap(map!).copyWith(id: docID),
   );
 });
@@ -180,7 +180,7 @@ final thisSeasonBoutsProvider = StreamProvider((ref) {
 final lastSeasonBoutsProvider = StreamProvider((ref) {
   final database = ref.watch(databaseProvider);
   return database.collectionGroupStream(
-    groupTerm: boutsSeason23,
+    groupTerm: FirestorePath.lastSeasonBouts(),
     builder: (map, docID) => BoutMonth.fromMap(map!).copyWith(id: docID),
   );
 });
@@ -189,7 +189,7 @@ final thisSeasonUserBoutsProvider = StreamProvider((ref) {
   final auth = ref.watch(authStateChangesProvider);
   final database = ref.watch(databaseProvider);
   return database.collectionGroupStream(
-      groupTerm: boutsSeason24,
+      groupTerm: FirestorePath.thisSeasonBouts(),
       builder: (map, docID) => BoutMonth.fromMap(map!).copyWith(id: docID),
       queryBuilder: (query) =>
           query.where("fencerID", isEqualTo: auth.value!.uid));
@@ -206,7 +206,7 @@ final poolsProvider = StreamProvider((ref) {
 final lineupsProvider = StreamProvider((ref) {
   final database = ref.watch(databaseProvider);
   return database.collectionGroupStream(
-    groupTerm: lineupSeason24,
+    groupTerm: FirestorePath.lineups(),
     builder: (map, docID) => Lineup.fromMap(map!).copyWith(id: docID),
     sort: (lhs, rhs) => lhs.createdAt.compareTo(rhs.createdAt),
   );

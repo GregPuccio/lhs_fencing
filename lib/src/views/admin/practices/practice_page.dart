@@ -214,18 +214,21 @@ class _PracticePageState extends ConsumerState<PracticePage> {
                                       appBar: AppBar(
                                         title: Text("Selected Team"),
                                       ),
-                                      body: Column(
-                                        children: Team.values.map((team) {
-                                          return RadioListTile.adaptive(
+                                      body: RadioGroup(
+                                        groupValue: teamToShow,
+                                        onChanged: (value) async {
+                                          if (value != null) {
+                                            await context.maybePop(value);
+                                          }
+                                        },
+                                        child: Column(
+                                          children: Team.values.map((team) {
+                                            return RadioListTile.adaptive(
                                               value: team,
-                                              groupValue: teamToShow,
                                               title: Text(team.type),
-                                              onChanged: (value) async {
-                                                if (value != null) {
-                                                  await context.maybePop(value);
-                                                }
-                                              });
-                                        }).toList(),
+                                            );
+                                          }).toList(),
+                                        ),
                                       ),
                                     );
                                   });

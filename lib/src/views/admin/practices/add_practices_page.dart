@@ -403,8 +403,9 @@ class _AddPracticesPageState extends ConsumerState<AddPracticesPage> {
                 }
                 for (var month in months) {
                   if (month.id.isEmpty) {
-                    await FirestoreService.instance
-                        .addData(path: practiceSeason24, data: month.toMap());
+                    await FirestoreService.instance.addData(
+                        path: FirestorePath.thisSeasonPractices(),
+                        data: month.toMap());
                   } else {
                     await FirestoreService.instance.updateData(
                         path: FirestorePath.thisSeasonPractice(month.id),

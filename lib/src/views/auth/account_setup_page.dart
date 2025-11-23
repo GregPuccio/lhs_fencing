@@ -69,6 +69,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
       if (user == null) {
         return const LoadingPage();
       } else {
+        print(FirestorePath.user("123"));
         UserData? lastYearUser =
             ref.watch(lastSeasonUserDataProvider).asData?.value;
         bool adminEditor = ref.watch(userDataProvider).value?.admin ?? false;

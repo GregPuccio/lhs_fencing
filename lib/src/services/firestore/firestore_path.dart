@@ -12,42 +12,53 @@ String drillSeason23 = "drills23";
 String drillSeason24 = "drills24";
 String drillSeason25 = "drills25";
 String boutsSeason23 = "bouts23";
-String poolsSeason24 = "pools24";
-String poolsSeason25 = "pools25";
 String boutsSeason24 = "bouts24";
 String boutsSeason25 = "bouts25";
+String poolsSeason24 = "pools24";
+String poolsSeason25 = "pools25";
 String lineupSeason24 = "lineup24";
 String lineupSeason25 = "lineup25";
 
 class FirestorePath {
-  final FirestorePath firestorePath = FirestorePath();
-
   /// users
-  static String lastSeasonUser(String userID) => '$userSeason24/$userID';
-  static String user(String userID) => '$userSeason25/$userID';
+  static String lastSeasonUsers() => userSeason24;
+  static String lastSeasonUser(String userID) => '${lastSeasonUsers()}/$userID';
   static String users() => userSeason25;
+  static String user(String userID) => '${users()}/$userID';
 
+  /// practices
+  static String thisSeasonPractices() => practiceSeason25;
   static String thisSeasonPractice(String practiceID) =>
-      '$practiceSeason25/$practiceID';
+      '${thisSeasonPractices()}/$practiceID';
+  static String lastSeasonPractices() => practiceSeason24;
   static String lastSeasonPractice(String practiceID) =>
-      '$practiceSeason24/$practiceID';
+      '${lastSeasonPractices()}/$practiceID';
 
+  /// attendances
+  static String thisSeasonAttendances() => attendanceSeason25;
+  static String lastSeasonAttendances() => attendanceSeason24;
   static String attendances(String userID) =>
-      '$userSeason25/$userID/$attendanceSeason25';
+      '${users()}/$userID/$attendanceSeason25';
   static String attendance(String userID, String practiceID) =>
-      '$userSeason25/$userID/$attendanceSeason25/$practiceID';
+      '${users()}/$userID/${thisSeasonAttendances()}/$practiceID';
 
+  /// drills
   static String drills() => drillCollection;
-  static String drill(String drillSeasonID) =>
-      '$drillCollection/$drillSeasonID';
+  static String thisSeasonDrills() => drillSeason25;
+  static String drill(String drillSeasonID) => '${drills()}/$drillSeasonID';
 
+  /// bouts
+  static String thisSeasonBouts() => boutsSeason25;
+  static String lastSeasonBouts() => boutsSeason24;
   static String currentSeasonBoutMonths(String fencerID) =>
-      '$userSeason25/$fencerID/$boutsSeason25';
+      '${users()}/$fencerID/${thisSeasonBouts()}';
   static String currentSeasonBoutMonth(String fencerID, String month) =>
       '${currentSeasonBoutMonths(fencerID)}/$month';
 
+  /// lineups
   static String lineups() => lineupSeason25;
-  static String lineup(String lineupID) => '$lineupSeason25/$lineupID';
+  static String lineup(String lineupID) => '${lineups()}/$lineupID';
 
+  /// pools
   static String pools() => poolsSeason25;
 }

@@ -109,7 +109,7 @@ class _AddDrillsPageState extends ConsumerState<AddDrillsPage> {
             OutlinedButton.icon(
               onPressed: () async {
                 List<DrillSeason> seasons = ref.read(drillsProvider).value!;
-                String currentSeason = drillSeason23;
+                String currentSeason = FirestorePath.thisSeasonDrills();
                 int index = seasons.indexWhere((m) => m.id == currentSeason);
                 if (index == -1) {
                   seasons.add(DrillSeason(id: currentSeason, drills: [drill]));

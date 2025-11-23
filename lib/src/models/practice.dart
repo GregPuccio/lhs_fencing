@@ -167,15 +167,26 @@ Coach ${coach.firstName}
       busTime: map['busTime'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['busTime'])
           : null,
-      startTime: DateTime.fromMillisecondsSinceEpoch(map['startTime'] ?? 0),
-      endTime: DateTime.fromMillisecondsSinceEpoch(map['endTime'] ?? 0),
+      startTime: map['startTime'] is int
+          ? DateTime.fromMillisecondsSinceEpoch(map['startTime'])
+          : map['startTime']?.toDate(),
+      endTime: map['endTime'] is int
+          ? DateTime.fromMillisecondsSinceEpoch(map['endTime'])
+          : map['endTime']?.toDate(),
       type: TypePractice.fromMap(map['type'] ?? "practice"),
       team: Team.fromMap(map['team'] ?? "both"),
-      activities: Map<String, DateTime>.from(((map['activities'] ?? {}))
-              .map((k, v) => MapEntry<String, DateTime>(k, v.toDate())) ??
-          {}),
-      busCoaches: List<UserData>.from(
-          map['busCoaches']?.map((x) => UserData.fromMap(x)) ?? []),
+      activities: map['activities'] != null
+          ? (map['activities'] as Map<String, dynamic>).map(
+              (key, value) => MapEntry(
+                key,
+                value.toDate(),
+              ),
+            )
+          : {},
+      busCoaches: map['busCoaches'] != null
+          ? List<UserData>.from(
+              map['busCoaches'].map((x) => UserData.fromMap(x)))
+          : [],
     );
   }
 

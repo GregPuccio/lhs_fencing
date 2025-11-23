@@ -294,7 +294,7 @@ class _EditPracticePageState extends ConsumerState<EditPracticePage> {
                 }
                 if (index == -1) {
                   await FirestoreService.instance.addData(
-                    path: practiceSeason24,
+                    path: FirestorePath.thisSeasonPractices(),
                     data: months.last.toMap(),
                   );
                 } else {
