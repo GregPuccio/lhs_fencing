@@ -15,6 +15,7 @@ import 'package:lhs_fencing/src/views/admin/equipment/equipment_list_page.dart';
 import 'package:lhs_fencing/src/views/admin/events/event_list.dart';
 import 'package:lhs_fencing/src/views/admin/lineup/create_lineup_page.dart';
 import 'package:lhs_fencing/src/views/admin/lineup/lineup_page.dart';
+import 'package:lhs_fencing/src/views/admin/lineup/lineup_redesign.dart';
 import 'package:lhs_fencing/src/views/admin/pools/create_pool.dart';
 import 'package:lhs_fencing/src/views/admin/pools/edit_pool.dart';
 import 'package:lhs_fencing/src/views/admin/pools/pool_list.dart';
@@ -62,7 +63,10 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: EventsListRoute.page, path: "/eventList"),
     AutoRoute(page: EquipmentListRoute.page, path: "/equipmentList"),
     AutoRoute(page: LineupRoute.page, path: "/lineup"),
+    AutoRoute(page: LineupRedesignRoute.page, path: "/lineupRedesign"),
     AutoRoute(page: CreateLineupRoute.page, path: "/createLineup"),
+    AutoRoute(
+        page: CreateLineupRedesignRoute.page, path: "/createLineupRedesign"),
     AutoRoute(
       page: AttendanceRoute.page,
       path: "/attendance/:practiceID",

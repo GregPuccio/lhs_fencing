@@ -1,3 +1,4 @@
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
@@ -34,8 +35,9 @@ class AddBoutRoute extends PageRouteInfo<AddBoutRouteArgs> {
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      final args =
-          data.argsAs<AddBoutRouteArgs>(orElse: () => const AddBoutRouteArgs());
+      final args = data.argsAs<AddBoutRouteArgs>(
+        orElse: () => const AddBoutRouteArgs(),
+      );
       return AddBoutPage(
         fencer: args.fencer,
         opponent: args.opponent,
@@ -72,10 +74,7 @@ class AddBoutRouteArgs {
 /// [AddDrillsPage]
 class AddDrillsRoute extends PageRouteInfo<void> {
   const AddDrillsRoute({List<PageRouteInfo>? children})
-      : super(
-          AddDrillsRoute.name,
-          initialChildren: children,
-        );
+      : super(AddDrillsRoute.name, initialChildren: children);
 
   static const String name = 'AddDrillsRoute';
 
@@ -96,10 +95,7 @@ class AddPracticesRoute extends PageRouteInfo<AddPracticesRouteArgs> {
     List<PageRouteInfo>? children,
   }) : super(
           AddPracticesRoute.name,
-          args: AddPracticesRouteArgs(
-            practiceDate: practiceDate,
-            key: key,
-          ),
+          args: AddPracticesRouteArgs(practiceDate: practiceDate, key: key),
           initialChildren: children,
         );
 
@@ -109,20 +105,15 @@ class AddPracticesRoute extends PageRouteInfo<AddPracticesRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<AddPracticesRouteArgs>(
-          orElse: () => const AddPracticesRouteArgs());
-      return AddPracticesPage(
-        practiceDate: args.practiceDate,
-        key: args.key,
+        orElse: () => const AddPracticesRouteArgs(),
       );
+      return AddPracticesPage(practiceDate: args.practiceDate, key: args.key);
     },
   );
 }
 
 class AddPracticesRouteArgs {
-  const AddPracticesRouteArgs({
-    this.practiceDate,
-    this.key,
-  });
+  const AddPracticesRouteArgs({this.practiceDate, this.key});
 
   final DateTime? practiceDate;
 
@@ -143,10 +134,7 @@ class AttendanceRoute extends PageRouteInfo<AttendanceRouteArgs> {
     List<PageRouteInfo>? children,
   }) : super(
           AttendanceRoute.name,
-          args: AttendanceRouteArgs(
-            practiceID: practiceID,
-            key: key,
-          ),
+          args: AttendanceRouteArgs(practiceID: practiceID, key: key),
           rawPathParams: {'practiceID': practiceID},
           initialChildren: children,
         );
@@ -158,21 +146,16 @@ class AttendanceRoute extends PageRouteInfo<AttendanceRouteArgs> {
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<AttendanceRouteArgs>(
-          orElse: () => AttendanceRouteArgs(
-              practiceID: pathParams.getString('practiceID')));
-      return AttendancePage(
-        practiceID: args.practiceID,
-        key: args.key,
+        orElse: () =>
+            AttendanceRouteArgs(practiceID: pathParams.getString('practiceID')),
       );
+      return AttendancePage(practiceID: args.practiceID, key: args.key);
     },
   );
 }
 
 class AttendanceRouteArgs {
-  const AttendanceRouteArgs({
-    required this.practiceID,
-    this.key,
-  });
+  const AttendanceRouteArgs({required this.practiceID, this.key});
 
   final String practiceID;
 
@@ -188,10 +171,7 @@ class AttendanceRouteArgs {
 /// [AuthWrapperPage]
 class AuthWrapperRoute extends PageRouteInfo<void> {
   const AuthWrapperRoute({List<PageRouteInfo>? children})
-      : super(
-          AuthWrapperRoute.name,
-          initialChildren: children,
-        );
+      : super(AuthWrapperRoute.name, initialChildren: children);
 
   static const String name = 'AuthWrapperRoute';
 
@@ -207,10 +187,7 @@ class AuthWrapperRoute extends PageRouteInfo<void> {
 /// [BoutHistoryPage]
 class BoutHistoryRoute extends PageRouteInfo<void> {
   const BoutHistoryRoute({List<PageRouteInfo>? children})
-      : super(
-          BoutHistoryRoute.name,
-          initialChildren: children,
-        );
+      : super(BoutHistoryRoute.name, initialChildren: children);
 
   static const String name = 'BoutHistoryRoute';
 
@@ -287,13 +264,75 @@ class CreateLineupRouteArgs {
 }
 
 /// generated route for
+/// [CreateLineupRedesignPage]
+class CreateLineupRedesignRoute
+    extends PageRouteInfo<CreateLineupRedesignRouteArgs> {
+  CreateLineupRedesignRoute({
+    required Team team,
+    required Weapon weapon,
+    required Map<String, int> adjustAmounts,
+    required List<Practice> unaccountedPractices,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CreateLineupRedesignRoute.name,
+          args: CreateLineupRedesignRouteArgs(
+            team: team,
+            weapon: weapon,
+            adjustAmounts: adjustAmounts,
+            unaccountedPractices: unaccountedPractices,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CreateLineupRedesignRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<CreateLineupRedesignRouteArgs>();
+      return CreateLineupRedesignPage(
+        team: args.team,
+        weapon: args.weapon,
+        adjustAmounts: args.adjustAmounts,
+        unaccountedPractices: args.unaccountedPractices,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class CreateLineupRedesignRouteArgs {
+  const CreateLineupRedesignRouteArgs({
+    required this.team,
+    required this.weapon,
+    required this.adjustAmounts,
+    required this.unaccountedPractices,
+    this.key,
+  });
+
+  final Team team;
+
+  final Weapon weapon;
+
+  final Map<String, int> adjustAmounts;
+
+  final List<Practice> unaccountedPractices;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'CreateLineupRedesignRouteArgs{team: $team, weapon: $weapon, adjustAmounts: $adjustAmounts, unaccountedPractices: $unaccountedPractices, key: $key}';
+  }
+}
+
+/// generated route for
 /// [CreatePoolPage]
 class CreatePoolRoute extends PageRouteInfo<void> {
   const CreatePoolRoute({List<PageRouteInfo>? children})
-      : super(
-          CreatePoolRoute.name,
-          initialChildren: children,
-        );
+      : super(CreatePoolRoute.name, initialChildren: children);
 
   static const String name = 'CreatePoolRoute';
 
@@ -309,10 +348,7 @@ class CreatePoolRoute extends PageRouteInfo<void> {
 /// [DrillsListPage]
 class DrillsListRoute extends PageRouteInfo<void> {
   const DrillsListRoute({List<PageRouteInfo>? children})
-      : super(
-          DrillsListRoute.name,
-          initialChildren: children,
-        );
+      : super(DrillsListRoute.name, initialChildren: children);
 
   static const String name = 'DrillsListRoute';
 
@@ -327,16 +363,10 @@ class DrillsListRoute extends PageRouteInfo<void> {
 /// generated route for
 /// [EditBoutPage]
 class EditBoutRoute extends PageRouteInfo<EditBoutRouteArgs> {
-  EditBoutRoute({
-    required Bout bout,
-    Key? key,
-    List<PageRouteInfo>? children,
-  }) : super(
+  EditBoutRoute({required Bout bout, Key? key, List<PageRouteInfo>? children})
+      : super(
           EditBoutRoute.name,
-          args: EditBoutRouteArgs(
-            bout: bout,
-            key: key,
-          ),
+          args: EditBoutRouteArgs(bout: bout, key: key),
           initialChildren: children,
         );
 
@@ -346,19 +376,13 @@ class EditBoutRoute extends PageRouteInfo<EditBoutRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<EditBoutRouteArgs>();
-      return EditBoutPage(
-        bout: args.bout,
-        key: args.key,
-      );
+      return EditBoutPage(bout: args.bout, key: args.key);
     },
   );
 }
 
 class EditBoutRouteArgs {
-  const EditBoutRouteArgs({
-    required this.bout,
-    this.key,
-  });
+  const EditBoutRouteArgs({required this.bout, this.key});
 
   final Bout bout;
 
@@ -379,10 +403,7 @@ class EditDrillsRoute extends PageRouteInfo<EditDrillsRouteArgs> {
     List<PageRouteInfo>? children,
   }) : super(
           EditDrillsRoute.name,
-          args: EditDrillsRouteArgs(
-            drill: drill,
-            key: key,
-          ),
+          args: EditDrillsRouteArgs(drill: drill, key: key),
           initialChildren: children,
         );
 
@@ -392,19 +413,13 @@ class EditDrillsRoute extends PageRouteInfo<EditDrillsRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<EditDrillsRouteArgs>();
-      return EditDrillsPage(
-        drill: args.drill,
-        key: args.key,
-      );
+      return EditDrillsPage(drill: args.drill, key: args.key);
     },
   );
 }
 
 class EditDrillsRouteArgs {
-  const EditDrillsRouteArgs({
-    required this.drill,
-    this.key,
-  });
+  const EditDrillsRouteArgs({required this.drill, this.key});
 
   final Drill drill;
 
@@ -483,10 +498,7 @@ class EditPoolRoute extends PageRouteInfo<EditPoolRouteArgs> {
     List<PageRouteInfo>? children,
   }) : super(
           EditPoolRoute.name,
-          args: EditPoolRouteArgs(
-            poolID: poolID,
-            key: key,
-          ),
+          args: EditPoolRouteArgs(poolID: poolID, key: key),
           initialChildren: children,
         );
 
@@ -496,19 +508,13 @@ class EditPoolRoute extends PageRouteInfo<EditPoolRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<EditPoolRouteArgs>();
-      return EditPoolPage(
-        poolID: args.poolID,
-        key: args.key,
-      );
+      return EditPoolPage(poolID: args.poolID, key: args.key);
     },
   );
 }
 
 class EditPoolRouteArgs {
-  const EditPoolRouteArgs({
-    required this.poolID,
-    this.key,
-  });
+  const EditPoolRouteArgs({required this.poolID, this.key});
 
   final String poolID;
 
@@ -529,10 +535,7 @@ class EditPracticeRoute extends PageRouteInfo<EditPracticeRouteArgs> {
     List<PageRouteInfo>? children,
   }) : super(
           EditPracticeRoute.name,
-          args: EditPracticeRouteArgs(
-            practice: practice,
-            key: key,
-          ),
+          args: EditPracticeRouteArgs(practice: practice, key: key),
           initialChildren: children,
         );
 
@@ -542,19 +545,13 @@ class EditPracticeRoute extends PageRouteInfo<EditPracticeRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<EditPracticeRouteArgs>();
-      return EditPracticePage(
-        practice: args.practice,
-        key: args.key,
-      );
+      return EditPracticePage(practice: args.practice, key: args.key);
     },
   );
 }
 
 class EditPracticeRouteArgs {
-  const EditPracticeRouteArgs({
-    required this.practice,
-    this.key,
-  });
+  const EditPracticeRouteArgs({required this.practice, this.key});
 
   final Practice practice;
 
@@ -570,10 +567,7 @@ class EditPracticeRouteArgs {
 /// [EquipmentListPage]
 class EquipmentListRoute extends PageRouteInfo<void> {
   const EquipmentListRoute({List<PageRouteInfo>? children})
-      : super(
-          EquipmentListRoute.name,
-          initialChildren: children,
-        );
+      : super(EquipmentListRoute.name, initialChildren: children);
 
   static const String name = 'EquipmentListRoute';
 
@@ -589,10 +583,7 @@ class EquipmentListRoute extends PageRouteInfo<void> {
 /// [EventsListPage]
 class EventsListRoute extends PageRouteInfo<void> {
   const EventsListRoute({List<PageRouteInfo>? children})
-      : super(
-          EventsListRoute.name,
-          initialChildren: children,
-        );
+      : super(EventsListRoute.name, initialChildren: children);
 
   static const String name = 'EventsListRoute';
 
@@ -660,10 +651,7 @@ class FencerDetailsRouteArgs {
 /// [FencerListPage]
 class FencerListRoute extends PageRouteInfo<void> {
   const FencerListRoute({List<PageRouteInfo>? children})
-      : super(
-          FencerListRoute.name,
-          initialChildren: children,
-        );
+      : super(FencerListRoute.name, initialChildren: children);
 
   static const String name = 'FencerListRoute';
 
@@ -679,10 +667,7 @@ class FencerListRoute extends PageRouteInfo<void> {
 /// [LineupPage]
 class LineupRoute extends PageRouteInfo<void> {
   const LineupRoute({List<PageRouteInfo>? children})
-      : super(
-          LineupRoute.name,
-          initialChildren: children,
-        );
+      : super(LineupRoute.name, initialChildren: children);
 
   static const String name = 'LineupRoute';
 
@@ -695,13 +680,26 @@ class LineupRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [LineupRedesign]
+class LineupRedesignRoute extends PageRouteInfo<void> {
+  const LineupRedesignRoute({List<PageRouteInfo>? children})
+      : super(LineupRedesignRoute.name, initialChildren: children);
+
+  static const String name = 'LineupRedesignRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const LineupRedesign();
+    },
+  );
+}
+
+/// generated route for
 /// [PoolListPage]
 class PoolListRoute extends PageRouteInfo<void> {
   const PoolListRoute({List<PageRouteInfo>? children})
-      : super(
-          PoolListRoute.name,
-          initialChildren: children,
-        );
+      : super(PoolListRoute.name, initialChildren: children);
 
   static const String name = 'PoolListRoute';
 
@@ -722,10 +720,7 @@ class PracticeRoute extends PageRouteInfo<PracticeRouteArgs> {
     List<PageRouteInfo>? children,
   }) : super(
           PracticeRoute.name,
-          args: PracticeRouteArgs(
-            practiceID: practiceID,
-            key: key,
-          ),
+          args: PracticeRouteArgs(practiceID: practiceID, key: key),
           initialChildren: children,
         );
 
@@ -735,19 +730,13 @@ class PracticeRoute extends PageRouteInfo<PracticeRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<PracticeRouteArgs>();
-      return PracticePage(
-        practiceID: args.practiceID,
-        key: args.key,
-      );
+      return PracticePage(practiceID: args.practiceID, key: args.key);
     },
   );
 }
 
 class PracticeRouteArgs {
-  const PracticeRouteArgs({
-    required this.practiceID,
-    this.key,
-  });
+  const PracticeRouteArgs({required this.practiceID, this.key});
 
   final String practiceID;
 
