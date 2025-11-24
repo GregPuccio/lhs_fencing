@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 import 'package:lhs_fencing/src/models/practice.dart';
-import 'package:lhs_fencing/src/services/firestore/firestore_path.dart';
 
 class PracticeMonth {
   String id;
@@ -37,7 +36,6 @@ class PracticeMonth {
   }
 
   factory PracticeMonth.fromMap(Map<String, dynamic> map) {
-    print(FirestorePath.thisSeasonPractices());
     return PracticeMonth(
       id: map['id'] ?? '',
       practices: map['practices'] != null

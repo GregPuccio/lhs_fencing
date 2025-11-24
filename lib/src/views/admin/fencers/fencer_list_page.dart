@@ -530,15 +530,17 @@ class _FencerListPageState extends ConsumerState<FencerListPage> {
                   ListTile(
                     leading: SizedBox(
                       width: MediaQuery.of(context).size.width / 2.5,
-                      child: PieChart(
-                        PieChartData(
-                          borderData: FlBorderData(show: false),
-                          sectionsSpace: 2,
-                          centerSpaceRadius: 40,
-                          sections: showingSections,
-                          startDegreeOffset: 180,
-                        ),
-                      ),
+                      child: attendances.isNotEmpty
+                          ? PieChart(
+                              PieChartData(
+                                borderData: FlBorderData(show: false),
+                                sectionsSpace: 2,
+                                centerSpaceRadius: 40,
+                                sections: showingSections,
+                                startDegreeOffset: 180,
+                              ),
+                            )
+                          : Container(),
                     ),
                     title: Row(
                       children: [

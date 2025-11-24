@@ -35,7 +35,8 @@ class Indicator extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: isTouched ? FontWeight.bold : FontWeight.normal,
-            color: isTouched ? Theme.of(context).indicatorColor : null,
+            color:
+                isTouched ? Theme.of(context).tabBarTheme.indicatorColor : null,
           ),
         )
       ],

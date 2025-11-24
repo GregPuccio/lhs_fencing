@@ -94,10 +94,11 @@ class _EditBoutPageState extends ConsumerState<EditBoutPage> {
       }
     }
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (bout != widget.bout) {
-          return await showDialog(
+    return PopScope(
+      canPop: bout == widget.bout,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (!didPop) {
+          final shouldLeave = await showDialog(
             context: context,
             builder: (context) => AlertDialog(
               title: const Text("Save Changes"),
@@ -115,8 +116,9 @@ class _EditBoutPageState extends ConsumerState<EditBoutPage> {
               ],
             ),
           );
-        } else {
-          return true;
+          if (shouldLeave && context.mounted) {
+            Navigator.of(context).pop();
+          }
         }
       },
       child: Scaffold(

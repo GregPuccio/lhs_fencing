@@ -48,7 +48,6 @@ class CreatePoolPageState extends ConsumerState<CreatePoolPage> {
 
   Future<void> _showSaveConfirmation(
       BuildContext context, Future<void> Function() onConfirm) async {
-    print(_selectedFencers);
     final result = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {

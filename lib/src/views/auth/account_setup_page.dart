@@ -69,16 +69,14 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
       if (user == null) {
         return const LoadingPage();
       } else {
-        print(FirestorePath.user("123"));
         UserData? lastYearUser =
             ref.watch(lastSeasonUserDataProvider).asData?.value;
         bool adminEditor = ref.watch(userDataProvider).value?.admin ?? false;
-        return WillPopScope(
-          onWillPop: () async {
-            if (widget.userData == userData || widget.user == null) {
-              return true;
-            } else {
-              return await showDialog(
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) async {
+            if (!didPop) {
+              final shouldLeave = await showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
                         title: const Text("Unsaved Changes"),
@@ -114,6 +112,9 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                           ),
                         ],
                       )).then((value) => value ?? false);
+              if (shouldLeave && context.mounted) {
+                Navigator.of(context).pop();
+              }
             }
           },
           child: Scaffold(
@@ -201,7 +202,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                         }),
                     const SizedBox(height: 8),
                   ],
-                  if (user.email!.contains("livingston")) ...[
+                  if (userData.email.contains("livingston")) ...[
                     ListTile(
                       title: const Text("Welcome back, Coach"),
                       subtitle: Text(
@@ -484,7 +485,7 @@ class _AccountSetupState extends ConsumerState<AccountSetupPage> {
                               user.email!.contains("lps"))) {
                         userData.clubDays
                             .sort((a, b) => a.weekday.compareTo(b.weekday));
-                        if (user.email!.contains("livingston")) {
+                        if (userData.email.contains("livingston")) {
                           userData.admin = true;
                           userData.team = Team.both;
                         }
